@@ -4,11 +4,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemPortalKey extends Item {
-	public String portalGuid;
-	public String portalLocation;
-	public String portalImageUrl;
-	public String portalTitle;
-	public String portalAddress;
+
+	private String portalGuid;
+	private String portalLocation;
+	private String portalImageUrl;
+	private String portalTitle;
+	private String portalAddress;
+	
+	public ItemPortalKey()
+	{
+		super(Item.ItemType.PortalKey);
+	}
 
 	@Override
 	protected void initItemByJSON(JSONObject json) throws JSONException {
@@ -20,5 +26,29 @@ public class ItemPortalKey extends Item {
 		portalTitle = portalCoupler.getString("portalTitle");
 		portalAddress = portalCoupler.getString("portalAddress");
 	}
-	
+
+	public String getPortalGuid()
+	{
+		return portalGuid;
+	}
+
+	public String getPortalLocation()
+	{
+		return portalLocation;
+	}
+
+	public String getPortalImageUrl()
+	{
+		return portalImageUrl;
+	}
+
+	public String getPortalTitle()
+	{
+		return portalTitle;
+	}
+
+	public String getPortalAddress()
+	{
+		return portalAddress;
+	}	
 }

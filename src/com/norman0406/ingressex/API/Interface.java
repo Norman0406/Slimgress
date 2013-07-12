@@ -41,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Interface {
+	
 	private Agent agent = null;
 	private Inventory inventory = null;
 	
@@ -64,14 +65,14 @@ public class Interface {
 		try {
 			login();
 			handshake();
+			
+			inventory = new Inventory();
+			//inventory.update();
 
 			List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-			params.add(new BasicNameValuePair("lastQueryTimestamp", "1373498144202"));
+			params.add(new BasicNameValuePair("lastQueryTimestamp", agent.getLastSyncTimestamp()));
 			
 			request("playerUndecorated/getInventory", params, new ProcessGameBasket(this));
-
-			/*String json;
-			new ProcessGameBasket().requestFinished(json);*/
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -189,6 +190,7 @@ public class Interface {
 		JSONArray playerEntity = result.getJSONArray("playerEntity");
 		JSONObject controllingTeam = playerEntity.getJSONObject(2).getJSONObject("controllingTeam");
 		JSONObject playerPersonal = playerEntity.getJSONObject(2).getJSONObject("playerPersonal");
+		JSONObject initialKnobs = result.getJSONObject("initialKnobs");
 		
 		// set application specific data
 		xsrfToken = result.getString("xsrfToken");
@@ -209,17 +211,6 @@ public class Interface {
 		agent.setCanPlay(result.getBoolean("canPlay"));
 		agent.setAllowNicknameEdit(playerPersonal.getBoolean("allowNicknameEdit"));
 		agent.setAllowFactionChoice(playerPersonal.getBoolean("allowFactionChoice"));
-	}
-
-	private abstract class RequestCallback
-	{
-		private Interface theInterface;
-		RequestCallback(Interface inter)
-		{
-			theInterface = inter;
-		}
-		
-		abstract void requestFinished(JSONObject json) throws JSONException;
 	}
 	
 	private void request(final String requestString, final List<NameValuePair> requestParams, final RequestCallback finished) throws InterruptedException
@@ -301,6 +292,17 @@ public class Interface {
 		requestThread.start();
 		requestThread.join();		
 	}
+
+	private abstract class RequestCallback
+	{
+		private Interface theInterface;
+		RequestCallback(Interface inter)
+		{
+			theInterface = inter;
+		}
+		
+		abstract void requestFinished(JSONObject json) throws JSONException;
+	}
 	
 	private class ProcessGameBasket extends RequestCallback {
 		ProcessGameBasket(Interface inter) {
@@ -312,12 +314,15 @@ public class Interface {
 		{
 			// NOTE: inventory is beeing loaded in chunks. process multiple times
 			
-			String lastTimestamp = json.getString("result");
+			String timestamp = json.getString("result");
 			
 			JSONObject gameBasket = json.getJSONObject("gameBasket");
 			
 			processGameEntities(gameBasket.getJSONArray("gameEntities"));
 			processInventory(gameBasket.getJSONArray("inventory"));
+			processDeletedEntityGuids(gameBasket.getJSONArray("deletedEntityGuids"));
+			
+			super.theInterface.getAgent().setLastSyncTimestamp(timestamp);
 		}
 		
 		private void processGameEntities(JSONArray gameEntities) throws JSONException
@@ -326,25 +331,35 @@ public class Interface {
 		
 		private void processInventory(JSONArray inventory) throws JSONException
 		{
-			// create a new inventory
-			if (inventory.length() > 0 && super.theInterface.inventory == null) {
-				super.theInterface.inventory = new Inventory();
-			}
-			
-			// iterate over inventory items
-			for (int i = 0; i < inventory.length(); i++) {
-				JSONArray resource = inventory.getJSONArray(i);
-				JSONObject itemDescr = resource.getJSONObject(2);
-				
-				Item newItem = Item.createItem(resource.getString(0), resource.getString(1), itemDescr);
+			if (super.theInterface.inventory != null) {
+				// iterate over inventory items
+				for (int i = 0; i < inventory.length(); i++) {
+					JSONArray resource = inventory.getJSONArray(i);
+					JSONObject itemDescr = resource.getJSONObject(2);
+					
+					// deserialize the item using the JSON representation
+					Item newItem = Item.createItem(resource.getString(0), resource.getString(1), itemDescr);
 
-				// add the new item to the player inventory
-				if (newItem != null) {
-					super.theInterface.inventory.addItem(newItem);
+					// add the new item to the player inventory
+					if (newItem != null) {
+						super.theInterface.inventory.addItem(newItem);
+					}
 				}
-			}
-			
-			System.out.println("Hallo");
-		}		
+				
+				System.out.println("Hallo");
+			}			
+		}
+		
+		private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException
+		{
+		}
+	}
+	
+	public Agent getAgent() {
+		return agent;
+	}
+	
+	public Inventory getInventory() {
+		return inventory;
 	}
 }
