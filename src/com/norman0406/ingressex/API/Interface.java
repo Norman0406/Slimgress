@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -50,7 +49,7 @@ public class Interface {
 			world = new World();
 
 			updateInventory();
-			updateWorld();
+			//updateWorld();
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -265,30 +264,20 @@ public class Interface {
 				HttpResponse response;
 				try {
 					response = client.execute(post);
+					
 					HttpEntity entity = response.getEntity();
 					
 					if (entity != null) {
-						try {
-							String content = EntityUtils.toString(entity);
-						    finished.requestFinished(new JSONObject(content));
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					    finally {
-						    entity.consumeContent();
-					    }
+						String content = EntityUtils.toString(entity);						
+					    finished.requestFinished(new JSONObject(content));
 					}
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
