@@ -1,7 +1,5 @@
 package com.norman0406.ingressex;
 
-import com.norman0406.ingressex.API.Interface;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -10,6 +8,7 @@ import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 public class AuthActivity extends Activity {
 	
@@ -27,22 +26,24 @@ public class AuthActivity extends Activity {
 		if (accounts.length > 0) {
 			Account accToUse = accounts[0];
 			
+			// get account name (email)
 			String name = accToUse.name;	// account e-mail
+			((TextView)findViewById(R.id.username)).setText(name);
 	        Intent myIntent = getIntent();
 	        myIntent.putExtra("User", name);
 			
+	        // get authentication token from account manager and return it to the main activity	        
 			accountMgr.getAuthToken(accToUse, "ah", null, activity, new AccountManagerCallback<Bundle>() {
 			    public void run(AccountManagerFuture<Bundle> future) {
 			    	try {
 			    		String token = future.getResult().getString(AccountManager.KEY_AUTHTOKEN);
-			        				        
+			    				    		
 				        // switch to main activity
 				        Intent myIntent = getIntent();
 				        myIntent.putExtra("AuthToken", token);
-				        setResult(RESULT_OK, myIntent);
+				        setResult(RESULT_OK, myIntent);				        
 				        finish();
 				   	} catch (OperationCanceledException e) {
-				   		// TODO: The user has denied you access to the API, you should handle that
 				   		setResult(RESULT_CANCELED);
 				   		finish();
 				   	} catch (Exception e) {

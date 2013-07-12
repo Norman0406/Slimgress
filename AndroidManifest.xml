@@ -30,10 +30,11 @@
         <activity
             android:name="com.norman0406.ingressex.AuthActivity"
             android:label="@string/authenticate" >
-            <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+        </activity>
+        
+        <activity
+            android:name="com.norman0406.ingressex.InventoryActivity"
+            android:label="@string/inventory" >
         </activity>
     </application>
 
