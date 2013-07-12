@@ -3,17 +3,11 @@ package com.norman0406.ingressex.API;
 // TODO: let Agent deserialize it's values automatically from handshake and gameBasket data
 
 public class Agent {
-	
-	public enum Team
-	{
-		RESISTANCE,
-		ENLIGHTENED		
-	}
-	
+		
 	// can never change during the game
 	private final String playerId;
 	private final String nickname;
-	private final Team team;
+	private final Utils.Team team;
 	
 	// dynamic information
 	private int ap;
@@ -25,7 +19,7 @@ public class Agent {
 	private boolean canPlay;
 	private String lastSyncTimestamp;
 	
-	public Agent(final String playerId, final String nickname, final Team team)	{
+	public Agent(final String playerId, final String nickname, final Utils.Team team)	{
 		lastSyncTimestamp = "0";
 		this.playerId = playerId;
 		this.nickname = nickname;
@@ -88,7 +82,7 @@ public class Agent {
 		return nickname;
 	}
 
-	public Team getTeam() {
+	public Utils.Team getTeam() {
 		return team;
 	}
 }

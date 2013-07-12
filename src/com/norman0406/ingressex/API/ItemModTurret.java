@@ -4,11 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModTurret extends ItemMod {
-		
+	
+	public ItemModTurret(String guid, String timestamp) {
+		super(guid, timestamp);
+	}
+	
 	@Override
-	protected void initItemByJSON(JSONObject json) throws JSONException
-	{
-		JSONObject modResource = json.getJSONObject("modResource");
-		super.initItemByJSON(modResource);
+	protected void initByJSON(JSONObject json) throws JSONException {
+		super.initByJSON(json);
 	}
 }

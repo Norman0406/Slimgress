@@ -5,28 +5,22 @@ import org.json.JSONObject;
 
 public class ItemModShield extends ItemMod {
 	
-	private int shieldRemovalStickiness;
 	private int shieldMitigation;
+
+	public ItemModShield(String guid, String timestamp) {
+		super(guid, timestamp);
+	}
 	
 	@Override
-	protected void initItemByJSON(JSONObject json) throws JSONException
-	{
-		JSONObject modResource = json.getJSONObject("modResource");
-		super.initItemByJSON(modResource);
-
-		JSONObject shieldStats = modResource.getJSONObject("stats");
+	protected void initByJSON(JSONObject json) throws JSONException {
+		super.initByJSON(json);
 		
-		shieldRemovalStickiness = Integer.parseInt(shieldStats.getString("REMOVAL_STICKINESS"));
-		shieldMitigation = Integer.parseInt(shieldStats.getString("MITIGATION"));
-	}
-	
-	public int getShieldRemovalStickiness()
-	{
-		return shieldRemovalStickiness;
+		JSONObject modResource = json.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		shieldMitigation = Integer.parseInt(stats.getString("MITIGATION"));
 	}
 
-	public int getShieldMitigation()
-	{
+	public int getMultihackInsulation() {
 		return shieldMitigation;
-	}	
+	}
 }

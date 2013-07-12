@@ -1,17 +1,12 @@
 package com.norman0406.ingressex.API;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
 public class Inventory {
 	private List<Item> items;
 	
-	public Inventory()
-	{
+	public Inventory() {
 		items = new LinkedList<Item>();
 	}
 	
@@ -23,23 +18,22 @@ public class Inventory {
 		return items;
 	}
 	
-	public Item getItem(String itemGuid) {
+	public Item getItem(String guid) {
 		for (Item it : items) {
-			if (it.getItemGuid() == itemGuid)
+			if (it.getEntityGuid() == guid)
 				return it;
 		}
 		return null;
 	}
 	
-	public boolean removeItem(String itemGuid) {
-		Item itemToRemove = getItem(itemGuid);
-		if (itemToRemove != null)
-			return items.remove(itemToRemove);
+	public boolean removeItem(String guid) {
+		Item item = getItem(guid);
+		if (item != null)
+			return items.remove(item);
 		return false;
 	}
 	
-	public void update()
-	{
+	public void update() {
 		/*List<NameValuePair> params = new ArrayList<NameValuePair>(1);
 		params.add(new BasicNameValuePair("lastQueryTimestamp", agent.getLastSyncTimestamp()));
 		

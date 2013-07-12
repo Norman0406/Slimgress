@@ -5,12 +5,32 @@ import org.json.JSONObject;
 
 public class ItemVirus extends Item {
 	
-	public ItemVirus()
-	{
-		super(Item.ItemType.Virus);
+	public enum VirusType {
+		Jarvis,
+		Ada
+	}
+	
+	private VirusType virusType;
+	
+	public ItemVirus(String guid, String timestamp) {
+		super(guid, timestamp, Item.ItemType.Virus);
 	}
 
 	@Override
-	protected void initItemByJSON(JSONObject json) throws JSONException {
-	}	
+	protected void initByJSON(JSONObject json) throws JSONException {
+		super.initByJSON(json);
+		
+		JSONObject flipCard = json.getJSONObject("flipCard");
+		
+		if (flipCard.getString("flipCardType").equals("JARVIS"))
+			virusType = VirusType.Jarvis;
+		else if (flipCard.getString("flipCardType").equals("ADA"))
+			virusType = VirusType.Ada;
+		else
+			System.out.println("unknown virus type");
+	}
+	
+	public VirusType getVirusType() {
+		return virusType;
+	}
 }

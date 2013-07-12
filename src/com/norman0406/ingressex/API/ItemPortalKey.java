@@ -11,13 +11,14 @@ public class ItemPortalKey extends Item {
 	private String portalTitle;
 	private String portalAddress;
 	
-	public ItemPortalKey()
-	{
-		super(Item.ItemType.PortalKey);
+	public ItemPortalKey(String guid, String timestamp) {
+		super(guid, timestamp, Item.ItemType.PortalKey);
 	}
 
 	@Override
-	protected void initItemByJSON(JSONObject json) throws JSONException {
+	protected void initByJSON(JSONObject json) throws JSONException {
+		super.initByJSON(json);
+		
 		JSONObject portalCoupler = json.getJSONObject("portalCoupler");
 		
 		portalGuid = portalCoupler.getString("portalGuid");
@@ -27,28 +28,23 @@ public class ItemPortalKey extends Item {
 		portalAddress = portalCoupler.getString("portalAddress");
 	}
 
-	public String getPortalGuid()
-	{
+	public String getPortalGuid() {
 		return portalGuid;
 	}
 
-	public String getPortalLocation()
-	{
+	public String getPortalLocation() {
 		return portalLocation;
 	}
 
-	public String getPortalImageUrl()
-	{
+	public String getPortalImageUrl() {
 		return portalImageUrl;
 	}
 
-	public String getPortalTitle()
-	{
+	public String getPortalTitle() {
 		return portalTitle;
 	}
 
-	public String getPortalAddress()
-	{
+	public String getPortalAddress() {
 		return portalAddress;
 	}	
 }

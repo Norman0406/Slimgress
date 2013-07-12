@@ -5,13 +5,12 @@ import org.json.JSONObject;
 
 public class ItemResonator extends Item {
 	
-	public ItemResonator()
-	{
-		super(Item.ItemType.Resonator);
+	public ItemResonator(String guid, String timestamp) {
+		super(guid, timestamp, Item.ItemType.Resonator);
 	}
 
 	@Override
-	protected void initItemByJSON(JSONObject json) throws JSONException {
-	}
-	
+	protected void initByJSON(JSONObject json) throws JSONException {
+		super.initByJSON(json);
+	}	
 }

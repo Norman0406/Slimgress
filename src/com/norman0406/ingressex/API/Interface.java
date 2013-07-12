@@ -1,40 +1,19 @@
 package com.norman0406.ingressex.API;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +23,7 @@ public class Interface {
 	
 	private Agent agent = null;
 	private Inventory inventory = null;
+	private World world = null;
 	
 	private DefaultHttpClient client;
 	private String authToken;
@@ -51,13 +31,13 @@ public class Interface {
 	private String sacsidCookie;
 
 	// ingress api definition
-	private final String apiBase = "https://betaspike.appspot.com/";
+	private final String apiBase = "betaspike.appspot.com";
+	private final String apiBaseURL = "https://" + apiBase + "/";
 	private final String apiLogin = "_ah/login?continue=http://localhost/&auth=";
 	private final String apiHandshake = "handshake?json=";
 	private final String apiRequest = "rpc/";
 	
-	public Interface(String token)
-	{
+	public Interface(String token) {
 		client = new DefaultHttpClient();
 		
 		authToken = token;
@@ -67,27 +47,61 @@ public class Interface {
 			handshake();
 			
 			inventory = new Inventory();
-			//inventory.update();
+			world = new World();
 
-			List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-			params.add(new BasicNameValuePair("lastQueryTimestamp", agent.getLastSyncTimestamp()));
-			
-			request("playerUndecorated/getInventory", params, new ProcessGameBasket(this));
+			updateInventory();
+			updateWorld();
 			
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void login() throws InterruptedException
-	{
+	private void updateInventory() throws InterruptedException, JSONException {
+		JSONObject params = new JSONObject();
+		params.put("lastQueryTimestamp", agent.getLastSyncTimestamp());
+		
+		request("playerUndecorated/getInventory", params, new ProcessGameBasket(this));
+	}
+	
+	private void updateWorld() throws InterruptedException, JSONException {
+
+		JSONObject params = new JSONObject();
+
+		JSONArray cells = new JSONArray();
+		cells.put(null);
+		
+		JSONArray energyGlobGuids = new JSONArray();
+				
+		// create cells
+		JSONArray cellsAsHex = new JSONArray();
+		cellsAsHex.put("478af45f10000000");
+
+		// create dates (timestamps?)
+		JSONArray dates = new JSONArray();
+		dates.put(0);
+		
+		params.put("cells", null);
+		params.put("cellsAsHex", cellsAsHex);
+		params.put("dates", dates);
+		params.put("energyGlobGuids", energyGlobGuids);
+		params.put("knobSyncTimestamp", Long.valueOf("1358200098740"));
+		params.put("playerLocation", "02b1a282,00577cb9");
+				
+		request("gameplay/getObjectsInCells", params, new ProcessGameBasket(this));
+	}
+	
+	private void login() throws InterruptedException {
 		Thread loginThread = new Thread(new Runnable() {
 		    public void run() {
 		    	// see http://blog.notdot.net/2010/05/Authenticating-against-App-Engine-from-an-Android-app
 		    	// also use ?continue= (?)
 		    	
-		    	String login = apiBase + apiLogin + authToken;
+		    	String login = apiBaseURL + apiLogin + authToken;
 				HttpGet get = new HttpGet(login);
 
 				try {
@@ -124,8 +138,7 @@ public class Interface {
 		loginThread.join();
 	}
 	
-	private void handshake() throws InterruptedException
-	{
+	private void handshake() throws InterruptedException {
 		Thread handshakeThread = new Thread(new Runnable() {
 		    public void run() {
 		    	
@@ -137,7 +150,7 @@ public class Interface {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}	// TODO: get from system information
-		    			    	
+		    	
 		    	String paramString = params.toString();
 		    	
 		    	try {
@@ -146,7 +159,7 @@ public class Interface {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-		    	String handshake = apiBase + apiHandshake + paramString;
+		    	String handshake = apiBaseURL + apiHandshake + paramString;
 				
 				HttpGet get = new HttpGet(handshake);
 				get.setHeader("Accept-Charset", "utf-8");
@@ -183,24 +196,26 @@ public class Interface {
 		handshakeThread.join();
 	}
 	
-	private void processHandshakeData(JSONObject json) throws JSONException
-	{
+	private void processHandshakeData(JSONObject json) throws JSONException {
 		// get json objects
 		JSONObject result = json.getJSONObject("result");
 		JSONArray playerEntity = result.getJSONArray("playerEntity");
 		JSONObject controllingTeam = playerEntity.getJSONObject(2).getJSONObject("controllingTeam");
 		JSONObject playerPersonal = playerEntity.getJSONObject(2).getJSONObject("playerPersonal");
-		JSONObject initialKnobs = result.getJSONObject("initialKnobs");
 		
 		// set application specific data
 		xsrfToken = result.getString("xsrfToken");
 		
 		// set static agent data
 		if (agent == null) {
-			Agent.Team agentTeam = Agent.Team.ENLIGHTENED;
+			Utils.Team agentTeam = Utils.Team.Enlightened;
 			
 			if (controllingTeam.getString("team").equals("RESISTANCE"))
-				agentTeam = Agent.Team.RESISTANCE;
+				agentTeam = Utils.Team.Resistance;
+			else if (controllingTeam.getString("team").equals("ALIENS"))
+				agentTeam = Utils.Team.Enlightened;
+			else
+				System.out.println("unknown team string");
 			
 			agent = new Agent(playerEntity.getString(0), result.getString("nickname"), agentTeam);
 		}
@@ -213,32 +228,24 @@ public class Interface {
 		agent.setAllowFactionChoice(playerPersonal.getBoolean("allowFactionChoice"));
 	}
 	
-	private void request(final String requestString, final List<NameValuePair> requestParams, final RequestCallback finished) throws InterruptedException
-	{
+	private void request(final String requestString, final JSONObject requestParams, final RequestCallback finished) throws InterruptedException {
 		Thread requestThread = new Thread(new Runnable() {
 		    public void run() {
 		    	
-		    	// create some json params
 		    	JSONObject params = new JSONObject();
-		    	JSONObject actualParams = new JSONObject();
-
-	    		try {
-			    	for (NameValuePair pair : requestParams) {
-			    		actualParams.put(pair.getName(), pair.getValue());
-			    	}
-			    	params.put("params", actualParams);
-				} catch (JSONException e) {
+		    	try {
+					params.put("params", requestParams);
+				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
-		    	String paramString = params.toString();
 		    	
-				String postString = apiBase + apiRequest + requestString;
+				String postString = apiBaseURL + apiRequest + requestString;
 				
 				HttpPost post = new HttpPost(postString);
 				
 				try {
-					StringEntity entity = new StringEntity(paramString, "UTF-8");
+					StringEntity entity = new StringEntity(params.toString(), "UTF-8");
 					entity.setContentType("application/json");
 					post.setEntity(entity);
 				} catch (UnsupportedEncodingException e) {
@@ -250,8 +257,7 @@ public class Interface {
 				//post.setHeader("Accept-Encoding", "gzip");	// TODO: decode
 				post.setHeader("User-Agent", "Nemesis (gzip)");
 				post.setHeader("X-XsrfToken", xsrfToken);
-				//post.setHeader("Host", apiBase);	// is not working
-				post.setHeader("Host", "m-dot-betaspike.appspot.com");	// is working
+				post.setHeader("Host", apiBase);
 				post.setHeader("Connection", "Keep-Alive");
 				post.setHeader("Cookie", "SACSID=" + sacsidCookie);
 				
@@ -293,11 +299,9 @@ public class Interface {
 		requestThread.join();		
 	}
 
-	private abstract class RequestCallback
-	{
+	private abstract class RequestCallback {
 		private Interface theInterface;
-		RequestCallback(Interface inter)
-		{
+		RequestCallback(Interface inter) {
 			theInterface = inter;
 		}
 		
@@ -310,48 +314,52 @@ public class Interface {
 		}
 
 		@Override
-		public void requestFinished(JSONObject json) throws JSONException
-		{
-			// NOTE: inventory is beeing loaded in chunks. process multiple times
-			
-			String timestamp = json.getString("result");
-			
+		public void requestFinished(JSONObject json) throws JSONException {
 			JSONObject gameBasket = json.getJSONObject("gameBasket");
 			
 			processGameEntities(gameBasket.getJSONArray("gameEntities"));
 			processInventory(gameBasket.getJSONArray("inventory"));
 			processDeletedEntityGuids(gameBasket.getJSONArray("deletedEntityGuids"));
-			
+
+			String timestamp = json.getString("result");
 			super.theInterface.getAgent().setLastSyncTimestamp(timestamp);
 		}
 		
-		private void processGameEntities(JSONArray gameEntities) throws JSONException
-		{
+		private void processGameEntities(JSONArray gameEntities) throws JSONException {
+			if (super.theInterface.world != null) {
+				// iterate over game entites
+				for (int i = 0; i < gameEntities.length(); i++) {
+					JSONArray resource = gameEntities.getJSONArray(i);
+
+					// deserialize the game entity using the JSON representation
+					GameEntity newEntity = GameEntity.createEntity(resource.getString(0), resource.getString(1), resource.getJSONObject(2));
+					
+					// add the new entity to the world
+					if (newEntity != null) {
+						super.theInterface.world.addEntity(newEntity);
+					}
+				}
+			}
 		}
 		
-		private void processInventory(JSONArray inventory) throws JSONException
-		{
+		private void processInventory(JSONArray inventory) throws JSONException {
 			if (super.theInterface.inventory != null) {
 				// iterate over inventory items
 				for (int i = 0; i < inventory.length(); i++) {
 					JSONArray resource = inventory.getJSONArray(i);
-					JSONObject itemDescr = resource.getJSONObject(2);
 					
 					// deserialize the item using the JSON representation
-					Item newItem = Item.createItem(resource.getString(0), resource.getString(1), itemDescr);
+					Item newItem = Item.createItem(resource.getString(0), resource.getString(1), resource.getJSONObject(2));
 
 					// add the new item to the player inventory
 					if (newItem != null) {
 						super.theInterface.inventory.addItem(newItem);
 					}
 				}
-				
-				System.out.println("Hallo");
-			}			
+			}
 		}
 		
-		private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException
-		{
+		private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException {
 		}
 	}
 	
@@ -361,5 +369,9 @@ public class Interface {
 	
 	public Inventory getInventory() {
 		return inventory;
+	}
+	
+	public World getWorld() {
+		return world;
 	}
 }
