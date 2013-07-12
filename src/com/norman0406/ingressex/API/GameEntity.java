@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public abstract class GameEntity extends Entity {
 	
-	private String creatorGuid;
+	private String creatorGuid;			// NOTE: not valid for portals
 	private String creationTimestamp;
 
 	GameEntity(String guid, String timestamp) {
@@ -20,6 +20,8 @@ public abstract class GameEntity extends Entity {
 			newEntity = new GameEntityLink(guid, timestamp);
 		else if (json.has("capturedRegion"))
 			newEntity = new GameEntityControlField(guid, timestamp);
+		else if (json.has("portalV2"))
+			newEntity = new GameEntityPortal(guid, timestamp);
 		
 		// init entity
 		if (newEntity != null)

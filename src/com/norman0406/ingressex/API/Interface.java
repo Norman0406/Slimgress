@@ -18,6 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.geometry.S2Cell;
+import com.google.common.geometry.S2CellId;
+
 public class Interface {
 	
 	private Agent agent = null;
@@ -48,8 +51,8 @@ public class Interface {
 			inventory = new Inventory();
 			world = new World();
 
-			updateInventory();
-			//updateWorld();
+			//updateInventory();
+			updateWorld();
 			
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -74,23 +77,19 @@ public class Interface {
 		JSONArray cells = new JSONArray();
 		cells.put(null);
 		
-		JSONArray energyGlobGuids = new JSONArray();
-				
 		// create cells
 		JSONArray cellsAsHex = new JSONArray();
-		cellsAsHex.put("478af45f10000000");
+		cellsAsHex.put("478af46070000000");
 
 		// create dates (timestamps?)
 		JSONArray dates = new JSONArray();
-		dates.put(0);
+		for (int i = 0; i < cellsAsHex.length(); i++)
+			dates.put(0);
 		
-		params.put("cells", null);
 		params.put("cellsAsHex", cellsAsHex);
 		params.put("dates", dates);
-		params.put("energyGlobGuids", energyGlobGuids);
-		params.put("knobSyncTimestamp", Long.valueOf("1358200098740"));
 		params.put("playerLocation", "02b1a282,00577cb9");
-				
+		
 		request("gameplay/getObjectsInCells", params, new ProcessGameBasket(this));
 	}
 	
@@ -306,9 +305,18 @@ public class Interface {
 		public void requestFinished(JSONObject json) throws JSONException {
 			JSONObject gameBasket = json.getJSONObject("gameBasket");
 			
+			if (gameBasket.has("exception")) {
+				String excMsg = gameBasket.getString("exception");
+				throw new RuntimeException(excMsg);
+			}
+			
 			processGameEntities(gameBasket.getJSONArray("gameEntities"));
 			processInventory(gameBasket.getJSONArray("inventory"));
 			processDeletedEntityGuids(gameBasket.getJSONArray("deletedEntityGuids"));
+			
+			// get xm particles
+			if (gameBasket.has("energyGlobGuids"))
+				processEnergyGlobGuids(gameBasket.getJSONArray("energyGlobGuids"), gameBasket.getString("energyGlobTimestamp"));
 
 			String timestamp = json.getString("result");
 			super.theInterface.getAgent().setLastSyncTimestamp(timestamp);
@@ -349,6 +357,17 @@ public class Interface {
 		}
 		
 		private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException {
+		}
+
+		private void processEnergyGlobGuids(JSONArray energyGlobGuids, String timestamp) throws JSONException {
+			if (super.theInterface.world != null) {
+				for (int i = 0; i < energyGlobGuids.length(); i++) {
+					String guid = energyGlobGuids.getString(i);
+					
+					XMParticle newParticle = new XMParticle(guid, timestamp);
+					super.theInterface.world.addParticle(newParticle);
+				}
+			}
 		}
 	}
 	
