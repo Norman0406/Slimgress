@@ -9,5 +9,8 @@
     <string name="username">User-Name</string>
     <string name="inventory">Inventory</string>
     <string name="world">Ingress World</string>
+    <string name="level">L1</string>
+    <string name="xmvalue">XM Value</string>
+    <string name="ops_menu">OPS</string>
 
 </resources>

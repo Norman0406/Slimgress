@@ -23,8 +23,10 @@ public class AuthActivity extends Activity {
 		
 		final Activity activity = this;
 		
-		if (accounts.length > 0) {
-			Account accToUse = accounts[0];
+		// UNDONE: let user choose account
+		
+		if (accounts.length > 1) {
+			Account accToUse = accounts[1];
 			
 			// get account name (email)
 			String name = accToUse.name;	// account e-mail

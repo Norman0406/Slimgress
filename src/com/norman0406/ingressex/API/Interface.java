@@ -3,8 +3,11 @@ package com.norman0406.ingressex.API;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -18,14 +21,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.geometry.S1Angle;
+import com.google.common.geometry.S2Cap;
 import com.google.common.geometry.S2Cell;
 import com.google.common.geometry.S2CellId;
+import com.google.common.geometry.S2LatLng;
+import com.google.common.geometry.S2Point;
+import com.google.common.geometry.S2RegionCoverer;
+import com.norman0406.ingressex.API.Utils.LocationE6;
 
 public class Interface {
 	
 	private Agent agent = null;
 	private Inventory inventory = null;
 	private World world = null;
+	
+	private String syncTimestamp;
 	
 	private DefaultHttpClient client;
 	private String authToken;
@@ -70,16 +81,57 @@ public class Interface {
 		request("playerUndecorated/getInventory", params, new ProcessGameBasket(this));
 	}
 	
+	private String[] getCellIds(Utils.LocationE6 location, int minLevel, int maxLevel, double area_m2) {
+		S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());
+		
+		//double area_m2 = 2000 * 2000;	// 1 km2
+		double radius_m2 = 6371 * 1000; 
+		double sr = area_m2 / (radius_m2 * radius_m2);
+				
+		S2Cap h1 = S2Cap.fromAxisArea(pointLatLng.toPoint(), sr);
+		S2RegionCoverer rCov = new S2RegionCoverer();
+
+		rCov.setMinLevel(minLevel);
+		rCov.setMaxLevel(maxLevel);
+		
+		// get cells
+		ArrayList<S2CellId> cells = rCov.getCovering(h1).cellIds();
+		ArrayList<Long> cellIds = new ArrayList<Long>();
+		for (int i = 0; i < cells.size(); i++) {
+			
+			S2CellId cellId = cells.get(i);
+			
+			// can happen for some reason
+			if (cellId.level() < minLevel || cellId.level() > maxLevel)
+				continue;
+			
+			cellIds.add(cellId.id());
+		}
+		
+		// convert to hex values
+		String cellIdsHex[] = new String[cellIds.size()];
+		for (int i = 0; i < cellIdsHex.length; i++) {
+			cellIdsHex[i] = Long.toHexString(cellIds.get(i));
+		}
+
+		return cellIdsHex;
+	}
+	
 	private void updateWorld() throws InterruptedException, JSONException {
 
 		JSONObject params = new JSONObject();
-
-		JSONArray cells = new JSONArray();
-		cells.put(null);
+		
+		// get player location
+		Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
+		
+		// get cell ids within area
+		double area = 1000 * 1000;	// area to cover
+		String cellIds[] = getCellIds(playerLocation, 16, 16, area);
 		
 		// create cells
 		JSONArray cellsAsHex = new JSONArray();
-		cellsAsHex.put("478af46070000000");
+		for (int i = 0; i < cellIds.length; i++)
+			cellsAsHex.put(cellIds[i]);
 
 		// create dates (timestamps?)
 		JSONArray dates = new JSONArray();
@@ -88,7 +140,9 @@ public class Interface {
 		
 		params.put("cellsAsHex", cellsAsHex);
 		params.put("dates", dates);
-		params.put("playerLocation", "02b1a282,00577cb9");
+		String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
+		params.put("playerLocation", loc);
+		params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
 		
 		request("gameplay/getObjectsInCells", params, new ProcessGameBasket(this));
 	}
@@ -198,11 +252,13 @@ public class Interface {
 		// get json objects
 		JSONObject result = json.getJSONObject("result");
 		JSONArray playerEntity = result.getJSONArray("playerEntity");
+		JSONObject initialKnobs = result.getJSONObject("initialKnobs");
 		JSONObject controllingTeam = playerEntity.getJSONObject(2).getJSONObject("controllingTeam");
 		JSONObject playerPersonal = playerEntity.getJSONObject(2).getJSONObject("playerPersonal");
 		
 		// set application specific data
 		xsrfToken = result.getString("xsrfToken");
+		syncTimestamp = initialKnobs.getString("syncTimestamp");
 		
 		// set static agent data
 		if (agent == null) {
@@ -263,12 +319,14 @@ public class Interface {
 				HttpResponse response;
 				try {
 					response = client.execute(post);
-					
-					HttpEntity entity = response.getEntity();
-					
-					if (entity != null) {
-						String content = EntityUtils.toString(entity);						
-					    finished.requestFinished(new JSONObject(content));
+
+					//if (response.getStatusLine().getStatusCode() == 200) {					
+						HttpEntity entity = response.getEntity();
+						
+						if (entity != null) {
+							String content = EntityUtils.toString(entity);						
+						    finished.requestFinished(new JSONObject(content));
+						//}
 					}
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block

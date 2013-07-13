@@ -29,6 +29,18 @@ public class Utils {
 			latitude = pos.lat().e6();
 			longitude = pos.lng().e6();
 		}
+		
+		public LocationE6(double latDeg, double lngDeg) {
+			S2LatLng pos = S2LatLng.fromDegrees(latDeg, lngDeg);
+			
+			latitude = pos.lat().e6();
+			longitude = pos.lng().e6();
+		}
+		
+		public LocationE6(long latE6, long lngE6) {
+			latitude = latE6;
+			longitude = lngE6;
+		}
 
 		public long getLatitude() {
 			return latitude;

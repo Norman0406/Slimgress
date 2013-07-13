@@ -20,8 +20,10 @@ public abstract class GameEntity extends Entity {
 			newEntity = new GameEntityLink(guid, timestamp);
 		else if (json.has("capturedRegion"))
 			newEntity = new GameEntityControlField(guid, timestamp);
-		else if (json.has("portalV2"))
-			newEntity = new GameEntityPortal(guid, timestamp);
+		else if (json.has("portalV2")) {
+			System.out.println("Portals not yet working");
+			//newEntity = new GameEntityPortal(guid, timestamp);
+		}
 		
 		// init entity
 		if (newEntity != null)
