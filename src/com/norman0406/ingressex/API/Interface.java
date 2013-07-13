@@ -159,6 +159,12 @@ public class Interface {
 				try {
 					client.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
 					HttpResponse response = client.execute(get);
+					
+					if (response.getStatusLine().getStatusCode() == 401) {
+						// TODO: the token has expired
+						// call AccountManager.invalidateToken() and authenticate again
+					}
+					
 					if (response.getStatusLine().getStatusCode() != 302) {
 						// Response should be a redirect
 						//return false;

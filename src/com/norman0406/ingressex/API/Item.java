@@ -19,8 +19,10 @@ public abstract class Item extends Entity {
 		None,
 		VeryCommon,
 		Common,
+		LessCommon,
 		Rare,
-		VeryRare
+		VeryRare,
+		ExtraRare
 	}
 
 	private int itemAccessLevel = 0;
@@ -67,7 +69,7 @@ public abstract class Item extends Entity {
 			newItem = new ItemModLinkAmp(guid, timestamp);
 		else if (itemType.equals("TURRET"))
 			newItem = new ItemModTurret(guid, timestamp);
-		else if (itemType.equals("HEAT_SINK"))
+		else if (itemType.equals("HEATSINK"))
 			newItem = new ItemModHeatSink(guid, timestamp);
 		else if (itemType.equals("FLIP_CARD"))
 			newItem = new ItemVirus(guid, timestamp);

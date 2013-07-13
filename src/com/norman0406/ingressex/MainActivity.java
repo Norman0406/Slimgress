@@ -124,9 +124,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				isLoggedIn = true;
 	        	user = data.getStringExtra("User");
 	        	authToken = data.getStringExtra("AuthToken");
-
-	            // pass the authentication token to the interface
-	            ingressInterface = new Interface(authToken);
 			}
 			else {
 				user = data.getStringExtra("User");
@@ -144,6 +141,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		/*if (isLoggedIn) {
 			mGLSurfaceView.onResume();
 		}*/
+		
+		if (isLoggedIn && ingressInterface == null) {
+            // pass the authentication token to the interface
+
+			// TODO: let the interface run asynchronously
+			//ingressInterface = new Interface(authToken);
+		}
 	}
 
 	@Override
