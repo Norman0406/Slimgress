@@ -12,5 +12,6 @@
     <string name="level">L1</string>
     <string name="xmvalue">XM Value</string>
     <string name="ops_menu">OPS</string>
+ 	<string name="mapskey">YOUR API KEY</string>
 
 </resources>

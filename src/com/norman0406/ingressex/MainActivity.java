@@ -2,11 +2,16 @@ package com.norman0406.ingressex;
 
 import java.util.Locale;
 
+import com.google.android.gms.maps.GoogleMap;
+import android.support.v4.app.FragmentActivity;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.norman0406.ingressex.API.Interface;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +29,7 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener 
+public class MainActivity extends FragmentActivity // implements ActionBar.TabListener 
 {
 	/** Hold a reference to our GLSurfaceView */
 	//private GLSurfaceView mGLSurfaceView;
@@ -35,11 +40,29 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	
+
+    private GoogleMap mMap;
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            
+            // Check if we were successful in obtaining the map.
+            /*if (mMap != null) {
+                mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+            }*/
+        }
+		
+		/*super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
 		isLoggedIn = false;
@@ -84,7 +107,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
-		}
+		}*/
 
 		/*mGLSurfaceView = new GLSurfaceView(this);
 
@@ -172,7 +195,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	{
 		super.onDestroy();
 	}
-
+/*
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
@@ -189,7 +212,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 		
-	}
+	}*/
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

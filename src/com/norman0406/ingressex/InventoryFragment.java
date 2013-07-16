@@ -58,7 +58,7 @@ public class InventoryFragment extends Fragment implements OnChildClickListener 
 		ArrayList<String> childResonators = new ArrayList<String>();
 		ArrayList<String> childWeapons = new ArrayList<String>();	
 		
-		MainActivity mainAct = (MainActivity)this.getActivity();
+		/*MainActivity mainAct = (MainActivity)this.getActivity();
 		
 		Interface ingInt = mainAct.ingressInterface;
 		
@@ -113,7 +113,7 @@ public class InventoryFragment extends Fragment implements OnChildClickListener 
 			childItem.add(childPowerCubes);
 			childItem.add(childResonators);
 			childItem.add(childWeapons);			
-		}
+		}*/
  
 		InventoryList inventoryList = new InventoryList(groupItem, childItem);
 		inventoryList.setInflater(inflater, this.getActivity());
