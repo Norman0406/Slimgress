@@ -29,17 +29,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:icon="@drawable/ic_launcher" 
+       	android:theme="@android:style/Theme.Holo" >
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBpKdJkocix1RLPiSO0oNoHVHl6TtRXI5E" />
         
         <activity
-            android:name="com.norman0406.ingressex.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.norman0406.ingressex.ActivityMain"
+            android:label="@string/app_name"
+       		android:theme="@android:style/Theme.Holo.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -47,13 +47,18 @@
         </activity>
         
         <activity
-            android:name="com.norman0406.ingressex.AuthActivity"
+            android:name="com.norman0406.ingressex.ActivityAutrh"
             android:label="@string/authenticate" >
         </activity>
         
         <activity
-            android:name="com.norman0406.ingressex.InventoryActivity"
+            android:name="com.norman0406.ingressex.ActivityInventory"
             android:label="@string/inventory" >
+        </activity>
+                
+        <activity
+            android:name="com.norman0406.ingressex.ActivityOps"
+            android:label="@string/ops" >
         </activity>
     </application>
 

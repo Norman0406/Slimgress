@@ -8,7 +8,9 @@
     <string name="login">Logging in to User-Account:</string>
     <string name="username">User-Name</string>
     <string name="inventory">Inventory</string>
-    <string name="world">Ingress World</string>
+    <string name="user">User</string>
+    <string name="device">Device</string>
+    <string name="ops">OPS</string>
     <string name="level">L1</string>
     <string name="xmvalue">XM Value</string>
     <string name="ops_menu">OPS</string>

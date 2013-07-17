@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class AuthActivity extends Activity {
+public class ActivityAuth extends Activity {
 	
 	private AccountManager accountMgr;
 		

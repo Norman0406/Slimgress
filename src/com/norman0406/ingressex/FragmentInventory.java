@@ -26,12 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class InventoryFragment extends Fragment implements OnChildClickListener {
-
-	public InventoryFragment()
-	{
-		
-	}
+public class FragmentInventory extends Fragment implements OnChildClickListener {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,14 +46,14 @@ public class InventoryFragment extends Fragment implements OnChildClickListener 
 		groupItem.add("Resonators");
 		groupItem.add("Weapons");
 
-		ArrayList<String> childMedia = new ArrayList<String>();
+		/*ArrayList<String> childMedia = new ArrayList<String>();
 		ArrayList<String> childMods = new ArrayList<String>();
 		ArrayList<String> childPortalKeys = new ArrayList<String>();
 		ArrayList<String> childPowerCubes = new ArrayList<String>();
 		ArrayList<String> childResonators = new ArrayList<String>();
 		ArrayList<String> childWeapons = new ArrayList<String>();	
 		
-		/*MainActivity mainAct = (MainActivity)this.getActivity();
+		MainActivity mainAct = (MainActivity)this.getActivity();
 		
 		Interface ingInt = mainAct.ingressInterface;
 		
