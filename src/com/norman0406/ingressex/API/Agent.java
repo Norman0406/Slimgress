@@ -1,13 +1,16 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 // TODO: let Agent deserialize it's values automatically from handshake and gameBasket data
 
-public class Agent {
+public class Agent extends Entity {
 		
 	// can never change during the game
-	private final String playerId;
 	private final String nickname;
-	private final Utils.Team team;
+	private Utils.Team team;
 	
 	// dynamic information
 	private int ap;
@@ -16,68 +19,43 @@ public class Agent {
 	// other information
 	private boolean allowNicknameEdit;
 	private boolean allowFactionChoice;
-	private boolean canPlay;
-	private String lastSyncTimestamp;
 	
-	public Agent(final String playerId, final String nickname, final Utils.Team team)	{
-		lastSyncTimestamp = "0";
-		this.playerId = playerId;
+	public Agent(JSONArray json, String nickname) throws JSONException {
+		super(json);
 		this.nickname = nickname;
-		this.team = team;
+		
+		JSONObject player = json.getJSONObject(2);
+		this.team = Utils.getTeam(player.getJSONObject("controllingTeam"));
+		
+		JSONObject playerPersonal = player.optJSONObject("playerPersonal");
+		if (playerPersonal != null) {
+			ap = Integer.parseInt(playerPersonal.getString("ap"));
+			energy = playerPersonal.getInt("energy");
+			allowNicknameEdit = playerPersonal.getBoolean("playerNicknameEdit");
+			allowFactionChoice = playerPersonal.getBoolean("playerFactionChoice");
+		}
+	}
+	
+	public void update(JSONObject json) throws JSONException {
+		// UNDONE: update ap, energy and energyState
 	}
 
 	public int getAp() {
 		return ap;
 	}
 
-	public void setAp(int ap) {
-		this.ap = ap;
-	}
-
 	public int getEnergy() {
 		return energy;
-	}
-
-	public void setEnergy(int energy) {
-		this.energy = energy;
 	}
 
 	public boolean isAllowNicknameEdit() {
 		return allowNicknameEdit;
 	}
 
-	public void setAllowNicknameEdit(boolean allowNicknameEdit) {
-		this.allowNicknameEdit = allowNicknameEdit;
-	}
-
 	public boolean isAllowFactionChoice() {
 		return allowFactionChoice;
 	}
-
-	public void setAllowFactionChoice(boolean allowFactionChoice) {
-		this.allowFactionChoice = allowFactionChoice;
-	}
-
-	public boolean isCanPlay() {
-		return canPlay;
-	}
-
-	public void setCanPlay(boolean canPlay) {
-		this.canPlay = canPlay;
-	}
 	
-	public String getLastSyncTimestamp() {
-		return lastSyncTimestamp;
-	}
-	
-	public void setLastSyncTimestamp(String timestamp) {
-		this.lastSyncTimestamp = timestamp;
-	}
-	
-	public String getPlayerId() {
-		return playerId;
-	}
-
 	public String getNickname() {
 		return nickname;
 	}

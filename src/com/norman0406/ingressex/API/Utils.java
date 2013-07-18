@@ -7,10 +7,26 @@ import com.google.common.geometry.S2CellId;
 import com.google.common.geometry.S2LatLng;
 
 public class Utils {
-
+	
 	public enum Team {
 		Resistance,
 		Enlightened,
+	}
+	
+	public static Team getTeam(String teamString) {
+		if (teamString == "RESISTANCE")
+			return Team.Resistance;
+		else if (teamString == "ALIENS")
+			return Team.Enlightened;
+		else
+			throw new RuntimeException("invalid team string: " + teamString);
+	}
+	
+	public static Team getTeam(JSONObject json) throws JSONException {
+		if (!json.has("team"))
+			throw new RuntimeException("invalid json object");
+		
+		return getTeam(json.getString("team"));		
 	}
 	
 	public static class LocationE6 {

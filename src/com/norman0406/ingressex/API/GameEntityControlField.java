@@ -1,5 +1,6 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,28 +30,18 @@ public class GameEntityControlField extends GameEntity {
 	private int fieldScore;
 	private Utils.Team fieldControllingTeam;
 	
-	GameEntityControlField(String guid, String timestamp) {
-		super(guid, timestamp);
-	}
-
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
+	GameEntityControlField(JSONArray json) throws JSONException {
+		super(json);
 		
-		JSONObject capturedRedgion = json.getJSONObject("capturedRegion");
-		String team = json.getJSONObject("controllingTeam").getString("team");
+		JSONObject item = json.getJSONObject(2);
+		
+		JSONObject capturedRedgion = item.getJSONObject("capturedRegion");
 		
 		fieldVertexA = new Vertex(capturedRedgion.getJSONObject("vertexA"));
 		fieldVertexB = new Vertex(capturedRedgion.getJSONObject("vertexB"));
 		fieldVertexC = new Vertex(capturedRedgion.getJSONObject("vertexC"));
-		fieldScore = Integer.parseInt(json.getJSONObject("entityScore").getString("entityScore"));
-		
-		if (team.equals("RESISTANCE"))
-			fieldControllingTeam = Utils.Team.Resistance;
-		else if (team.equals("ALIENS"))
-			fieldControllingTeam = Utils.Team.Enlightened;
-		else
-			System.out.println("unknown team string");	
+		fieldScore = Integer.parseInt(item.getJSONObject("entityScore").getString("entityScore"));
+		fieldControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
 	}
 	
 	public Vertex getFieldVertexA() {

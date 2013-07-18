@@ -1,9 +1,11 @@
 package com.norman0406.ingressex;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -14,23 +16,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class ActivityMain extends FragmentActivity // implements ActionBar.TabListener 
 {
-	/** Hold a reference to our GLSurfaceView */
-	//private GLSurfaceView mGLSurfaceView;
-	private boolean isLoggedIn;
-	private String user;
-	private String authToken;
-	protected Interface ingressInterface;
-
-    private GoogleMap mMap;
+	private IngressApplication app = IngressApplication.getInstance();
+	private Interface ingressInterface = app.getInterface();
+    private GoogleMap mMap = null;
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+						
+		if (!app.isLoggedIn()) {
+	        Intent myIntent = new Intent(getApplicationContext(), ActivityAuth.class);
+	        startActivityForResult(myIntent, 0);
+		}
 
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -38,7 +41,7 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 
             mMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
-           
+                        
             LatLng myPos = new LatLng(50.345963, 7.588223);
             
             CameraPosition pos = mMap.getCameraPosition();
@@ -57,12 +60,7 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
             ui.setZoomGesturesEnabled(true);
             ui.setRotateGesturesEnabled(true);
             ui.setScrollGesturesEnabled(false);
-            ui.setTiltGesturesEnabled(false);           
-            
-            // Check if we were successful in obtaining the map.
-            /*if (mMap != null) {
-                mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-            }*/
+            ui.setTiltGesturesEnabled(false);
         }
         
         final Button buttonOps = (Button)findViewById(R.id.buttonOps);
@@ -74,39 +72,6 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
     	        //startActivityForResult(myIntent, 0);
             }
         });
-		
-		/*super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		
-		isLoggedIn = false;
-		
-		if (!isLoggedIn) {
-	        Intent myIntent = new Intent(getApplicationContext(), AuthActivity.class);
-	        startActivityForResult(myIntent, 0);
-		}
-
-		/*mGLSurfaceView = new GLSurfaceView(this);
-
-		// Check if the system supports OpenGL ES 2.0.
-		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-		final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
-
-		if (supportsEs2) 
-		{
-			// Request an OpenGL ES 2.0 compatible context.
-			mGLSurfaceView.setEGLContextClientVersion(2);
-
-			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new MainRenderer());
-		} 
-		else 
-		{
-			// This is where you could create an OpenGL ES 1.x compatible
-			// renderer if you wanted to support both ES 1 and ES 2.
-			return;
-		}
-		setContentView(mGLSurfaceView);*/
 	}
 	
 	@Override
@@ -115,18 +80,49 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 		super.onStart();
 	}
 
+	private int numLogins = 0;
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == 0) {
+		if (requestCode == 0) { // means ActivityAuth has been called to get a token
 			if (resultCode == RESULT_OK) {
-				isLoggedIn = true;
-	        	user = data.getStringExtra("User");
-	        	authToken = data.getStringExtra("AuthToken");
+	        	String authToken = data.getStringExtra("AuthToken");
+	        	
+	        	app.getInterface().authenticate(authToken, new AuthenticateCallback(++numLogins));
 			}
 			else {
-				user = data.getStringExtra("User");
-				isLoggedIn = false;
+				app.setLoggedIn(false);
+			}
+		}
+	}
+
+	public class AuthenticateCallback {
+		int numLogins = 0;
+		
+		AuthenticateCallback(int numLogins) {
+			this.numLogins = numLogins;
+		}
+		
+		public void authenticationFinished(String token, int returnCode) {
+			switch (returnCode) {
+			case 0:	// successful
+				app.setLoggedIn(true);
+				break;
+			case 1:	// token expired, try to renew
+				
+				if (this.numLogins > 1) {	// we already tried too often, is simply not working
+					//app.getInterface() = null;
+				}
+				else {
+			        Intent myIntent = new Intent(getApplicationContext(), ActivityAuth.class);
+			        myIntent.putExtra("RefreshToken", token);
+			        startActivityForResult(myIntent, 0);					
+				}
+				
+				break;
+			case 2:	// something else
+				break;
 			}
 		}
 	}
@@ -136,17 +132,6 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 	{
 		// The activity must call the GL surface view's onResume() on activity onResume().
 		super.onResume();
-				
-		/*if (isLoggedIn) {
-			mGLSurfaceView.onResume();
-		}*/
-		
-		if (isLoggedIn && ingressInterface == null) {
-            // pass the authentication token to the interface
-
-			// TODO: let the interface run asynchronously
-			//ingressInterface = new Interface(authToken);
-		}
 	}
 
 	@Override
@@ -154,21 +139,5 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 	{
 		// The activity must call the GL surface view's onPause() on activity onPause().
 		super.onPause();
-
-		/*if (isLoggedIn) {
-			mGLSurfaceView.onPause();
-		}*/
-	}
-
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
-	}
-
-	@Override
-	protected void onDestroy()
-	{
-		super.onDestroy();
 	}
 }

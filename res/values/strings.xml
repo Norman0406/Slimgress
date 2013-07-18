@@ -6,14 +6,15 @@
     <string name="hello_world">Hello world!</string>
     <string name="authenticate">Authentication</string>
     <string name="login">Logging in to User-Account:</string>
+    <string name="refresh">Refreshing token for User-Account:</string>
     <string name="username">User-Name</string>
     <string name="inventory">Inventory</string>
     <string name="user">User</string>
     <string name="device">Device</string>
     <string name="ops">OPS</string>
     <string name="level">L1</string>
-    <string name="xmvalue">XM Value</string>
+    <string name="agent">Agent</string>
     <string name="ops_menu">OPS</string>
- 	<string name="mapskey">YOUR API KEY</string>
+ 	<string name="mapskey">AIzaSyBpKdJkocix1RLPiSO0oNoHVHl6TtRXI5E</string>
 
 </resources>

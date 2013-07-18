@@ -1,5 +1,6 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,15 +12,11 @@ public class ItemPortalKey extends Item {
 	private String portalTitle;
 	private String portalAddress;
 	
-	public ItemPortalKey(String guid, String timestamp) {
-		super(guid, timestamp, Item.ItemType.PortalKey);
-	}
+	public ItemPortalKey(JSONArray json) throws JSONException {
+		super(ItemType.PortalKey, json);
 
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
-		
-		JSONObject portalCoupler = json.getJSONObject("portalCoupler");
+		JSONObject item = json.getJSONObject(2);
+		JSONObject portalCoupler = item.getJSONObject("portalCoupler");
 		
 		portalGuid = portalCoupler.getString("portalGuid");
 		portalLocation = portalCoupler.getString("portalLocation");

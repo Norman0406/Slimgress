@@ -1,5 +1,6 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,15 +13,11 @@ public class ItemVirus extends Item {
 	
 	private VirusType virusType;
 	
-	public ItemVirus(String guid, String timestamp) {
-		super(guid, timestamp, Item.ItemType.Virus);
-	}
+	public ItemVirus(JSONArray json) throws JSONException {
+		super(ItemType.Virus, json);
 
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
-		
-		JSONObject flipCard = json.getJSONObject("flipCard");
+		JSONObject item = json.getJSONObject(2);
+		JSONObject flipCard = item.getJSONObject("flipCard");
 		
 		if (flipCard.getString("flipCardType").equals("JARVIS"))
 			virusType = VirusType.Jarvis;

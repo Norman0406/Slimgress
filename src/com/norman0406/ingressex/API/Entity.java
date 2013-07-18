@@ -1,19 +1,20 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 public abstract class Entity {
 
-	private final String entityGuid;
-	private final String entityTimestamp;
+	private String entityGuid;
+	private String entityTimestamp;
 	
-	Entity(String guid, String timestamp) {
-		entityGuid = guid;
-		entityTimestamp = timestamp;
+	public Entity(JSONArray json) throws JSONException {
+		if (json.length() != 3)
+			throw new JSONException("invalid array size");
+		
+		entityGuid = json.getString(0);
+		entityTimestamp = json.getString(1);
 	}
-	
-	protected abstract void initByJSON(JSONObject json) throws JSONException;
 
 	public String getEntityGuid() {
 		return entityGuid;

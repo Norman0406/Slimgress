@@ -1,5 +1,6 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,28 +12,18 @@ public class GameEntityLink extends GameEntity {
 	private Utils.LocationE6 linkDestinationLocation;
 	private Utils.Team linkControllingTeam;
 
-	GameEntityLink(String guid, String timestamp) {
-		super(guid, timestamp);
-	}
-
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
+	GameEntityLink(JSONArray json) throws JSONException {
+		super(json);
 		
-		JSONObject edge = json.getJSONObject("edge");
-		String team = json.getJSONObject("controllingTeam").getString("team");
+		JSONObject item = json.getJSONObject(2);
+
+		JSONObject edge = item.getJSONObject("edge");
 		
 		linkOriginGuid = edge.getString("originPortalGuid");
 		linkDestinationGuid = edge.getString("destinationPortalGuid");
 		linkOriginLocation = new Utils.LocationE6(edge.getJSONObject("originPortalLocation"));
 		linkDestinationLocation = new Utils.LocationE6(edge.getJSONObject("destinationPortalLocation"));
-		
-		if (team.equals("RESISTANCE"))
-			linkControllingTeam = Utils.Team.Resistance;
-		else if (team.equals("ALIENS"))
-			linkControllingTeam = Utils.Team.Enlightened;
-		else
-			System.out.println("unknown team string");		
+		linkControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));	
 	}
 	
 	public String getLinkOriginGuid() {

@@ -1,16 +1,15 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModHeatSink extends ItemMod {
 	
-	public ItemModHeatSink(String guid, String timestamp) {
-		super(guid, timestamp);
-	}
-	
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
+	public ItemModHeatSink(JSONArray json) throws JSONException {
+		super(json);
+
+		JSONObject item = json.getJSONObject(2);
+		// UNDONE
 	}
 }

@@ -2,6 +2,7 @@ package com.norman0406.ingressex.API;
 
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,17 +41,18 @@ public class GameEntityPortal extends GameEntity {
 	private Utils.Team portalTeam;
 	private String portalImageUrl;
 		
-	GameEntityPortal(String guid, String timestamp) {
-		super(guid, timestamp);
-	}
-
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		super.initByJSON(json);
+	GameEntityPortal(JSONArray json) throws JSONException {
+		super(json);
 		
-		portalLocation = new Utils.LocationE6(json.getJSONObject("location"));
+		JSONObject item = json.getJSONObject(2);
 		
-		JSONObject portalV2 = json.getJSONObject("portalV2");
+		portalTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
+		portalLocation = new Utils.LocationE6(item.getJSONObject("location"));
+		
+		JSONObject portalV2 = item.getJSONObject("portalV2");
+		JSONArray portalEdges = portalV2.getJSONArray("linkedEdges");
+		JSONArray portalMods = portalV2.getJSONArray("linkedModArray");
+		JSONObject descriptiveText = portalV2.getJSONObject("descriptiveText");
 		
 	}
 }

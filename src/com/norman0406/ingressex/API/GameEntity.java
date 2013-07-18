@@ -1,49 +1,74 @@
 package com.norman0406.ingressex.API;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class GameEntity extends Entity {
 	
-	private String creatorGuid;			// NOTE: not valid for portals
-	private String creationTimestamp;
-
-	GameEntity(String guid, String timestamp) {
-		super(guid, timestamp);
+	private enum OwnerType {
+		Creator,
+		Conqueror
 	}
 	
-	public static GameEntity createEntity(String guid, String timestamp, JSONObject json) throws JSONException {
-		GameEntity newEntity = null;
+	OwnerType ownerType;	// created or captured
+	String ownerGuid;
+	String ownerTimestamp;
+		
+	GameEntity(JSONArray json) throws JSONException {
+		super(json);
+		
+		JSONObject item = json.getJSONObject(2);
+
+		if (item.has("creator")) {
+			JSONObject creator = item.getJSONObject("creator");
+			ownerGuid = creator.getString("creatorGuid");
+			ownerTimestamp = creator.getString("creationTime");
+			ownerType = OwnerType.Creator;
+		}
+		else if (item.has("captured")) {
+			JSONObject creator = item.getJSONObject("captured");
+			ownerGuid = creator.getString("capturingPlayerId");
+			ownerTimestamp = creator.getString("capturedTime");
+			ownerType = OwnerType.Conqueror;
+		}
+		else
+			throw new RuntimeException("no owner information available");		
+	}
+	
+	public static GameEntity createEntity(JSONArray json) throws JSONException {	
+		if (json.length() != 3)
+			throw new JSONException("invalid array size");
+
+		JSONObject item = json.getJSONObject(2);
 		
 		// create entity
-		if (json.has("edge"))
-			newEntity = new GameEntityLink(guid, timestamp);
-		else if (json.has("capturedRegion"))
-			newEntity = new GameEntityControlField(guid, timestamp);
-		else if (json.has("portalV2")) {
+		GameEntity newEntity = null;
+		if (item.has("edge"))
+			newEntity = new GameEntityLink(json);
+		else if (item.has("capturedRegion"))
+			newEntity = new GameEntityControlField(json);
+		else if (item.has("portalV2")) {
 			System.out.println("Portals not yet working");
 			//newEntity = new GameEntityPortal(guid, timestamp);
 		}
-		
-		// init entity
-		if (newEntity != null)
-			newEntity.initByJSON(json);
+		else {
+			// unknown game entity
+			throw new RuntimeException("unknown game entity");
+		}
 		
 		return newEntity;
 	}
 	
-	@Override
-	protected void initByJSON(JSONObject json) throws JSONException {
-		JSONObject creator = json.getJSONObject("creator");
-		creatorGuid = creator.getString("creatorGuid");
-		creationTimestamp = creator.getString("creationTime");
+	public OwnerType getOwnerType() {
+		return ownerType;
+	}
+	
+	public String getOwnerGuid() {
+		return ownerGuid;
 	}
 
-	public String getCreatorGuid() {
-		return creatorGuid;
-	}
-
-	public String getCreationTimestamp() {
-		return creationTimestamp;
+	public String getOwnerTimestamp() {
+		return ownerTimestamp;
 	}
 }

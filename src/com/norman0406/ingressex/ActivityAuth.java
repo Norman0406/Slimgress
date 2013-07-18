@@ -2,6 +2,11 @@ package com.norman0406.ingressex;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.norman0406.ingressex.API.Interface;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -16,13 +21,14 @@ import android.widget.TextView;
 public class ActivityAuth extends Activity {
 	
 	private AccountManager accountMgr;
+	
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_auth);
-		
+    	
 		/* Workflow: This activity is created first without any extra data. The authentication token
 		 * is returned as extra "AuthToken" to the calling activity if everything was okay. Elsewise,
 		 * RESULT_CANCELLED is returned, which means that the user could not be authenticated.
@@ -38,13 +44,16 @@ public class ActivityAuth extends Activity {
 		
 		accountMgr = AccountManager.get(getApplicationContext());
 
-        Intent myIntent = getIntent();    	
+        Intent myIntent = getIntent();
     	if (myIntent.hasExtra("RefreshToken")) {
+    		((TextView)findViewById(R.id.login)).setText(getString(R.string.refresh));
     		String tokenToRefresh = myIntent.getStringExtra("RefreshToken");
     		refreshToken(tokenToRefresh);
     	}
-    	else
+    	else {
+    		((TextView)findViewById(R.id.login)).setText(getString(R.string.login));
     		authorize();
+    	}
 	}
 
 	@Override
@@ -60,7 +69,7 @@ public class ActivityAuth extends Activity {
 		new Thread(new Runnable() {
 			public void run() {
 				Account[] accounts = accountMgr.getAccountsByType("com.google");
-							
+				
 				// UNDONE: let user choose account
 							
 				if (accounts.length > 1) {
@@ -76,9 +85,10 @@ public class ActivityAuth extends Activity {
 			        accountMgr.getAuthToken(accToUse, "ah", null, getActivity(), new AccountManagerCallback<Bundle>() {
 						public void run(AccountManagerFuture<Bundle> future) {
 					        try {
-								if (future.getResult().containsKey(AccountManager.KEY_AUTHTOKEN))
+								if (future.getResult().containsKey(AccountManager.KEY_AUTHTOKEN)) {
 									// everything is ok, token obtained
 									authFinished(future.getResult().getString(AccountManager.KEY_AUTHTOKEN));
+								}
 								else if (future.getResult().containsKey(AccountManager.KEY_INTENT)) {
 									// the system need further user input, handle in onActivityResult
 									Intent launch = (Intent)future.getResult().get(AccountManager.KEY_INTENT);
@@ -137,14 +147,14 @@ public class ActivityAuth extends Activity {
         // switch to main activity and set token result
         Intent myIntent = getIntent();
         myIntent.putExtra("AuthToken", token);
-        setResult(RESULT_OK, myIntent);				        
+        setResult(RESULT_OK, myIntent);
         finish();
 	}
 	
 	public void authFailed() {
         // switch to main activity
         Intent myIntent = getIntent();
-        setResult(RESULT_CANCELED, myIntent);				        
+        setResult(RESULT_CANCELED, myIntent);
         finish();
 	}
 
