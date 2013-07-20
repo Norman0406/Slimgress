@@ -10,33 +10,11 @@ public class Inventory {
 		items = new LinkedList<Item>();
 	}
 	
-	public void addItem(Item item) {
-		items.add(item);
-	}
-	
-	public List<Item> getItems() {
-		return items;
-	}
-	
-	public Item getItem(String guid) {
-		for (Item it : items) {
-			if (it.getEntityGuid() == guid)
-				return it;
+	public void processGameBasket(JSONHandlerGameBasket basket) {
+		List<Item> newInv = basket.getInventory();
+		if (newInv != null) {
+			items.clear();
+			items.addAll(basket.getInventory());
 		}
-		return null;
-	}
-	
-	public boolean removeItem(String guid) {
-		Item item = getItem(guid);
-		if (item != null)
-			return items.remove(item);
-		return false;
-	}
-	
-	public void update() {
-		/*List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-		params.add(new BasicNameValuePair("lastQueryTimestamp", agent.getLastSyncTimestamp()));
-		
-		request("playerUndecorated/getInventory", params, new ProcessGameBasket(this));*/
-	}
+	}	
 }

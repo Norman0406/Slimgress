@@ -53,9 +53,8 @@ public abstract class Item extends Entity {
 				rarity = itemResource.getString("resourceRarity");
 			else if (itemResource.has("rarity"))
 				rarity = itemResource.getString("rarity");
-			else {
-				// unknown rarity string
-			}
+			else
+				throw new RuntimeException("unknown rarity string");
 			
 			if (itemRarity != null) {
 				if (rarity.equals("VERY_COMMON"))
@@ -95,6 +94,7 @@ public abstract class Item extends Entity {
 		
 		// create item
 		Item newItem = null;
+		
 		String itemType = itemResource.getString("resourceType");
 		if (itemType.equals("PORTAL_LINK_KEY"))
 			newItem = new ItemPortalKey(json);
@@ -124,7 +124,7 @@ public abstract class Item extends Entity {
 			// unknown resource type
 			throw new RuntimeException("unknown resource type");
 		}
-				
+
 		return newItem;
 	}
 	

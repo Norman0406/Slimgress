@@ -8,14 +8,12 @@ public class IngressApplication extends Application {
 
 	private static IngressApplication singleton;
 	private boolean loggedIn = false;
-	protected Interface ingressInterface = null;
-	
+	protected Interface ingressInterface = Interface.getInstance();
+		
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		singleton = this;
-
-		ingressInterface = new Interface();
 	}
 
     public static IngressApplication getInstance() {

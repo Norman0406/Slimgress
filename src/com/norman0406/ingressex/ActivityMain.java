@@ -1,22 +1,22 @@
 package com.norman0406.ingressex;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import org.json.JSONException;
+
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.norman0406.ingressex.API.IngressInterface;
 import com.norman0406.ingressex.API.Interface;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class ActivityMain extends FragmentActivity // implements ActionBar.TabListener 
 {
@@ -29,7 +29,7 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-						
+		
 		if (!app.isLoggedIn()) {
 	        Intent myIntent = new Intent(getApplicationContext(), ActivityAuth.class);
 	        startActivityForResult(myIntent, 0);
@@ -39,9 +39,8 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
 
-            mMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-                        
+            mMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+
             LatLng myPos = new LatLng(50.345963, 7.588223);
             
             CameraPosition pos = mMap.getCameraPosition();
@@ -51,9 +50,9 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
             .tilt(50)
             .build();
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
-                        
+            
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                                    
+            
             UiSettings ui = mMap.getUiSettings();
             ui.setCompassEnabled(false);
             ui.setZoomControlsEnabled(false);
@@ -69,7 +68,6 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
                 // Perform action on click
     	        Intent myIntent = new Intent(getApplicationContext(), ActivityOps.class);
     	        startActivity(myIntent);
-    	        //startActivityForResult(myIntent, 0);
             }
         });
 	}
@@ -89,12 +87,19 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 			if (resultCode == RESULT_OK) {
 	        	String authToken = data.getStringExtra("AuthToken");
 	        	
-	        	app.getInterface().authenticate(authToken, new AuthenticateCallback(++numLogins));
+	        	app.getInterface().authenticate(authToken, new AuthenticateCallback(++numLogins));	        	
 			}
 			else {
 				app.setLoggedIn(false);
 			}
 		}
+	}
+	
+	private void setData() {
+		/*R.id.agentname;
+		R.id.agentxm;*/
+				
+		//app.getInterface().getHandshakeData().getAgent().getLevel();
 	}
 
 	public class AuthenticateCallback {
@@ -108,6 +113,20 @@ public class ActivityMain extends FragmentActivity // implements ActionBar.TabLi
 			switch (returnCode) {
 			case 0:	// successful
 				app.setLoggedIn(true);
+
+	        	IngressInterface theInt = new IngressInterface();
+	        	try {
+					theInt.intGetInventory();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	        	System.out.println("Hallo");
+	        	
 				break;
 			case 1:	// token expired, try to renew
 				
