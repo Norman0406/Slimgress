@@ -1,7 +1,5 @@
 package com.norman0406.ingressex;
 
-import com.norman0406.ingressex.API.Handshake;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +21,7 @@ public class ActivitySplash extends Activity
 	        Intent myIntent = new Intent(getApplicationContext(), ActivityAuth.class);
 	        startActivityForResult(myIntent, 0);
 		}
-		else {	        
+		else {
 	        // start main activity
 	        finish();
 	        startActivity(new Intent(getApplicationContext(), ActivityMain.class));
@@ -38,9 +36,9 @@ public class ActivitySplash extends Activity
 				mApp.setLoggedIn(true);
 				
 				// perform handshake
-				mApp.getInterface().handshake(new Handshake.Callback() {
+				mApp.getInterface().intHandshake(new Runnable() {
 					@Override
-					public void handle(Handshake handshake) {				        
+					public void run() {				        
 				        // start main activity
 				        ActivitySplash.this.startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
 				        ActivitySplash.this.finish();

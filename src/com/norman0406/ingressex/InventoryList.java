@@ -14,21 +14,21 @@ import android.widget.Toast;
 
 public class InventoryList extends BaseExpandableListAdapter
 {
-	public ArrayList<String> groupItem, tempChild;
-	public ArrayList<Object> Childtem = new ArrayList<Object>();
-	public LayoutInflater minflater;
-	public Activity activity;
+	public ArrayList<String> mGroupItem, mTempChild;
+	public ArrayList<Object> mChildtem = new ArrayList<Object>();
+	public LayoutInflater mInflater;
+	public Activity mActivity;
 	
 	public InventoryList(ArrayList<String> grList, ArrayList<Object> childItem)
 	{
-		groupItem = grList;
-		this.Childtem = childItem;
+		mGroupItem = grList;
+		mChildtem = childItem;
 	}
 	
-	public void setInflater(LayoutInflater mInflater, Activity act)
+	public void setInflater(LayoutInflater inflater, Activity act)
 	{
-		this.minflater = mInflater;
-		activity = act;
+		mInflater = inflater;
+		mActivity = act;
 	}
 	
 	@Override
@@ -46,17 +46,17 @@ public class InventoryList extends BaseExpandableListAdapter
 	@Override
 	public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
 	{
-		tempChild = (ArrayList<String>) Childtem.get(groupPosition);
+		mTempChild = (ArrayList<String>)mChildtem.get(groupPosition);
 		TextView text = null;
 		if (convertView == null) {
-			convertView = minflater.inflate(R.layout.inventory_childrow, null);
+			convertView = mInflater.inflate(R.layout.inventory_childrow, null);
 		}
-		text = (TextView) convertView.findViewById(R.id.agentlevel);
-		text.setText(tempChild.get(childPosition));
+		text = (TextView)convertView.findViewById(R.id.agentlevel);
+		text.setText(mTempChild.get(childPosition));
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(activity, tempChild.get(childPosition), Toast.LENGTH_SHORT).show();
+				Toast.makeText(mActivity, mTempChild.get(childPosition), Toast.LENGTH_SHORT).show();
 			}
 		});
 		return convertView;
@@ -65,7 +65,7 @@ public class InventoryList extends BaseExpandableListAdapter
 	@Override
 	public int getChildrenCount(int groupPosition)
 	{
-		return ((ArrayList<String>) Childtem.get(groupPosition)).size();
+		return ((ArrayList<String>)mChildtem.get(groupPosition)).size();
 	}
 	
 	@Override
@@ -77,7 +77,7 @@ public class InventoryList extends BaseExpandableListAdapter
 	@Override
 	public int getGroupCount()
 	{
-		return groupItem.size();
+		return mGroupItem.size();
 	}
 	
 	@Override
@@ -102,9 +102,9 @@ public class InventoryList extends BaseExpandableListAdapter
 	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
 	{
 		if (convertView == null) {
-			convertView = minflater.inflate(R.layout.inventory_grouprow, null);
+			convertView = mInflater.inflate(R.layout.inventory_grouprow, null);
 		}
-		((CheckedTextView)convertView).setText(groupItem.get(groupPosition));
+		((CheckedTextView)convertView).setText(mGroupItem.get(groupPosition));
 		((CheckedTextView)convertView).setChecked(isExpanded);
 		return convertView;
 	}

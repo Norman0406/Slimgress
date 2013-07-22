@@ -28,16 +28,16 @@ public abstract class Item extends Entity
 		ExtraRare
 	}
 
-	private int itemAccessLevel = 0;
-	private Rarity itemRarity = Rarity.None;
-	private final ItemType itemType;
-	private String itemPlayerId;
-	private String itemAcquisitionTimestamp;	
+	private int mItemAccessLevel = 0;
+	private Rarity mItemRarity = Rarity.None;
+	private final ItemType mItemType;
+	private String mItemPlayerId;
+	private String mItemAcquisitionTimestamp;	
 	
 	protected Item(ItemType type, JSONArray json) throws JSONException
 	{
 		super(json);
-		itemType = type;
+		mItemType = type;
 
 		JSONObject item = json.getJSONObject(2);
 		JSONObject itemResource = null;
@@ -59,26 +59,26 @@ public abstract class Item extends Entity
 			else
 				throw new RuntimeException("unknown rarity string");
 			
-			if (itemRarity != null) {
+			if (mItemRarity != null) {
 				if (rarity.equals("VERY_COMMON"))
-					itemRarity = Item.Rarity.VeryCommon;
+					mItemRarity = Item.Rarity.VeryCommon;
 				else if (rarity.equals("COMMON"))
-					itemRarity = Item.Rarity.Common;
+					mItemRarity = Item.Rarity.Common;
 				else if (rarity.equals("RARE"))
-					itemRarity = Item.Rarity.Rare;
+					mItemRarity = Item.Rarity.Rare;
 				else if (rarity.equals("VERY_RARE"))
-					itemRarity = Item.Rarity.VeryRare;
+					mItemRarity = Item.Rarity.VeryRare;
 			}
 		}
 
 		if (itemResource.has("level")) {
 			int level = itemResource.getInt("level");
-			itemAccessLevel = level;
+			mItemAccessLevel = level;
 		}
 		
 		JSONObject itemInInventory = item.getJSONObject("inInventory");
-		itemPlayerId = itemInInventory.getString("playerId");
-		itemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
+		mItemPlayerId = itemInInventory.getString("playerId");
+		mItemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
 	}
 
 	public static Item createItem(JSONArray json) throws JSONException
@@ -134,26 +134,26 @@ public abstract class Item extends Entity
 	
 	public int getItemAccessLevel()
 	{
-		return itemAccessLevel;
+		return mItemAccessLevel;
 	}
 
 	public Rarity getItemRarity()
 	{
-		return itemRarity;
+		return mItemRarity;
 	}
 
 	public String getItemPlayerId()
 	{
-		return itemPlayerId;
+		return mItemPlayerId;
 	}
 
 	public String getItemAcquisitionTimestamp()
 	{
-		return itemAcquisitionTimestamp;
+		return mItemAcquisitionTimestamp;
 	}
 
 	public ItemType getItemType()
 	{
-		return itemType;
+		return mItemType;
 	}
 }

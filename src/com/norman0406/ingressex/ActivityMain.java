@@ -1,11 +1,5 @@
 package com.norman0406.ingressex;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Callable;
-
-import org.json.JSONException;
-
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 
@@ -15,9 +9,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.norman0406.ingressex.API.Agent;
-import com.norman0406.ingressex.API.GameBasket;
 import com.norman0406.ingressex.API.Utils;
-import com.norman0406.ingressex.API.Utils.LocationE6;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -97,23 +89,23 @@ public class ActivityMain extends FragmentActivity
 			@Override
 			public void run() {
 				// inventory is loaded
-				System.out.println("Hallo");
+				System.out.println("inventory loaded");
 			}
 		});
 	}
 	
 	private void updateWorld()
 	{
-		/*Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
+		Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
 		double area = 1000 * 1000;
 		
 		mApp.getInterface().intGetObjectsInCells(playerLocation, area, new Runnable() {
 			@Override
 			public void run() {
 				// finished loading world
-				System.out.println("Hallo");
+				System.out.println("world updated");
 			}
-		});*/
+		});
 	}
 	
 	private void initMap()

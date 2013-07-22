@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class ItemModLinkAmp extends ItemMod
 {	
-	private int linkAmpMultiplier;
+	private int mLinkRangeMultiplier;
 
 	public ItemModLinkAmp(JSONArray json) throws JSONException
 	{
@@ -15,11 +15,11 @@ public class ItemModLinkAmp extends ItemMod
 		JSONObject item = json.getJSONObject(2);
 		JSONObject modResource = item.getJSONObject("modResource");
 		JSONObject stats = modResource.getJSONObject("stats");
-		linkAmpMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
+		mLinkRangeMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
 	}
 	
-	public int getLinkAmpMultiplier()
+	public int getLinkRangeMultiplier()
 	{
-		return linkAmpMultiplier;
+		return mLinkRangeMultiplier;
 	}
 }

@@ -12,7 +12,7 @@ public class ItemVirus extends Item
 		Ada
 	}
 	
-	private VirusType virusType;
+	private VirusType mVirusType;
 	
 	public ItemVirus(JSONArray json) throws JSONException
 	{
@@ -22,15 +22,15 @@ public class ItemVirus extends Item
 		JSONObject flipCard = item.getJSONObject("flipCard");
 		
 		if (flipCard.getString("flipCardType").equals("JARVIS"))
-			virusType = VirusType.Jarvis;
+			mVirusType = VirusType.Jarvis;
 		else if (flipCard.getString("flipCardType").equals("ADA"))
-			virusType = VirusType.Ada;
+			mVirusType = VirusType.Ada;
 		else
 			System.out.println("unknown virus type");
 	}
 	
 	public VirusType getVirusType()
 	{
-		return virusType;
+		return mVirusType;
 	}
 }

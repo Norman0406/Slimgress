@@ -45,15 +45,15 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
 		groupItem.add("PowerCubes");
 		groupItem.add("Resonators");
 		groupItem.add("Weapons");
-
-		/*ArrayList<String> childMedia = new ArrayList<String>();
+		
+		ArrayList<String> childMedia = new ArrayList<String>();
 		ArrayList<String> childMods = new ArrayList<String>();
 		ArrayList<String> childPortalKeys = new ArrayList<String>();
 		ArrayList<String> childPowerCubes = new ArrayList<String>();
 		ArrayList<String> childResonators = new ArrayList<String>();
 		ArrayList<String> childWeapons = new ArrayList<String>();	
 		
-		MainActivity mainAct = (MainActivity)this.getActivity();
+		/*MainActivity mainAct = (MainActivity)this.getActivity();
 		
 		Interface ingInt = mainAct.ingressInterface;
 		
@@ -116,6 +116,11 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
 		list.setOnChildClickListener(this);
 		
 		return rootView;
+	}
+	
+	private void fillInventory(Inventory inventory)
+	{
+		
 	}
 
 	@Override

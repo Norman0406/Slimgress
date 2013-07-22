@@ -6,11 +6,11 @@ import org.json.JSONObject;
 
 public class ItemMedia extends Item
 {	
-	private String mediaImageUrl;
-	private String mediaUrl;
-	private String mediaDescription;
-	private boolean mediaHasBeenViewed;
-	private String mediaReleaseDate;
+	private String mMediaImageUrl;
+	private String mMediaUrl;
+	private String mMediaDescription;
+	private boolean mMediaHasBeenViewed;
+	private String mMediaReleaseDate;
 	
 	public ItemMedia(JSONArray json) throws JSONException
 	{
@@ -20,35 +20,35 @@ public class ItemMedia extends Item
 		JSONObject imageByUrl = item.getJSONObject("imageByUrl");
 		JSONObject storyItem = item.getJSONObject("storyItem");
 		
-		mediaImageUrl = imageByUrl.getString("imageUrl");
-		mediaUrl = storyItem.getString("primaryUrl");
-		mediaDescription = storyItem.getString("shortDescription");
-		mediaHasBeenViewed = storyItem.getBoolean("hasBeenViewed");
-		mediaReleaseDate = storyItem.getString("releaseDate");
+		mMediaImageUrl = imageByUrl.getString("imageUrl");
+		mMediaUrl = storyItem.getString("primaryUrl");
+		mMediaDescription = storyItem.getString("shortDescription");
+		mMediaHasBeenViewed = storyItem.getBoolean("hasBeenViewed");
+		mMediaReleaseDate = storyItem.getString("releaseDate");
 	}
 
 	public String getMediaImageUrl()
 	{
-		return mediaImageUrl;
+		return mMediaImageUrl;
 	}
 
 	public String getMediaUrl()
 	{
-		return mediaUrl;
+		return mMediaUrl;
 	}
 
 	public String getMediaDescription()
 	{
-		return mediaDescription;
+		return mMediaDescription;
 	}
 
 	public boolean isMediaHasBeenViewed()
 	{
-		return mediaHasBeenViewed;
+		return mMediaHasBeenViewed;
 	}
 
 	public String getMediaReleaseDate()
 	{
-		return mediaReleaseDate;
+		return mMediaReleaseDate;
 	}
 }

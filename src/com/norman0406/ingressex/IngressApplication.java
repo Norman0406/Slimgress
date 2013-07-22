@@ -8,51 +8,40 @@ import android.content.SharedPreferences;
 
 public class IngressApplication extends Application
 {
-	private static IngressApplication singleton;
-	private boolean loggedIn = false;
-	protected IngressInterface ingress = IngressInterface.getInstance();
-	private String prefsFile = "IngressExPrefs";
+	private static IngressApplication mSingleton;
+	private boolean mLoggedIn = false;
+	protected IngressInterface mIngress = IngressInterface.getInstance();
 	
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
-		
-		SharedPreferences prefs = getSharedPreferences(prefsFile,  0);
-		
-		// TODO: load data
-				
-		singleton = this;
+						
+		mSingleton = this;
 	}
 
 	@Override
 	public void onTerminate()
 	{
-		SharedPreferences prefs = getSharedPreferences(prefsFile,  0);
-		SharedPreferences.Editor editor = prefs.edit();
-		
-		// TODO: store data in editor
-		
-		editor.commit();
 	}
 
     public static IngressApplication getInstance()
     {
-        return singleton;
+        return mSingleton;
     }
 	
 	public IngressInterface getInterface()
 	{
-		return ingress;
+		return mIngress;
 	}
 	
 	public boolean isLoggedIn()
 	{
-		return loggedIn;
+		return mLoggedIn;
 	}
 	
 	public void setLoggedIn(boolean loggedIn)
 	{
-		this.loggedIn = loggedIn;
+		mLoggedIn = loggedIn;
 	}
 }

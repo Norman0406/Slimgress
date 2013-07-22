@@ -6,8 +6,8 @@ import org.json.JSONObject;
 
 public class IngressInterface
 {
-	private static IngressInterface singleton = null;
-	private Interface theInterface;
+	private static IngressInterface mSingleton = null;
+	private Interface mInterface;
 	
 	Handshake mHandshake = null;
 	World mWorld = null;
@@ -17,31 +17,31 @@ public class IngressInterface
 	
 	private IngressInterface()
 	{
-		theInterface = new Interface();
+		mInterface = new Interface();
 		mInventory = new Inventory();
 		mWorld = new World();
 	}
 	
 	public static IngressInterface getInstance()
 	{
-		if (singleton == null)
-			singleton = new IngressInterface();
+		if (mSingleton == null)
+			mSingleton = new IngressInterface();
 		
-		return singleton;
+		return mSingleton;
 	}
 	
-	public Interface.AuthSuccess authenticate(String token)
+	public Interface.AuthSuccess intAuthenticate(String token)
 	{
-		return theInterface.authenticate(token);
+		return mInterface.authenticate(token);
 	}
 	
-	public synchronized void handshake(final Handshake.Callback callback)
+	public synchronized void intHandshake(final Runnable callback)
 	{
-		theInterface.handshake(new Handshake.Callback() {
+		mInterface.handshake(new Handshake.Callback() {
 			@Override
 			public void handle(Handshake handshake) {
 				mHandshake = handshake;
-				callback.handle(handshake);
+				callback.run();
 			}
 		});
 	}
@@ -70,82 +70,94 @@ public class IngressInterface
 	
 	public void intGetInventory(final Runnable callback)
 	{
-		try {
-			checkInterface();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					checkInterface();
+					
+					// create params
+					JSONObject params = new JSONObject();
+					params.put("lastQueryTimestamp", mLastSyncTimestamp);
+					
+					// request basket
+					mInterface.request(mHandshake, "playerUndecorated/getInventory", params, new GameBasket.Callback() {
+						@Override
+						public void handle(GameBasket gameBasket) {
+							// process basket
+							processGameBasket(gameBasket);
+							callback.run();
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
+			}
 			
-			// create params
-			JSONObject params = new JSONObject();
-			params.put("lastQueryTimestamp", mLastSyncTimestamp);
-			
-			// request basket
-			theInterface.request(mHandshake, "playerUndecorated/getInventory", params, new GameBasket.Callback() {
-				@Override
-				public void handle(GameBasket gameBasket) {
-					// process basket
-					processGameBasket(gameBasket);
-					callback.run();
-				}
-			});
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}		
+		}).start();
 	}
 		
-	public void intGetObjectsInCells(Utils.LocationE6 playerLocation, double areaM2, final Runnable callback)
+	public void intGetObjectsInCells(final Utils.LocationE6 playerLocation, final double areaM2, final Runnable callback)
 	{
-		try {
-			checkInterface();
-	
-			// get cell ids for surrounding area
-			String cellIds[] = Utils.getCellIdsFromLocationArea(playerLocation, 16, 16, areaM2);
-	
-			// create cells
-			JSONArray cellsAsHex = new JSONArray();
-			for (int i = 0; i < cellIds.length; i++)
-				cellsAsHex.put(cellIds[i]);
-	
-			// create dates (timestamps?)
-			JSONArray dates = new JSONArray();
-			for (int i = 0; i < cellsAsHex.length(); i++)
-				dates.put(0);		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					checkInterface();
+					
+					// get cell ids for surrounding area
+					String cellIds[] = Utils.getCellIdsFromLocationArea(playerLocation, 16, 16, areaM2);
 			
-			// create params
-			JSONObject params = new JSONObject();
-			params.put("cellsAsHex", cellsAsHex);
-			params.put("dates", dates);
-			String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
-			params.put("playerLocation", loc);
-			//params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
+					// create cells
+					JSONArray cellsAsHex = new JSONArray();
+					for (int i = 0; i < cellIds.length; i++)
+						cellsAsHex.put(cellIds[i]);
 			
-			// request basket
-			theInterface.request(mHandshake, "gameplay/getObjectsInCells", params, new GameBasket.Callback() {
-				@Override
-				public void handle(GameBasket gameBasket) {
-					// process basket
-					processGameBasket(gameBasket);
-					callback.run();
+					// create dates (timestamps?)
+					JSONArray dates = new JSONArray();
+					for (int i = 0; i < cellsAsHex.length(); i++)
+						dates.put(0);		
+					
+					// create params
+					JSONObject params = new JSONObject();
+					params.put("cellsAsHex", cellsAsHex);
+					params.put("dates", dates);
+					String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
+					params.put("playerLocation", loc);
+					//params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
+					
+					// request basket
+					mInterface.request(mHandshake, "gameplay/getObjectsInCells", params, new GameBasket.Callback() {
+						@Override
+						public void handle(GameBasket gameBasket) {
+							// process basket
+							processGameBasket(gameBasket);
+							callback.run();
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			});
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+			}
+			
+		}).start();
 	}
 	
-	public World getWorld()
+	public synchronized World getWorld()
 	{
 		return mWorld;
 	}
 	
-	public Inventory getInventory()
+	public synchronized Inventory getInventory()
 	{
 		return mInventory;
 	}
 	
-	public Agent getAgent()
+	public synchronized Agent getAgent()
 	{
 		checkInterface();
 		return mAgent;

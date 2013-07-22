@@ -29,16 +29,16 @@ public class Interface
     	UnknownError
     }
 	
-	private DefaultHttpClient client;
-	private String sacsidCookie;
+	private DefaultHttpClient mClient;
+	private String mCookie;
 	
-	// ingress api definitions	
-	private static final String apiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
-	private static final String apiBase = "betaspike.appspot.com";
-	private static final String apiBaseURL = "https://" + apiBase + "/";
-	private static final String apiLogin = "_ah/login?continue=http://localhost/&auth=";
-	private static final String apiHandshake = "handshake?json=";
-	private static final String apiRequest = "rpc/";
+	// ingress api definitions
+	private static final String mApiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
+	private static final String mApiBase = "betaspike.appspot.com";
+	private static final String mApiBaseURL = "https://" + mApiBase + "/";
+	private static final String mApiLogin = "_ah/login?continue=http://localhost/&auth=";
+	private static final String mApiHandshake = "handshake?json=";
+	private static final String mApiRequest = "rpc/";
 		
 	public interface CallbackRequest
 	{
@@ -47,10 +47,10 @@ public class Interface
 	
 	protected Interface()
 	{
-		client = new DefaultHttpClient();
+		mClient = new DefaultHttpClient();
 	}
     
-	protected synchronized AuthSuccess authenticate(final String token)
+	protected AuthSuccess authenticate(final String token)
 	{
 		FutureTask<AuthSuccess> future = new FutureTask<AuthSuccess>(new Callable<AuthSuccess>() {
 			@Override
@@ -58,12 +58,17 @@ public class Interface
 				// see http://blog.notdot.net/2010/05/Authenticating-against-App-Engine-from-an-Android-app
 		    	// also use ?continue= (?)
 		    	
-		    	String login = apiBaseURL + apiLogin + token;
+		    	String login = mApiBaseURL + mApiLogin + token;
 				HttpGet get = new HttpGet(login);
 
 				try {
-					client.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
-					HttpResponse response = client.execute(get);
+					HttpResponse response = null;
+					synchronized(Interface.this) {
+						mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+						response = mClient.execute(get);
+					}
+					assert(response != null);
+					response.getEntity().consumeContent();
 					
 					if (response.getStatusLine().getStatusCode() == 401) {
 						// the token has expired
@@ -75,20 +80,26 @@ public class Interface
 					}
 					else {
 						// get cookie
-						for(Cookie cookie : client.getCookieStore().getCookies()) {
-							if(cookie.getName().equals("SACSID")) {	// secure cookie! (ACSID is non-secure http cookie)
-								sacsidCookie = cookie.getValue();
+						synchronized(Interface.this) {
+							for(Cookie cookie : mClient.getCookieStore().getCookies()) {
+								if(cookie.getName().equals("SACSID")) {	// secure cookie! (ACSID is non-secure http cookie)
+									mCookie = cookie.getValue();
+								}
 							}
 						}
 						return AuthSuccess.Successful;
 					}
-				} catch (ClientProtocolException e) {
+				}
+				catch (ClientProtocolException e) {
 					e.printStackTrace();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					e.printStackTrace();
 				}
 				finally {
-					client.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, true);
+					synchronized(Interface.this) {
+						mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, true);
+					}
 				}
 				return AuthSuccess.Successful;
 			}
@@ -102,17 +113,15 @@ public class Interface
 		try {
 			retVal = future.get();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return retVal;
 	}
 	
-	protected synchronized void handshake(final Handshake.Callback callback)
+	protected void handshake(final Handshake.Callback callback)
 	{
 		new Thread(new Runnable() {
 			@Override
@@ -120,19 +129,23 @@ public class Interface
 				JSONObject params = new JSONObject();
 		    	try {
 		    		// set handshake parameters
-			    	params.put("nemesisSoftwareVersion", apiVersion);
+			    	params.put("nemesisSoftwareVersion", mApiVersion);
 					params.put("deviceSoftwareVersion", "4.2.0");
 			    	String paramString = params.toString();
 			    	paramString = URLEncoder.encode(paramString, "UTF-8");
 			    	
-			    	String handshake = apiBaseURL + apiHandshake + paramString;
+			    	String handshake = mApiBaseURL + mApiHandshake + paramString;
 					
 					HttpGet get = new HttpGet(handshake);
 					get.setHeader("Accept-Charset", "utf-8");
 					get.setHeader("Cache-Control", "max-age=0");
 			
 					// do handshake
-					HttpResponse response = client.execute(get);			
+					HttpResponse response = null;
+					synchronized(Interface.this) {
+						response = mClient.execute(get);
+					}
+					assert(response != null);
 					HttpEntity entity = response.getEntity();
 	
 					if (entity != null) {
@@ -141,20 +154,24 @@ public class Interface
 					    
 					    content = content.replace("while(1);", "");
 					    
+					    // handle handshake data
 					    callback.handle(new Handshake(new JSONObject(content)));
 					}
-				} catch (ClientProtocolException e) {
+				}
+		    	catch (ClientProtocolException e) {
 					e.printStackTrace();
-				} catch (IOException e) {
+				}
+		    	catch (IOException e) {
 					e.printStackTrace();
-				} catch (JSONException e) {
+				}
+		    	catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
 	}
 	
-	protected synchronized void request(final Handshake handshake, final String requestString,
+	protected void request(final Handshake handshake, final String requestString,
 			final JSONObject requestParams, final GameBasket.Callback callback) throws InterruptedException
 	{
 		if (!handshake.isValid() || handshake.getXSRFToken().length() == 0)
@@ -170,7 +187,7 @@ public class Interface
 					e.printStackTrace();
 				}
 		    	
-				String postString = apiBaseURL + apiRequest + requestString;
+				String postString = mApiBaseURL + mApiRequest + requestString;
 				
 				HttpPost post = new HttpPost(postString);
 				
@@ -178,7 +195,8 @@ public class Interface
 					StringEntity entity = new StringEntity(params.toString(), "UTF-8");
 					entity.setContentType("application/json");
 					post.setEntity(entity);
-				} catch (UnsupportedEncodingException e) {
+				}
+				catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
 				
@@ -186,35 +204,42 @@ public class Interface
 				//post.setHeader("Accept-Encoding", "gzip");	// TODO: decode
 				post.setHeader("User-Agent", "Nemesis (gzip)");
 				post.setHeader("X-XsrfToken", handshake.getXSRFToken());
-				post.setHeader("Host", apiBase);
+				post.setHeader("Host", mApiBase);
 				post.setHeader("Connection", "Keep-Alive");
-				post.setHeader("Cookie", "SACSID=" + sacsidCookie);
+				post.setHeader("Cookie", "SACSID=" + mCookie);
 				
 				// execute and get the response.
-				HttpResponse response;
 				try {
-					response = client.execute(post);
+					HttpResponse response = null;
+					synchronized(Interface.this) {
+						response = mClient.execute(post);
+					}
+					assert(response != null);
 
 					if (response.getStatusLine().getStatusCode() == 401) {
 						// token expired or similar
 						//isAuthenticated = false;
+						response.getEntity().consumeContent();
 					}
 					else {
 						HttpEntity entity = response.getEntity();
 						
 						if (entity != null) {
 							String content = EntityUtils.toString(entity);
+							entity.consumeContent();
+							
+							// handle game basket
 							callback.handle(new GameBasket(new JSONObject(content)));
 						}
 					}						
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
+				}
+				catch (ClientProtocolException e) {
 					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
+				}
+				catch (IOException e) {
 					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
+				}
+				catch (JSONException e) {
 					e.printStackTrace();
 				}
 		    }

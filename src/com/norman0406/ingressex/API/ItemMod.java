@@ -6,8 +6,8 @@ import org.json.JSONObject;
 
 public abstract class ItemMod extends Item
 {	
-	private String modDisplayName;
-	private int removalStickiness;
+	private String mModDisplayName;
+	private int mRemovalStickiness;
 
 	public ItemMod(JSONArray json) throws JSONException
 	{
@@ -16,17 +16,17 @@ public abstract class ItemMod extends Item
 		JSONObject item = json.getJSONObject(2);
 		JSONObject modResource = item.getJSONObject("modResource");
 		JSONObject stats = modResource.getJSONObject("stats");
-		modDisplayName = modResource.getString("displayName");
-		removalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
+		mModDisplayName = modResource.getString("displayName");
+		mRemovalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
 	}
 	
 	public String getModDisplayName()
 	{
-		return modDisplayName;
+		return mModDisplayName;
 	}
 	
 	public int getRemovalStickiness()
 	{
-		return removalStickiness;
+		return mRemovalStickiness;
 	}
 }

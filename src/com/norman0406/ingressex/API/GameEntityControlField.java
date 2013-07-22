@@ -8,31 +8,31 @@ public class GameEntityControlField extends GameEntity
 {
 	public class Vertex
 	{
-		private String portalGuid;
-		private Utils.LocationE6 portalLocation;
+		private String mPortalGuid;
+		private Utils.LocationE6 mPortalLocation;
 		
 		public Vertex(JSONObject json) throws JSONException
 		{
-			portalGuid = json.getString("guid");
-			portalLocation = new Utils.LocationE6(json.getJSONObject("location"));
+			mPortalGuid = json.getString("guid");
+			mPortalLocation = new Utils.LocationE6(json.getJSONObject("location"));
 		}
 
 		public String getPortalGuid()
 		{
-			return portalGuid;
+			return mPortalGuid;
 		}
 
 		public Utils.LocationE6 getPortalLocation()
 		{
-			return portalLocation;
+			return mPortalLocation;
 		}
 	}
 	
-	private Vertex fieldVertexA;
-	private Vertex fieldVertexB;
-	private Vertex fieldVertexC;
-	private int fieldScore;
-	private Utils.Team fieldControllingTeam;
+	private Vertex mFieldVertexA;
+	private Vertex mFieldVertexB;
+	private Vertex mFieldVertexC;
+	private int mFieldScore;
+	private Utils.Team mFieldControllingTeam;
 	
 	GameEntityControlField(JSONArray json) throws JSONException
 	{
@@ -42,35 +42,35 @@ public class GameEntityControlField extends GameEntity
 		
 		JSONObject capturedRedgion = item.getJSONObject("capturedRegion");
 		
-		fieldVertexA = new Vertex(capturedRedgion.getJSONObject("vertexA"));
-		fieldVertexB = new Vertex(capturedRedgion.getJSONObject("vertexB"));
-		fieldVertexC = new Vertex(capturedRedgion.getJSONObject("vertexC"));
-		fieldScore = Integer.parseInt(item.getJSONObject("entityScore").getString("entityScore"));
-		fieldControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
+		mFieldVertexA = new Vertex(capturedRedgion.getJSONObject("vertexA"));
+		mFieldVertexB = new Vertex(capturedRedgion.getJSONObject("vertexB"));
+		mFieldVertexC = new Vertex(capturedRedgion.getJSONObject("vertexC"));
+		mFieldScore = Integer.parseInt(item.getJSONObject("entityScore").getString("entityScore"));
+		mFieldControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
 	}
 	
 	public Vertex getFieldVertexA()
 	{
-		return fieldVertexA;
+		return mFieldVertexA;
 	}
 	
 	public Vertex getFieldVertexB()
 	{
-		return fieldVertexB;
+		return mFieldVertexB;
 	}
 	
 	public Vertex getFieldVertexC()
 	{
-		return fieldVertexC;
+		return mFieldVertexC;
 	}
 	
 	public int getFieldScore()
 	{
-		return fieldScore;
+		return mFieldScore;
 	}
 	
 	public Utils.Team getFieldControllingTeam()
 	{
-		return fieldControllingTeam;
+		return mFieldControllingTeam;
 	}
 }

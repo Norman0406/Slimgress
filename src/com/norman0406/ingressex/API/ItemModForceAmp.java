@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class ItemModForceAmp extends ItemMod
 {	
-	private int forceAmpValue;
+	private int mForceAmplifier;
 
 	public ItemModForceAmp(JSONArray json) throws JSONException
 	{
@@ -15,11 +15,11 @@ public class ItemModForceAmp extends ItemMod
 		JSONObject item = json.getJSONObject(2);
 		JSONObject modResource = item.getJSONObject("modResource");
 		JSONObject stats = modResource.getJSONObject("stats");
-		forceAmpValue = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
+		mForceAmplifier = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
 	}
 	
-	public int getForceAmpValue() 
+	public int getForceAmplifier() 
 	{
-		return forceAmpValue;
+		return mForceAmplifier;
 	}
 }

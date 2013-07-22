@@ -5,19 +5,19 @@ import java.util.List;
 
 public class Inventory
 {
-	private List<Item> items;
+	private List<Item> mItems;
 	
 	public Inventory()
 	{
-		items = new LinkedList<Item>();
+		mItems = new LinkedList<Item>();
 	}
 	
 	public void processGameBasket(GameBasket basket)
 	{
 		List<Item> newInv = basket.getInventory();
 		if (newInv != null) {
-			items.clear();
-			items.addAll(basket.getInventory());
+			mItems.clear();
+			mItems.addAll(basket.getInventory());
 		}
 	}	
 }

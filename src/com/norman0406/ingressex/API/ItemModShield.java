@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class ItemModShield extends ItemMod
 {	
-	private int shieldMitigation;
+	private int mMitigation;
 
 	public ItemModShield(JSONArray json) throws JSONException
 	{
@@ -15,11 +15,11 @@ public class ItemModShield extends ItemMod
 		JSONObject item = json.getJSONObject(2);
 		JSONObject modResource = item.getJSONObject("modResource");
 		JSONObject stats = modResource.getJSONObject("stats");
-		shieldMitigation = Integer.parseInt(stats.getString("MITIGATION"));
+		mMitigation = Integer.parseInt(stats.getString("MITIGATION"));
 	}
 
-	public int getMultihackInsulation()
+	public int getMitigation()
 	{
-		return shieldMitigation;
+		return mMitigation;
 	}
 }

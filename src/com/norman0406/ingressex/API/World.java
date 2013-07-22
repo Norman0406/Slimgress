@@ -5,12 +5,12 @@ import java.util.List;
 
 public class World
 {
-	private List<GameEntity> gameEntities = new LinkedList<GameEntity>();
-	private List<XMParticle> xmParticles = new LinkedList<XMParticle>();
+	private List<GameEntity> mGameEntities = new LinkedList<GameEntity>();
+	private List<XMParticle> mXMParticles = new LinkedList<XMParticle>();
 	
 	public void processGameBasket(GameBasket basket)
 	{
-		gameEntities.addAll(basket.getGameEntities());
-		xmParticles.addAll(basket.getEnergyGlobGuids());
+		mGameEntities.addAll(basket.getGameEntities());
+		mXMParticles.addAll(basket.getEnergyGlobGuids());
 	}
 }

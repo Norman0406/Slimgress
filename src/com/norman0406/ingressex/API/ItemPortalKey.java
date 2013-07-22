@@ -6,11 +6,11 @@ import org.json.JSONObject;
 
 public class ItemPortalKey extends Item
 {
-	private String portalGuid;
-	private String portalLocation;
-	private String portalImageUrl;
-	private String portalTitle;
-	private String portalAddress;
+	private String mPortalGuid;
+	private String mPortalLocation;
+	private String mPortalImageUrl;
+	private String mPortalTitle;
+	private String mPortalAddress;
 	
 	public ItemPortalKey(JSONArray json) throws JSONException
 	{
@@ -19,35 +19,35 @@ public class ItemPortalKey extends Item
 		JSONObject item = json.getJSONObject(2);
 		JSONObject portalCoupler = item.getJSONObject("portalCoupler");
 		
-		portalGuid = portalCoupler.getString("portalGuid");
-		portalLocation = portalCoupler.getString("portalLocation");
-		portalImageUrl = portalCoupler.getString("portalImageUrl");
-		portalTitle = portalCoupler.getString("portalTitle");
-		portalAddress = portalCoupler.getString("portalAddress");
+		mPortalGuid = portalCoupler.getString("portalGuid");
+		mPortalLocation = portalCoupler.getString("portalLocation");
+		mPortalImageUrl = portalCoupler.getString("portalImageUrl");
+		mPortalTitle = portalCoupler.getString("portalTitle");
+		mPortalAddress = portalCoupler.getString("portalAddress");
 	}
 
 	public String getPortalGuid()
 	{
-		return portalGuid;
+		return mPortalGuid;
 	}
 
 	public String getPortalLocation()
 	{
-		return portalLocation;
+		return mPortalLocation;
 	}
 
 	public String getPortalImageUrl()
 	{
-		return portalImageUrl;
+		return mPortalImageUrl;
 	}
 
 	public String getPortalTitle()
 	{
-		return portalTitle;
+		return mPortalTitle;
 	}
 
 	public String getPortalAddress()
 	{
-		return portalAddress;
+		return mPortalAddress;
 	}	
 }

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class ItemModHeatSink extends ItemMod
 {	
-	private int hackSpeed;
+	private int mHackSpeed;
 	
 	public ItemModHeatSink(JSONArray json) throws JSONException
 	{
@@ -15,11 +15,11 @@ public class ItemModHeatSink extends ItemMod
 		JSONObject item = json.getJSONObject(2);
 		JSONObject modResource = item.getJSONObject("modResource");
 		JSONObject stats = modResource.getJSONObject("stats");
-		hackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
+		mHackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
 	}
 	
 	public int getHackSpeed()
 	{
-		return hackSpeed;
+		return mHackSpeed;
 	}
 }

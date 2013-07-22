@@ -6,11 +6,11 @@ import org.json.JSONObject;
 
 public class GameEntityLink extends GameEntity
 {	
-	private String linkOriginGuid;
-	private String linkDestinationGuid;
-	private Utils.LocationE6 linkOriginLocation;
-	private Utils.LocationE6 linkDestinationLocation;
-	private Utils.Team linkControllingTeam;
+	private String mLinkOriginGuid;
+	private String mLinkDestinationGuid;
+	private Utils.LocationE6 mLinkOriginLocation;
+	private Utils.LocationE6 mLinkDestinationLocation;
+	private Utils.Team mLinkControllingTeam;
 
 	GameEntityLink(JSONArray json) throws JSONException
 	{
@@ -20,35 +20,35 @@ public class GameEntityLink extends GameEntity
 
 		JSONObject edge = item.getJSONObject("edge");
 		
-		linkOriginGuid = edge.getString("originPortalGuid");
-		linkDestinationGuid = edge.getString("destinationPortalGuid");
-		linkOriginLocation = new Utils.LocationE6(edge.getJSONObject("originPortalLocation"));
-		linkDestinationLocation = new Utils.LocationE6(edge.getJSONObject("destinationPortalLocation"));
-		linkControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));	
+		mLinkOriginGuid = edge.getString("originPortalGuid");
+		mLinkDestinationGuid = edge.getString("destinationPortalGuid");
+		mLinkOriginLocation = new Utils.LocationE6(edge.getJSONObject("originPortalLocation"));
+		mLinkDestinationLocation = new Utils.LocationE6(edge.getJSONObject("destinationPortalLocation"));
+		mLinkControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));	
 	}
 	
 	public String getLinkOriginGuid()
 	{
-		return linkOriginGuid;
+		return mLinkOriginGuid;
 	}
 	
 	public String getLinkDestinationGuid()
 	{
-		return linkDestinationGuid;
+		return mLinkDestinationGuid;
 	}
 	
 	public Utils.LocationE6 getLinkOriginLocation()
 	{
-		return linkOriginLocation;
+		return mLinkOriginLocation;
 	}
 	
 	public Utils.LocationE6 getLinkDestinationLocation()
 	{
-		return linkDestinationLocation;
+		return mLinkDestinationLocation;
 	}
 	
 	public Utils.Team getLinkControllingTeam()
 	{
-		return linkControllingTeam;
+		return mLinkControllingTeam;
 	}
 }

@@ -2,11 +2,7 @@ package com.norman0406.ingressex;
 
 import java.io.IOException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.norman0406.ingressex.API.Interface;
-import com.norman0406.ingressex.API.Interface.AuthSuccess;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -18,6 +14,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -50,6 +48,34 @@ public class ActivityAuth extends Activity
 	{
 		final Account[] accounts = mAccountMgr.getAccountsByType("com.google");
 		
+		// check first if user is already logged in
+		
+		if (isLoggedIn()) {
+			// user is already logged in, get login data			
+			SharedPreferences prefs = getSharedPreferences(getApplicationInfo().packageName,  0);
+			String accountName = prefs.getString("account_name", null);
+			String accountToken = prefs.getString("account_token", null);
+			
+			// check if there is a matching account available
+			boolean found = false;
+			for (Account account : accounts) {
+				if (account.name.equals(accountName)) {
+					authFinished(account, accountToken);
+					found = true;
+				}
+			}
+			
+			// specified account not found, simply select an existing one
+			if (!found)
+				selectAccount(accounts);
+		}
+		else {
+			selectAccount(accounts);
+		}
+	}
+	
+	private void selectAccount(final Account[] accounts)
+	{
 		if (accounts.length > 1) {	// let user choose account
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			builder.setTitle(R.string.auth_identity);
@@ -83,10 +109,24 @@ public class ActivityAuth extends Activity
 			authFailed();
 	}
 	
+	private boolean isLoggedIn()
+	{
+		// check if login data exists
+		SharedPreferences prefs = getSharedPreferences(getApplicationInfo().packageName,  0);
+		String accountName = prefs.getString("account_name", null);
+		String accountToken = prefs.getString("account_token", null);
+		
+		if (accountName != null && accountToken != null)
+			return true;
+		
+		return false;
+	}
+	
 	private void authenticateUser(final Account accToUse)
 	{
 		// authorize user
 		new Thread(new Runnable() {
+			@Override
 			public void run() {
 				// get account name (email)
 				final String name = accToUse.name;	// account e-mail
@@ -120,19 +160,16 @@ public class ActivityAuth extends Activity
 							else
 								authFailed();
 						} catch (OperationCanceledException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (AuthenticatorException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 		        }, null);
 			}
-		}).start();
+		}).start();		
 	}
 	
 	private void refreshToken(Account account, String token)
@@ -169,44 +206,65 @@ public class ActivityAuth extends Activity
         finish();
 	}
 	
-	public void authFinished(Account account, String token)
+	public void authFinished(final Account account, final String token)
 	{
 		mNumAttempts++;
+				
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// authenticate ingress
+				Interface.AuthSuccess success = mApp.getInterface().intAuthenticate(token);
+				
+				if (success == Interface.AuthSuccess.Successful) {
+					
+					// save login data
+					SharedPreferences prefs = getSharedPreferences(getApplicationInfo().packageName, 0);
+					Editor editor = prefs.edit();
+					editor.putString("account_name", account.name);
+					editor.putString("account_token", token);
+					editor.commit();
+					
+			        // switch to main activity and set token result
+			        Intent myIntent = getIntent();
+			        setResult(RESULT_OK, myIntent);
+			        finish();
+				}
+				else if (success == Interface.AuthSuccess.TokenExpired) {
+					// token expired, refresh and get a new one
+					if (mNumAttempts > mMaxNumAttempts)
+						authFailed();
+					else
+						refreshToken(account, token);
+				}
+				else {
+					// some error occurred
+					authFailed();
+				}		
+			}
+		}).start();
 		
-		// authenticate ingress
-		Interface.AuthSuccess success = mApp.getInterface().authenticate(token);
-		
-		if (success == Interface.AuthSuccess.Successful) {
-	        // switch to main activity and set token result
-	        Intent myIntent = getIntent();
-	        setResult(RESULT_OK, myIntent);
-	        finish();
-		}
-		else if (success == Interface.AuthSuccess.TokenExpired) {
-			// token expired, refresh and get a new one
-			if (mNumAttempts > mMaxNumAttempts)
-				authFailed();
-			else
-				refreshToken(account, token);
-		}
-		else {
-			// some error occurred
-			authFailed();
-		}		
 	}
 	
 	public void authFailed()
 	{
+		// clear login data
+		SharedPreferences prefs = getSharedPreferences(getApplicationInfo().packageName,  0);
+		String accountName = prefs.getString("account_name", null);
+		String accountToken = prefs.getString("account_token", null);
+		
+		if (accountName == null || accountToken == null) {
+			Editor editor = prefs.edit();
+			if (accountName == null)
+				editor.remove("account_name");
+			if (accountToken == null)
+				editor.remove("account_token");
+			editor.commit();
+		}
+		
         // switch to main activity
         Intent myIntent = getIntent();
         setResult(RESULT_CANCELED, myIntent);
         finish();
-	}
-
-	@Override
-	protected void onPause() 
-	{
-		// The activity must call the GL surface view's onPause() on activity onPause().
-		super.onPause();
 	}
 }

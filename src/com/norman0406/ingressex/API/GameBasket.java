@@ -14,12 +14,12 @@ public class GameBasket
 		public void handle(GameBasket gameBasket);
 	}
 	
-	private String lastSyncTimestamp;
-	private PlayerEntity playerEntity;
-	private List<GameEntity> gameEntities = new LinkedList<GameEntity>();
-	private List<Item> inventory = new LinkedList<Item>();
-	private List<String> deletedEntityGuids = new LinkedList<String>();
-	private List<XMParticle> energyGlobGuids = new LinkedList<XMParticle>();
+	private String mLastSyncTimestamp;
+	private PlayerEntity mPlayerEntity;
+	private List<GameEntity> mGameEntities = new LinkedList<GameEntity>();
+	private List<Item> mInventory = new LinkedList<Item>();
+	private List<String> mDeletedEntityGuids = new LinkedList<String>();
+	private List<XMParticle> mEnergyGlobGuids = new LinkedList<XMParticle>();
 	
 	public GameBasket(JSONObject json) throws JSONException
 	{
@@ -39,7 +39,7 @@ public class GameBasket
 		processDeletedEntityGuids(gameBasket.getJSONArray("deletedEntityGuids"));
 		processEnergyGlobGuids(gameBasket.optJSONArray("energyGlobGuids"), gameBasket.optString("energyGlobTimestamp"));
 	
-		lastSyncTimestamp = json.getString("result");
+		mLastSyncTimestamp = json.getString("result");
 	}
 	
 	private void processPlayerDamages(JSONArray playerDamages) throws JSONException
@@ -60,7 +60,7 @@ public class GameBasket
 	private void processPlayerEntity(JSONArray playerEntity) throws JSONException
 	{
 		if (playerEntity != null) {
-			this.playerEntity = new PlayerEntity(playerEntity);
+			mPlayerEntity = new PlayerEntity(playerEntity);
 		}
 	}
 	
@@ -75,7 +75,7 @@ public class GameBasket
 			
 			// add the new entity to the world
 			if (newEntity != null) {
-				this.gameEntities.add(newEntity);
+				mGameEntities.add(newEntity);
 			}
 		}
 	}
@@ -107,7 +107,7 @@ public class GameBasket
 
 			// add the new item to the player inventory
 			if (newItem != null) {
-				this.inventory.add(newItem);
+				mInventory.add(newItem);
 			}
 		}
 	}
@@ -124,38 +124,38 @@ public class GameBasket
 				String guid = energyGlobGuids.getString(i);
 				
 				XMParticle newParticle = new XMParticle(guid, timestamp);
-				this.energyGlobGuids.add(newParticle);
+				mEnergyGlobGuids.add(newParticle);
 			}
 		}
 	}
 	
 	public final String getLastSyncTimestamp()
 	{
-		return lastSyncTimestamp;
+		return mLastSyncTimestamp;
 	}
 	
 	public final PlayerEntity getPlayerEntity()
 	{
-		return playerEntity;
+		return mPlayerEntity;
 	}
 
 	public final List<GameEntity> getGameEntities()
 	{
-		return gameEntities;
+		return mGameEntities;
 	}
 	
 	public final List<Item> getInventory()
 	{
-		return inventory;
+		return mInventory;
 	}
 	
 	public final List<String> getDeletedEntityGuids()
 	{
-		return deletedEntityGuids;
+		return mDeletedEntityGuids;
 	}
 	
 	public final List<XMParticle> getEnergyGlobGuids()
 	{
-		return energyGlobGuids;
+		return mEnergyGlobGuids;
 	}
 }
