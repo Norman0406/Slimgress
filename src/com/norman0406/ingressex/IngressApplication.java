@@ -1,7 +1,7 @@
 package com.norman0406.ingressex;
 
+import com.norman0406.ingressex.API.IngressInterface;
 import com.norman0406.ingressex.API.Interface;
-import com.norman0406.ingressex.API.JSONHandlerHandshake;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -10,10 +10,9 @@ public class IngressApplication extends Application
 {
 	private static IngressApplication singleton;
 	private boolean loggedIn = false;
-	protected Interface ingressInterface = Interface.getInstance();
-	JSONHandlerHandshake handshakeData = null;
+	protected IngressInterface ingress = IngressInterface.getInstance();
 	private String prefsFile = "IngressExPrefs";
-		
+	
 	@Override
 	public void onCreate()
 	{
@@ -42,9 +41,9 @@ public class IngressApplication extends Application
         return singleton;
     }
 	
-	public Interface getInterface()
+	public IngressInterface getInterface()
 	{
-		return ingressInterface;
+		return ingress;
 	}
 	
 	public boolean isLoggedIn()

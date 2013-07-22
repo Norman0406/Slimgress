@@ -23,7 +23,7 @@
             android:contentDescription="@string/dummy" />
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/agentlevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

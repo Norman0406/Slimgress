@@ -8,7 +8,7 @@ public class World
 	private List<GameEntity> gameEntities = new LinkedList<GameEntity>();
 	private List<XMParticle> xmParticles = new LinkedList<XMParticle>();
 	
-	public void processGameBasket(JSONHandlerGameBasket basket)
+	public void processGameBasket(GameBasket basket)
 	{
 		gameEntities.addAll(basket.getGameEntities());
 		xmParticles.addAll(basket.getEnergyGlobGuids());

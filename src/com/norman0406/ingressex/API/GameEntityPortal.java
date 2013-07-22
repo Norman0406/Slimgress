@@ -1,5 +1,6 @@
 package com.norman0406.ingressex.API;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -51,11 +52,12 @@ public class GameEntityPortal extends GameEntity
 		JSONObject item = json.getJSONObject(2);
 		
 		portalTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
-		portalLocation = new Utils.LocationE6(item.getJSONObject("location"));
+		portalLocation = new Utils.LocationE6(item.getJSONObject("locationE6"));
 		
 		JSONObject portalV2 = item.getJSONObject("portalV2");
 		
 		// get edges
+		this.portalEdges = new LinkedList<LinkedEdge>();
 		JSONArray portalEdges = portalV2.getJSONArray("linkedEdges");
 		for (int i = 0; i < portalEdges.length(); i++) {
 			JSONObject edge = portalEdges.getJSONObject(i);
@@ -68,6 +70,7 @@ public class GameEntityPortal extends GameEntity
 		}
 		
 		// get mods
+		this.portalMods = new LinkedList<LinkedMod>();
 		JSONArray portalMods = portalV2.getJSONArray("linkedModArray");
 		for (int i = 0; i < portalMods.length(); i++) {
 			JSONObject mod = portalMods.getJSONObject(i);
@@ -89,6 +92,7 @@ public class GameEntityPortal extends GameEntity
 		portalAttributionLink = descriptiveText.optString("ATTRIBUTION_LINK");
 		
 		// get resonators
+		this.portalResonators = new LinkedList<LinkedResonator>();
 		JSONObject resonatorArray = item.getJSONObject("resonatorArray");
 		JSONArray resonators = resonatorArray.getJSONArray("resonators");
 		for (int i = 0; i < resonators.length(); i++) {

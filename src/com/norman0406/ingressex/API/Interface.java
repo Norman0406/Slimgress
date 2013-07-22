@@ -28,43 +28,29 @@ public class Interface
     	TokenExpired,
     	UnknownError
     }
-    
-	private static Interface singleton = null;
-		
-	private boolean isAuthenticated;
 	
 	private DefaultHttpClient client;
 	private String sacsidCookie;
-	private JSONHandlerHandshake handshakeData = null;
 	
 	// ingress api definitions	
-	private final String apiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
-	private final String apiBase = "betaspike.appspot.com";
-	private final String apiBaseURL = "https://" + apiBase + "/";
-	private final String apiLogin = "_ah/login?continue=http://localhost/&auth=";
-	private final String apiHandshake = "handshake?json=";
-	private final String apiRequest = "rpc/";
-	
-	private Interface()
+	private static final String apiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
+	private static final String apiBase = "betaspike.appspot.com";
+	private static final String apiBaseURL = "https://" + apiBase + "/";
+	private static final String apiLogin = "_ah/login?continue=http://localhost/&auth=";
+	private static final String apiHandshake = "handshake?json=";
+	private static final String apiRequest = "rpc/";
+		
+	public interface CallbackRequest
 	{
-		client = new DefaultHttpClient();
-		isAuthenticated = false;
-		singleton = this;
+		public void handle(GameBasket gameBasket);
 	}
 	
-    public static Interface getInstance()
-    {
-    	if (singleton == null)
-    		singleton = new Interface();
-        return singleton;
-    }
+	protected Interface()
+	{
+		client = new DefaultHttpClient();
+	}
     
-    public synchronized final JSONHandlerHandshake getHandshakeData()
-    {
-    	return handshakeData;
-    }
-    
-	public synchronized AuthSuccess authenticate(final String token)
+	protected synchronized AuthSuccess authenticate(final String token)
 	{
 		FutureTask<AuthSuccess> future = new FutureTask<AuthSuccess>(new Callable<AuthSuccess>() {
 			@Override
@@ -96,7 +82,6 @@ public class Interface
 						}
 						return AuthSuccess.Successful;
 					}
-					
 				} catch (ClientProtocolException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -127,51 +112,52 @@ public class Interface
 		return retVal;
 	}
 	
-	public synchronized void handshake(JSONHandlerHandshake handler)
+	protected synchronized void handshake(final Handshake.Callback callback)
 	{
-    	JSONObject params = new JSONObject();
-    	try {
-    		// set handshake parameters
-	    	params.put("nemesisSoftwareVersion", apiVersion);
-			params.put("deviceSoftwareVersion", "4.2.0");
-	    	String paramString = params.toString();
-	    	paramString = URLEncoder.encode(paramString, "UTF-8");
-	    	
-	    	String handshake = apiBaseURL + apiHandshake + paramString;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				JSONObject params = new JSONObject();
+		    	try {
+		    		// set handshake parameters
+			    	params.put("nemesisSoftwareVersion", apiVersion);
+					params.put("deviceSoftwareVersion", "4.2.0");
+			    	String paramString = params.toString();
+			    	paramString = URLEncoder.encode(paramString, "UTF-8");
+			    	
+			    	String handshake = apiBaseURL + apiHandshake + paramString;
+					
+					HttpGet get = new HttpGet(handshake);
+					get.setHeader("Accept-Charset", "utf-8");
+					get.setHeader("Cache-Control", "max-age=0");
 			
-			HttpGet get = new HttpGet(handshake);
-			get.setHeader("Accept-Charset", "utf-8");
-			get.setHeader("Cache-Control", "max-age=0");
+					// do handshake
+					HttpResponse response = client.execute(get);			
+					HttpEntity entity = response.getEntity();
 	
-			// do handshake
-			HttpResponse response = client.execute(get);			
-			HttpEntity entity = response.getEntity();
-
-			if (entity != null) {
-			    String content = EntityUtils.toString(entity);
-			    entity.consumeContent();
-			    
-			    content = content.replace("while(1);", "");
-			    
-		    	handler.handleJSON(new JSONObject(content));
+					if (entity != null) {
+					    String content = EntityUtils.toString(entity);
+					    entity.consumeContent();
+					    
+					    content = content.replace("while(1);", "");
+					    
+					    callback.handle(new Handshake(new JSONObject(content)));
+					}
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
-
-	public boolean getIsAuthenticated() {
-		return isAuthenticated;
+		}).start();
 	}
 	
-	public synchronized void request(final String requestString, final JSONObject requestParams, final JSONHandler handler) throws InterruptedException
+	protected synchronized void request(final Handshake handshake, final String requestString,
+			final JSONObject requestParams, final GameBasket.Callback callback) throws InterruptedException
 	{
-		if (handshakeData.getXSRFToken().length() == 0)
+		if (!handshake.isValid() || handshake.getXSRFToken().length() == 0)
 			throw new RuntimeException("handshake is not valid");
 		
 		new Thread(new Runnable() {
@@ -180,9 +166,8 @@ public class Interface
 		    	JSONObject params = new JSONObject();
 		    	try {
 					params.put("params", requestParams);
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
 		    	
 				String postString = apiBaseURL + apiRequest + requestString;
@@ -194,14 +179,13 @@ public class Interface
 					entity.setContentType("application/json");
 					post.setEntity(entity);
 				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 				post.setHeader("Content-Type", "application/json;charset=UTF-8");
 				//post.setHeader("Accept-Encoding", "gzip");	// TODO: decode
 				post.setHeader("User-Agent", "Nemesis (gzip)");
-				post.setHeader("X-XsrfToken", handshakeData.getXSRFToken());
+				post.setHeader("X-XsrfToken", handshake.getXSRFToken());
 				post.setHeader("Host", apiBase);
 				post.setHeader("Connection", "Keep-Alive");
 				post.setHeader("Cookie", "SACSID=" + sacsidCookie);
@@ -213,14 +197,14 @@ public class Interface
 
 					if (response.getStatusLine().getStatusCode() == 401) {
 						// token expired or similar
-						isAuthenticated = false;
+						//isAuthenticated = false;
 					}
 					else {
 						HttpEntity entity = response.getEntity();
 						
 						if (entity != null) {
-							String content = EntityUtils.toString(entity);						
-							handler.handleJSON(new JSONObject(content));
+							String content = EntityUtils.toString(entity);
+							callback.handle(new GameBasket(new JSONObject(content)));
 						}
 					}						
 				} catch (ClientProtocolException e) {
@@ -234,6 +218,6 @@ public class Interface
 					e.printStackTrace();
 				}
 		    }
-		}).start();	
+		}).start();
 	}
 }

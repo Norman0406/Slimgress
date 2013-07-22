@@ -51,7 +51,7 @@ public class InventoryList extends BaseExpandableListAdapter
 		if (convertView == null) {
 			convertView = minflater.inflate(R.layout.inventory_childrow, null);
 		}
-		text = (TextView) convertView.findViewById(R.id.textView1);
+		text = (TextView) convertView.findViewById(R.id.agentlevel);
 		text.setText(tempChild.get(childPosition));
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override

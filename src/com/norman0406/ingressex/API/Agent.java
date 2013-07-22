@@ -32,7 +32,7 @@ public class Agent extends PlayerEntity
 	{
 		// TODO: more efficient?
 		
-		for (int i = 0; i < mLevels.length; i++) {
+		for (int i = mLevels.length - 1; i >= 0; i--) {
 			if (this.getAp() >= mLevels[i])
 				return i + 1;
 		}

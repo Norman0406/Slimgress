@@ -186,22 +186,23 @@ containing a value of this type.
         public static final int RelativeLayout1=0x7f050005;
         public static final int Space1=0x7f050006;
         public static final int Space2=0x7f050007;
+        public static final int agentinfo=0x7f05000f;
+        public static final int agentlevel=0x7f05000c;
         public static final int agentname=0x7f05000e;
         public static final int agentxm=0x7f05000d;
-        public static final int buttonOps=0x7f05000f;
-        public static final int childImage=0x7f050013;
+        public static final int buttonOps=0x7f050010;
+        public static final int childImage=0x7f050014;
         public static final int hybrid=0x7f050004;
-        public static final int listView=0x7f050012;
+        public static final int listView=0x7f050013;
         public static final int login=0x7f05000a;
         public static final int map=0x7f05000b;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int pager=0x7f050010;
+        public static final int pager=0x7f050011;
         public static final int progressBar=0x7f050008;
-        public static final int progressBar1=0x7f050011;
+        public static final int progressBar1=0x7f050012;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f05000c;
         public static final int username=0x7f050009;
     }
     public static final class layout {
@@ -309,15 +310,16 @@ containing a value of this type.
         public static final int common_signin_button_text_long=0x7f06000e;
         /**  other 
          */
-        public static final int dummy=0x7f060026;
+        public static final int dummy=0x7f060027;
         public static final int main_agent=0x7f060021;
+        public static final int main_agentinfo=0x7f060022;
         public static final int main_level=0x7f060020;
-        public static final int main_ops=0x7f060022;
+        public static final int main_ops=0x7f060023;
         public static final int mapskey=0x7f060018;
         public static final int ok=0x7f060016;
-        public static final int ops_device=0x7f060025;
-        public static final int ops_inventory=0x7f060023;
-        public static final int ops_user=0x7f060024;
+        public static final int ops_device=0x7f060026;
+        public static final int ops_inventory=0x7f060024;
+        public static final int ops_user=0x7f060025;
         public static final int splash_failure_msg=0x7f06001e;
         public static final int splash_failure_title=0x7f06001d;
         public static final int splash_loading=0x7f06001f;

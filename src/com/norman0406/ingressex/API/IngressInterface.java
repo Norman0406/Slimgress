@@ -5,106 +5,149 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class IngressInterface
-{	
-	World world = null;
-	Inventory inventory = null;
-	Agent agent = null;
-	String lastSyncTimestamp = "0";
+{
+	private static IngressInterface singleton = null;
+	private Interface theInterface;
 	
-	public IngressInterface()
+	Handshake mHandshake = null;
+	World mWorld = null;
+	Inventory mInventory = null;
+	Agent mAgent = null;
+	String mLastSyncTimestamp = "0";
+	
+	private IngressInterface()
 	{
-		inventory = new Inventory();
-		world = new World();
+		theInterface = new Interface();
+		mInventory = new Inventory();
+		mWorld = new World();
 	}
 	
-	private Interface checkInterface()
+	public static IngressInterface getInstance()
 	{
-		final Interface theInt = Interface.getInstance();
-		if (!theInt.getIsAuthenticated())
-			throw new RuntimeException("interface not authenticated");	
-		if (!theInt.getHandshakeData().isValid())
-			throw new RuntimeException("invalid handshake data");	
-				
-		if (agent == null) {
-			agent = Interface.getInstance().getHandshakeData().getAgent();
-		}
+		if (singleton == null)
+			singleton = new IngressInterface();
 		
-		return theInt;
+		return singleton;
 	}
 	
-	private void processGameBasket(JSONHandlerGameBasket gameBasket)
+	public Interface.AuthSuccess authenticate(String token)
 	{
-		inventory.processGameBasket(gameBasket);
-		world.processGameBasket(gameBasket);
+		return theInterface.authenticate(token);
+	}
+	
+	public synchronized void handshake(final Handshake.Callback callback)
+	{
+		theInterface.handshake(new Handshake.Callback() {
+			@Override
+			public void handle(Handshake handshake) {
+				mHandshake = handshake;
+				callback.handle(handshake);
+			}
+		});
+	}
+	
+	public synchronized void checkInterface()
+	{		
+		// check
+		if (mHandshake == null || !mHandshake.isValid())
+			throw new RuntimeException("invalid handshake data");
+
+		// get agent
+		if (mAgent == null)
+			mAgent = mHandshake.getAgent();
+	}
+	
+	private synchronized void processGameBasket(GameBasket gameBasket)
+	{
+		mInventory.processGameBasket(gameBasket);
+		mWorld.processGameBasket(gameBasket);
 		
 		// update player data
 		PlayerEntity playerEntity = gameBasket.getPlayerEntity();
-		if (playerEntity != null && agent != null)
-			agent.update(playerEntity);
+		if (playerEntity != null && mAgent != null)
+			mAgent.update(playerEntity);
 	}
 	
-	public void intGetInventory() throws JSONException, InterruptedException
+	public void intGetInventory(final Runnable callback)
 	{
-		Interface theInt = checkInterface();
-		
-		// create params
-		JSONObject params = new JSONObject();
-		params.put("lastQueryTimestamp", lastSyncTimestamp);
-		
-		// request basket
-		JSONHandlerGameBasket gameBasket = new JSONHandlerGameBasket();
-		theInt.request("playerUndecorated/getInventory", params, gameBasket);
-		
-		// process basket
-		processGameBasket(gameBasket);
+		try {
+			checkInterface();
+			
+			// create params
+			JSONObject params = new JSONObject();
+			params.put("lastQueryTimestamp", mLastSyncTimestamp);
+			
+			// request basket
+			theInterface.request(mHandshake, "playerUndecorated/getInventory", params, new GameBasket.Callback() {
+				@Override
+				public void handle(GameBasket gameBasket) {
+					// process basket
+					processGameBasket(gameBasket);
+					callback.run();
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
 	}
-	
-	public void intGetObjectsInCells(Utils.LocationE6 playerLocation, double areaM2) throws JSONException, InterruptedException
+		
+	public void intGetObjectsInCells(Utils.LocationE6 playerLocation, double areaM2, final Runnable callback)
 	{
-		Interface theInt = checkInterface();
-
-		// get cell ids for surrounding area
-		String cellIds[] = Utils.getCellIdsFromLocationArea(playerLocation, 16, 16, areaM2);
-
-		// create cells
-		JSONArray cellsAsHex = new JSONArray();
-		for (int i = 0; i < cellIds.length; i++)
-			cellsAsHex.put(cellIds[i]);
-
-		// create dates (timestamps?)
-		JSONArray dates = new JSONArray();
-		for (int i = 0; i < cellsAsHex.length(); i++)
-			dates.put(0);		
-		
-		// create params
-		JSONObject params = new JSONObject();
-		params.put("cellsAsHex", cellsAsHex);
-		params.put("dates", dates);
-		String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
-		params.put("playerLocation", loc);
-		//params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
-		
-		// request basket
-		JSONHandlerGameBasket gameBasket = new JSONHandlerGameBasket();
-		theInt.request("gameplay/getObjectsInCells", params, gameBasket);
-		
-		// process basket
-		processGameBasket(gameBasket);		
+		try {
+			checkInterface();
+	
+			// get cell ids for surrounding area
+			String cellIds[] = Utils.getCellIdsFromLocationArea(playerLocation, 16, 16, areaM2);
+	
+			// create cells
+			JSONArray cellsAsHex = new JSONArray();
+			for (int i = 0; i < cellIds.length; i++)
+				cellsAsHex.put(cellIds[i]);
+	
+			// create dates (timestamps?)
+			JSONArray dates = new JSONArray();
+			for (int i = 0; i < cellsAsHex.length(); i++)
+				dates.put(0);		
+			
+			// create params
+			JSONObject params = new JSONObject();
+			params.put("cellsAsHex", cellsAsHex);
+			params.put("dates", dates);
+			String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
+			params.put("playerLocation", loc);
+			//params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
+			
+			// request basket
+			theInterface.request(mHandshake, "gameplay/getObjectsInCells", params, new GameBasket.Callback() {
+				@Override
+				public void handle(GameBasket gameBasket) {
+					// process basket
+					processGameBasket(gameBasket);
+					callback.run();
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public World getWorld()
 	{
-		return world;
+		return mWorld;
 	}
 	
 	public Inventory getInventory()
 	{
-		return inventory;
+		return mInventory;
 	}
 	
 	public Agent getAgent()
 	{
 		checkInterface();
-		return agent;
+		return mAgent;
 	}
 }

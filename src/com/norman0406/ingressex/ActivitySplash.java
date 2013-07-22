@@ -1,5 +1,7 @@
 package com.norman0406.ingressex;
 
+import com.norman0406.ingressex.API.Handshake;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,7 +10,7 @@ import android.os.Bundle;
 
 public class ActivitySplash extends Activity
 {
-	private IngressApplication app = IngressApplication.getInstance();
+	private IngressApplication mApp = IngressApplication.getInstance();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -17,9 +19,14 @@ public class ActivitySplash extends Activity
 		setContentView(R.layout.activity_splash);
 		
 		// authenticate if necessary
-		if (!app.isLoggedIn()) {
+		if (!mApp.isLoggedIn()) {
 	        Intent myIntent = new Intent(getApplicationContext(), ActivityAuth.class);
 	        startActivityForResult(myIntent, 0);
+		}
+		else {	        
+	        // start main activity
+	        finish();
+	        startActivity(new Intent(getApplicationContext(), ActivityMain.class));
 		}
 	}
 
@@ -28,10 +35,17 @@ public class ActivitySplash extends Activity
 	{
 		if (requestCode == 0) {
 			if (resultCode == RESULT_OK) {
-				app.setLoggedIn(true);
-
-				// TODO: perform handshake with token
-	        	String authToken = data.getStringExtra("AuthToken");
+				mApp.setLoggedIn(true);
+				
+				// perform handshake
+				mApp.getInterface().handshake(new Handshake.Callback() {
+					@Override
+					public void handle(Handshake handshake) {				        
+				        // start main activity
+				        ActivitySplash.this.startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
+				        ActivitySplash.this.finish();
+					}
+				});
 			}
 			else if (resultCode == RESULT_FIRST_USER) {
 				// user cancelled authentication
@@ -39,7 +53,7 @@ public class ActivitySplash extends Activity
 			}
 			else {
 				// authentication failed
-				app.setLoggedIn(false);
+				mApp.setLoggedIn(false);
 				
 				// show an information dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);

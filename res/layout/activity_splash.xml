@@ -28,7 +28,7 @@
         android:layout_centerVertical="true" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/agentlevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progressBar1"

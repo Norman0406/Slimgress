@@ -12,7 +12,7 @@ public class Inventory
 		items = new LinkedList<Item>();
 	}
 	
-	public void processGameBasket(JSONHandlerGameBasket basket)
+	public void processGameBasket(GameBasket basket)
 	{
 		List<Item> newInv = basket.getInventory();
 		if (newInv != null) {

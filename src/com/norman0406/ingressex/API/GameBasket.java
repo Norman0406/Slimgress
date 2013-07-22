@@ -7,8 +7,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JSONHandlerGameBasket implements JSONHandler
+public class GameBasket
 {
+	public interface Callback
+	{
+		public void handle(GameBasket gameBasket);
+	}
+	
 	private String lastSyncTimestamp;
 	private PlayerEntity playerEntity;
 	private List<GameEntity> gameEntities = new LinkedList<GameEntity>();
@@ -16,8 +21,7 @@ public class JSONHandlerGameBasket implements JSONHandler
 	private List<String> deletedEntityGuids = new LinkedList<String>();
 	private List<XMParticle> energyGlobGuids = new LinkedList<XMParticle>();
 	
-	@Override
-	public void handleJSON(JSONObject json) throws JSONException
+	public GameBasket(JSONObject json) throws JSONException
 	{
 		if (json.has("exception")) {
 			String excMsg = json.getString("exception");

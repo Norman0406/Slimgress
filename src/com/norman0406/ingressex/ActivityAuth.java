@@ -179,7 +179,6 @@ public class ActivityAuth extends Activity
 		if (success == Interface.AuthSuccess.Successful) {
 	        // switch to main activity and set token result
 	        Intent myIntent = getIntent();
-	        myIntent.putExtra("AuthToken", token);
 	        setResult(RESULT_OK, myIntent);
 	        finish();
 		}
