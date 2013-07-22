@@ -6,22 +6,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GameEntityPortal extends GameEntity {
-	
-	public class LinkedEdge {
+public class GameEntityPortal extends GameEntity
+{
+	public class LinkedEdge
+	{
 		public String edgeGuid;
 		public String otherPortalGuid;
 		public boolean isOrigin;
 	}
 	
-	public class LinkedMod {
+	public class LinkedMod
+	{
 		// UNDONE: vielleicht mit ItemMod koppeln?
 		
 		public String installingUser;
 		public String displayName;
 	}
 	
-	public class LinkedResonator {
+	public class LinkedResonator
+	{
 		public int distanceToPortal;
 		public int energyTotal;
 		public int slot;
@@ -41,7 +44,8 @@ public class GameEntityPortal extends GameEntity {
 	private List<LinkedMod> portalMods;
 	private List<LinkedResonator> portalResonators;
 	
-	GameEntityPortal(JSONArray json) throws JSONException {
+	GameEntityPortal(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -102,43 +106,53 @@ public class GameEntityPortal extends GameEntity {
 		}
 	}
 
-	Utils.LocationE6 getPortalLocation() {
+	Utils.LocationE6 getPortalLocation()
+	{
 		return portalLocation;
 	}
 	
-	public Utils.Team getPortalTeam() {
+	public Utils.Team getPortalTeam()
+	{
 		return portalTeam;
 	}
 	
-	public String getPortalTitle() {
+	public String getPortalTitle()
+	{
 		return portalTitle;
 	}
 	
-	public String getPortalAddress() {
+	public String getPortalAddress()
+	{
 		return portalAddress;
 	}
 	
-	public String getPortalAttribution() {
+	public String getPortalAttribution()
+	{
 		return portalAttribution;
 	}
 	
-	public String getPortalAttributionLink() {
+	public String getPortalAttributionLink()
+	{
 		return portalAttributionLink;
 	}
 	
-	public String getPortalImageUrl() {
+	public String getPortalImageUrl()
+	{
 		return portalImageUrl;
 	}
 	
-	public List<LinkedEdge> getPortalEdges() {
+	public List<LinkedEdge> getPortalEdges()
+	{
 		return portalEdges;
 	}
 	
-	public List<LinkedMod> getPortalMods() {
+	public List<LinkedMod> getPortalMods()
+	{
 		return portalMods;
 	}
 	
-	public List<LinkedResonator> getPortalResonators() {
+	public List<LinkedResonator> getPortalResonators()
+	{
 		return portalResonators;
 	}
 }

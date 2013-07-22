@@ -4,12 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemModTurret extends ItemMod {
-	
+public class ItemModTurret extends ItemMod
+{	
 	private int attackFrequency;
 	private int hitBonus;
 	
-	public ItemModTurret(JSONArray json) throws JSONException {
+	public ItemModTurret(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -19,11 +20,13 @@ public class ItemModTurret extends ItemMod {
 		hitBonus = Integer.parseInt(stats.getString("HIT_BONUS"));
 	}
 	
-	public int getAttackFrequency() {
+	public int getAttackFrequency()
+	{
 		return attackFrequency;
 	}
 	
-	public int getHitBonus() {
+	public int getHitBonus()
+	{
 		return hitBonus;
 	}
 }

@@ -3,6 +3,9 @@ package com.norman0406.ingressex.API;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,10 +20,15 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.norman0406.ingressex.ActivityMain.AuthenticateCallback;
-
-public class Interface {
-	
+public class Interface
+{
+    public enum AuthSuccess
+    {
+    	Successful,
+    	TokenExpired,
+    	UnknownError
+    }
+    
 	private static Interface singleton = null;
 		
 	private boolean isAuthenticated;
@@ -37,26 +45,31 @@ public class Interface {
 	private final String apiHandshake = "handshake?json=";
 	private final String apiRequest = "rpc/";
 	
-	private Interface() {
+	private Interface()
+	{
 		client = new DefaultHttpClient();
 		isAuthenticated = false;
 		singleton = this;
 	}
 	
-    public static Interface getInstance() {
+    public static Interface getInstance()
+    {
     	if (singleton == null)
     		singleton = new Interface();
         return singleton;
     }
     
-    public synchronized final JSONHandlerHandshake getHandshakeData() {
+    public synchronized final JSONHandlerHandshake getHandshakeData()
+    {
     	return handshakeData;
     }
-	
-	public synchronized void authenticate(final String token, final AuthenticateCallback callback) {
-		new Thread(new Runnable() {
-		    public void run() {
-		    	// see http://blog.notdot.net/2010/05/Authenticating-against-App-Engine-from-an-Android-app
+    
+	public synchronized AuthSuccess authenticate(final String token)
+	{
+		FutureTask<AuthSuccess> future = new FutureTask<AuthSuccess>(new Callable<AuthSuccess>() {
+			@Override
+			public AuthSuccess call() throws Exception {
+				// see http://blog.notdot.net/2010/05/Authenticating-against-App-Engine-from-an-Android-app
 		    	// also use ?continue= (?)
 		    	
 		    	String login = apiBaseURL + apiLogin + token;
@@ -67,15 +80,12 @@ public class Interface {
 					HttpResponse response = client.execute(get);
 					
 					if (response.getStatusLine().getStatusCode() == 401) {
-						// TODO: the token has expired
-						// call AccountManager.invalidateToken() and authenticate again
-						isAuthenticated = false;
-						callback.authenticationFinished(token, 1);
+						// the token has expired
+						return AuthSuccess.TokenExpired;
 					}
 					else if (response.getStatusLine().getStatusCode() != 302) {
 						// Response should be a redirect
-						isAuthenticated = false;
-						callback.authenticationFinished(token, 2);
+						return AuthSuccess.UnknownError;
 					}
 					else {
 						// get cookie
@@ -84,31 +94,41 @@ public class Interface {
 								sacsidCookie = cookie.getValue();
 							}
 						}
-
-				    	handshakeData = new JSONHandlerHandshake();
-						handshake(handshakeData);
-
-						isAuthenticated = true;
-						callback.authenticationFinished(token, 0);
+						return AuthSuccess.Successful;
 					}
-
-					response.getEntity().consumeContent();
 					
 				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				finally {
 					client.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, true);
 				}
-		    }
-		  }).start();
+				return AuthSuccess.Successful;
+			}
+		});
+		
+		// start thread
+		new Thread(future).start();
+		
+		// obtain authentication return value
+		AuthSuccess retVal = AuthSuccess.UnknownError;
+		try {
+			retVal = future.get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return retVal;
 	}
 	
-	private synchronized void handshake(JSONHandlerHandshake handler) {
+	public synchronized void handshake(JSONHandlerHandshake handler)
+	{
     	JSONObject params = new JSONObject();
     	try {
     		// set handshake parameters
@@ -149,7 +169,8 @@ public class Interface {
 		return isAuthenticated;
 	}
 	
-	public synchronized void request(final String requestString, final JSONObject requestParams, final JSONHandler handler) throws InterruptedException {
+	public synchronized void request(final String requestString, final JSONObject requestParams, final JSONHandler handler) throws InterruptedException
+	{
 		if (handshakeData.getXSRFToken().length() == 0)
 			throw new RuntimeException("handshake is not valid");
 		

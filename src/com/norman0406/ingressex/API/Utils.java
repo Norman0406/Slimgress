@@ -10,16 +10,18 @@ import com.google.common.geometry.S2CellId;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2RegionCoverer;
 
-public class Utils {
-	
+public class Utils
+{
 	// Team enumeration
-	public enum Team {
+	public enum Team
+	{
 		Resistance,
 		Enlightened,
 	}
 	
 	// get team enum from json string
-	public static Team getTeam(String teamString) {
+	public static Team getTeam(String teamString)
+	{
 		if (teamString.equals("RESISTANCE"))
 			return Team.Resistance;
 		else if (teamString.equals("ALIENS"))
@@ -29,7 +31,8 @@ public class Utils {
 	}
 	
 	// get team enum from json object
-	public static Team getTeam(JSONObject json) throws JSONException {
+	public static Team getTeam(JSONObject json) throws JSONException
+	{
 		if (!json.has("team"))
 			throw new RuntimeException("invalid json object");
 		
@@ -37,16 +40,19 @@ public class Utils {
 	}
 	
 	// location E6 helper class
-	public static class LocationE6 {
+	public static class LocationE6
+	{
 		private long latitude;
 		private long longitude;
 		
-		public LocationE6(JSONObject json) throws JSONException {
+		public LocationE6(JSONObject json) throws JSONException
+		{
 			latitude = json.getInt("latE6");
 			longitude = json.getInt("lngE6");
 		}
 		
-		public LocationE6(long cellId) {
+		public LocationE6(long cellId)
+		{
 			S2CellId cell = new S2CellId(cellId);
 			
 			S2LatLng pos = cell.toLatLng();
@@ -54,29 +60,34 @@ public class Utils {
 			longitude = pos.lng().e6();
 		}
 		
-		public LocationE6(double latDeg, double lngDeg) {
+		public LocationE6(double latDeg, double lngDeg)
+		{
 			S2LatLng pos = S2LatLng.fromDegrees(latDeg, lngDeg);
 			
 			latitude = pos.lat().e6();
 			longitude = pos.lng().e6();
 		}
 		
-		public LocationE6(long latE6, long lngE6) {
+		public LocationE6(long latE6, long lngE6)
+		{
 			latitude = latE6;
 			longitude = lngE6;
 		}
 
-		public long getLatitude() {
+		public long getLatitude()
+		{
 			return latitude;
 		}
 
-		public long getLongitude() {
+		public long getLongitude()
+		{
 			return longitude;
 		}
 	}
 	
 	// retrieve cell ids from location and covering area in m2
-	public static String[] getCellIdsFromLocationArea(Utils.LocationE6 location, int minLevel, int maxLevel, double area_m2) {
+	public static String[] getCellIdsFromLocationArea(Utils.LocationE6 location, int minLevel, int maxLevel, double area_m2)
+	{
 		S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());
 		
 		//double area_m2 = 2000 * 2000;	// 1 km2

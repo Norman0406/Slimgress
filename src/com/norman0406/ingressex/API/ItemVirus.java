@@ -4,16 +4,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemVirus extends Item {
-	
-	public enum VirusType {
+public class ItemVirus extends Item
+{	
+	public enum VirusType
+	{
 		Jarvis,
 		Ada
 	}
 	
 	private VirusType virusType;
 	
-	public ItemVirus(JSONArray json) throws JSONException {
+	public ItemVirus(JSONArray json) throws JSONException
+	{
 		super(ItemType.Virus, json);
 
 		JSONObject item = json.getJSONObject(2);
@@ -27,7 +29,8 @@ public class ItemVirus extends Item {
 			System.out.println("unknown virus type");
 	}
 	
-	public VirusType getVirusType() {
+	public VirusType getVirusType()
+	{
 		return virusType;
 	}
 }

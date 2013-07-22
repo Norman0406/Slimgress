@@ -183,42 +183,45 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020019;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f05000e;
-        public static final int action_settings=0x7f050011;
-        public static final int agentname=0x7f05000b;
-        public static final int agentxm=0x7f05000a;
-        public static final int buttonOps=0x7f05000c;
-        public static final int childImage=0x7f050010;
+        public static final int RelativeLayout1=0x7f050005;
+        public static final int Space1=0x7f050006;
+        public static final int Space2=0x7f050007;
+        public static final int agentname=0x7f05000e;
+        public static final int agentxm=0x7f05000d;
+        public static final int buttonOps=0x7f05000f;
+        public static final int childImage=0x7f050013;
         public static final int hybrid=0x7f050004;
-        public static final int listView=0x7f05000f;
-        public static final int login=0x7f050005;
-        public static final int map=0x7f050008;
+        public static final int listView=0x7f050012;
+        public static final int login=0x7f05000a;
+        public static final int map=0x7f05000b;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int pager=0x7f05000d;
-        public static final int progressBar=0x7f050007;
+        public static final int pager=0x7f050010;
+        public static final int progressBar=0x7f050008;
+        public static final int progressBar1=0x7f050011;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f050009;
-        public static final int username=0x7f050006;
+        public static final int textView1=0x7f05000c;
+        public static final int username=0x7f050009;
     }
     public static final class layout {
         public static final int activity_auth=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int activity_ops=0x7f030002;
-        public static final int fragment_device=0x7f030003;
-        public static final int fragment_inventory=0x7f030004;
-        public static final int fragment_user=0x7f030005;
-        public static final int inventory_childrow=0x7f030006;
-        public static final int inventory_grouprow=0x7f030007;
+        public static final int activity_splash=0x7f030003;
+        public static final int fragment_device=0x7f030004;
+        public static final int fragment_inventory=0x7f030005;
+        public static final int fragment_user=0x7f030006;
+        public static final int inventory_childrow=0x7f030007;
+        public static final int inventory_grouprow=0x7f030008;
     }
     public static final class menu {
         public static final int main=0x7f090000;
     }
     public static final class string {
-        public static final int action_settings=0x7f060016;
-        public static final int agent=0x7f060021;
-        public static final int app_name=0x7f060015;
+        /**  general strings 
+         */
+        public static final int appname=0x7f060015;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
          */
@@ -242,7 +245,13 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f06000f;
-        public static final int authenticate=0x7f060018;
+        public static final int auth_identity=0x7f06001b;
+        /**  activity strings 
+         */
+        public static final int auth_login=0x7f060019;
+        public static final int auth_refresh=0x7f06001a;
+        public static final int auth_username=0x7f06001c;
+        public static final int cancel=0x7f060017;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -298,17 +307,20 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f06000e;
-        public static final int device=0x7f06001e;
-        public static final int hello_world=0x7f060017;
-        public static final int inventory=0x7f06001c;
-        public static final int level=0x7f060020;
-        public static final int login=0x7f060019;
-        public static final int mapskey=0x7f060023;
-        public static final int ops=0x7f06001f;
-        public static final int ops_menu=0x7f060022;
-        public static final int refresh=0x7f06001a;
-        public static final int user=0x7f06001d;
-        public static final int username=0x7f06001b;
+        /**  other 
+         */
+        public static final int dummy=0x7f060026;
+        public static final int main_agent=0x7f060021;
+        public static final int main_level=0x7f060020;
+        public static final int main_ops=0x7f060022;
+        public static final int mapskey=0x7f060018;
+        public static final int ok=0x7f060016;
+        public static final int ops_device=0x7f060025;
+        public static final int ops_inventory=0x7f060023;
+        public static final int ops_user=0x7f060024;
+        public static final int splash_failure_msg=0x7f06001e;
+        public static final int splash_failure_title=0x7f06001d;
+        public static final int splash_loading=0x7f06001f;
     }
     public static final class style {
         /** 

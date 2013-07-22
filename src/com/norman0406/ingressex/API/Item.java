@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class Item extends Entity {
-	
-	public enum ItemType {
+public abstract class Item extends Entity
+{
+	public enum ItemType
+	{
 		Media,
 		Mod,
 		PortalKey,
@@ -16,7 +17,8 @@ public abstract class Item extends Entity {
 		XMP
 	}
 	
-	public enum Rarity { // are there more to come?
+	public enum Rarity
+	{
 		None,
 		VeryCommon,
 		Common,
@@ -32,7 +34,8 @@ public abstract class Item extends Entity {
 	private String itemPlayerId;
 	private String itemAcquisitionTimestamp;	
 	
-	protected Item(ItemType type, JSONArray json) throws JSONException {
+	protected Item(ItemType type, JSONArray json) throws JSONException
+	{
 		super(json);
 		itemType = type;
 
@@ -78,7 +81,8 @@ public abstract class Item extends Entity {
 		itemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
 	}
 
-	public static Item createItem(JSONArray json) throws JSONException {
+	public static Item createItem(JSONArray json) throws JSONException
+	{
 		if (json.length() != 3)
 			throw new JSONException("invalid array size");
 		
@@ -128,23 +132,28 @@ public abstract class Item extends Entity {
 		return newItem;
 	}
 	
-	public int getItemAccessLevel() {
+	public int getItemAccessLevel()
+	{
 		return itemAccessLevel;
 	}
 
-	public Rarity getItemRarity() {
+	public Rarity getItemRarity()
+	{
 		return itemRarity;
 	}
 
-	public String getItemPlayerId() {
+	public String getItemPlayerId()
+	{
 		return itemPlayerId;
 	}
 
-	public String getItemAcquisitionTimestamp() {
+	public String getItemAcquisitionTimestamp()
+	{
 		return itemAcquisitionTimestamp;
 	}
 
-	public ItemType getItemType() {
+	public ItemType getItemType()
+	{
 		return itemType;
 	}
 }

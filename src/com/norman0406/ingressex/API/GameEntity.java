@@ -4,39 +4,42 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class GameEntity extends Entity {
-	
-	private enum OwnerType {
+public abstract class GameEntity extends Entity
+{	
+	private enum OwnerType
+	{
 		Creator,
 		Conqueror
 	}
 	
-	OwnerType ownerType;	// created or captured
-	String ownerGuid;
-	String ownerTimestamp;
+	OwnerType mOwnerType;	// created or captured
+	String mOwnerGuid;
+	String mOwnerTimestamp;
 		
-	GameEntity(JSONArray json) throws JSONException {
+	GameEntity(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
 
 		if (item.has("creator")) {
 			JSONObject creator = item.getJSONObject("creator");
-			ownerGuid = creator.getString("creatorGuid");
-			ownerTimestamp = creator.getString("creationTime");
-			ownerType = OwnerType.Creator;
+			mOwnerGuid = creator.getString("creatorGuid");
+			mOwnerTimestamp = creator.getString("creationTime");
+			mOwnerType = OwnerType.Creator;
 		}
 		else if (item.has("captured")) {
 			JSONObject creator = item.getJSONObject("captured");
-			ownerGuid = creator.getString("capturingPlayerId");
-			ownerTimestamp = creator.getString("capturedTime");
-			ownerType = OwnerType.Conqueror;
+			mOwnerGuid = creator.getString("capturingPlayerId");
+			mOwnerTimestamp = creator.getString("capturedTime");
+			mOwnerType = OwnerType.Conqueror;
 		}
 		else
 			throw new RuntimeException("no owner information available");		
 	}
 	
-	public static GameEntity createEntity(JSONArray json) throws JSONException {	
+	public static GameEntity createEntity(JSONArray json) throws JSONException
+	{	
 		if (json.length() != 3)
 			throw new JSONException("invalid array size");
 
@@ -60,15 +63,18 @@ public abstract class GameEntity extends Entity {
 		return newEntity;
 	}
 	
-	public OwnerType getOwnerType() {
-		return ownerType;
+	public OwnerType getOwnerType()
+	{
+		return mOwnerType;
 	}
 	
-	public String getOwnerGuid() {
-		return ownerGuid;
+	public String getOwnerGuid()
+	{
+		return mOwnerGuid;
 	}
 
-	public String getOwnerTimestamp() {
-		return ownerTimestamp;
+	public String getOwnerTimestamp()
+	{
+		return mOwnerTimestamp;
 	}
 }

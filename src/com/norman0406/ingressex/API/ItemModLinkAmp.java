@@ -4,11 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemModLinkAmp extends ItemMod {
-	
+public class ItemModLinkAmp extends ItemMod
+{	
 	private int linkAmpMultiplier;
 
-	public ItemModLinkAmp(JSONArray json) throws JSONException {
+	public ItemModLinkAmp(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -17,7 +18,8 @@ public class ItemModLinkAmp extends ItemMod {
 		linkAmpMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
 	}
 	
-	public int getLinkAmpMultiplier() {
+	public int getLinkAmpMultiplier()
+	{
 		return linkAmpMultiplier;
 	}
 }

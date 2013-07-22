@@ -4,10 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemPowerCube extends Item {
+public class ItemPowerCube extends Item
+{
 	private int powerCubeEnergy;
 	
-	public ItemPowerCube(JSONArray json) throws JSONException {
+	public ItemPowerCube(JSONArray json) throws JSONException
+	{
 		super(ItemType.PowerCube, json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -16,7 +18,8 @@ public class ItemPowerCube extends Item {
 		powerCubeEnergy = powerCube.getInt("energy");
 	}
 	
-	public int getPowerCubeEnergy() {
+	public int getPowerCubeEnergy()
+	{
 		return powerCubeEnergy;
 	}
 }

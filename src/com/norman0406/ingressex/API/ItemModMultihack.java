@@ -4,11 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemModMultihack extends ItemMod {
-
+public class ItemModMultihack extends ItemMod
+{
 	private int multihackInsulation;
 
-	public ItemModMultihack(JSONArray json) throws JSONException {
+	public ItemModMultihack(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -17,7 +18,8 @@ public class ItemModMultihack extends ItemMod {
 		multihackInsulation = Integer.parseInt(stats.getString("BURNOUT_INSULATION"));
 	}
 	
-	public int getMultihackInsulation() {
+	public int getMultihackInsulation()
+	{
 		return multihackInsulation;
 	}
 }

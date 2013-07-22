@@ -4,8 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JSONHandlerHandshake implements JSONHandler {
-	
+public class JSONHandlerHandshake implements JSONHandler
+{	
 	enum VersionMatch {
 		Current,
 		OldIncompatible
@@ -20,7 +20,8 @@ public class JSONHandlerHandshake implements JSONHandler {
 	private Agent agent = null;
 	
 	@Override
-	public void handleJSON(JSONObject json) throws JSONException {
+	public void handleJSON(JSONObject json) throws JSONException
+	{
 		JSONObject result = json.getJSONObject("result");
 		
 		String versionMatch = result.getString("versionMatch");
@@ -43,38 +44,46 @@ public class JSONHandlerHandshake implements JSONHandler {
 		canPlay = result.getBoolean("canPlay");
 	}
 	
-	public boolean isValid() {
+	public boolean isValid()
+	{
 		return agent != null &&
 				xsrfToken.length() > 0 &&
 				versionMatch == VersionMatch.Current &&
 				canPlay == true;
 	}
 	
-	public VersionMatch getVersionMatch() {
+	public VersionMatch getVersionMatch()
+	{
 		return versionMatch;
 	}
 	
-	public String getServerVersion() {
+	public String getServerVersion()
+	{
 		return serverVersion;
 	}
 	
-	public String getNickname() {
+	public String getNickname()
+	{
 		return nickname;
 	}
 	
-	public boolean getCanPlay() {
+	public boolean getCanPlay()
+	{
 		return canPlay;
 	}
 	
-	public String getXSRFToken() {
+	public String getXSRFToken()
+	{
 		return xsrfToken;
 	}
 	
-	public String getSyncTimestamp() {
+	public String getSyncTimestamp()
+	{
 		return syncTimestamp;
 	}
 	
-	public Agent getAgent() {
+	public Agent getAgent()
+	{
 		return agent;
 	}
 }

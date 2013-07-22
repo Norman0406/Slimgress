@@ -1,14 +1,15 @@
 package com.norman0406.ingressex.API;
 
-public class XMParticle {
-	
+public class XMParticle
+{	
 	private final String guid;
 	private final String energyTimestamp;
 	private final long cellId;
 	private final int amount;
 	private final Utils.LocationE6 cellLocation;
 
-	public XMParticle(String guid, String timestamp) {
+	public XMParticle(String guid, String timestamp)
+	{
 		this.guid = guid; 
 		this.energyTimestamp = timestamp;
 		
@@ -20,23 +21,28 @@ public class XMParticle {
 		amount = Integer.parseInt(amountStr, 16);
 	}
 	
-	public String getGuid() {
+	public String getGuid()
+	{
 		return guid;
 	}
 	
-	public String getEnergyTimestamp() {
+	public String getEnergyTimestamp()
+	{
 		return energyTimestamp;
 	}
 
-	public long getCellId() {
+	public long getCellId()
+	{
 		return cellId;
 	}
 
-	public int getAmount() {
+	public int getAmount()
+	{
 		return amount;
 	}
 
-	public Utils.LocationE6 getCellLocation() {
+	public Utils.LocationE6 getCellLocation()
+	{
 		return cellLocation;
 	}
 }

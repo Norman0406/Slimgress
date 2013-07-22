@@ -4,19 +4,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class IngressInterface {
-	
+public class IngressInterface
+{	
 	World world = null;
 	Inventory inventory = null;
 	Agent agent = null;
 	String lastSyncTimestamp = "0";
 	
-	public IngressInterface() {
+	public IngressInterface()
+	{
 		inventory = new Inventory();
 		world = new World();
 	}
 	
-	private Interface checkInterface() {
+	private Interface checkInterface()
+	{
 		final Interface theInt = Interface.getInstance();
 		if (!theInt.getIsAuthenticated())
 			throw new RuntimeException("interface not authenticated");	
@@ -30,7 +32,8 @@ public class IngressInterface {
 		return theInt;
 	}
 	
-	private void processGameBasket(JSONHandlerGameBasket gameBasket) {
+	private void processGameBasket(JSONHandlerGameBasket gameBasket)
+	{
 		inventory.processGameBasket(gameBasket);
 		world.processGameBasket(gameBasket);
 		
@@ -40,7 +43,8 @@ public class IngressInterface {
 			agent.update(playerEntity);
 	}
 	
-	public void intGetInventory() throws JSONException, InterruptedException {
+	public void intGetInventory() throws JSONException, InterruptedException
+	{
 		Interface theInt = checkInterface();
 		
 		// create params
@@ -55,7 +59,8 @@ public class IngressInterface {
 		processGameBasket(gameBasket);
 	}
 	
-	public void intGetObjectsInCells(Utils.LocationE6 playerLocation, double areaM2) throws JSONException, InterruptedException {
+	public void intGetObjectsInCells(Utils.LocationE6 playerLocation, double areaM2) throws JSONException, InterruptedException
+	{
 		Interface theInt = checkInterface();
 
 		// get cell ids for surrounding area
@@ -87,15 +92,18 @@ public class IngressInterface {
 		processGameBasket(gameBasket);		
 	}
 	
-	public World getWorld() {
+	public World getWorld()
+	{
 		return world;
 	}
 	
-	public Inventory getInventory() {
+	public Inventory getInventory()
+	{
 		return inventory;
 	}
 	
-	public Agent getAgent() {
+	public Agent getAgent()
+	{
 		checkInterface();
 		return agent;
 	}

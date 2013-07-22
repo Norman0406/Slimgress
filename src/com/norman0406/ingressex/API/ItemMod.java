@@ -4,12 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class ItemMod extends Item {
-	
+public abstract class ItemMod extends Item
+{	
 	private String modDisplayName;
 	private int removalStickiness;
 
-	public ItemMod(JSONArray json) throws JSONException {
+	public ItemMod(JSONArray json) throws JSONException
+	{
 		super(ItemType.Mod, json);
 
 		JSONObject item = json.getJSONObject(2);
@@ -19,11 +20,13 @@ public abstract class ItemMod extends Item {
 		removalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
 	}
 	
-	public String getModDisplayName() {
+	public String getModDisplayName()
+	{
 		return modDisplayName;
 	}
 	
-	public int getRemovalStickiness() {
+	public int getRemovalStickiness()
+	{
 		return removalStickiness;
 	}
 }

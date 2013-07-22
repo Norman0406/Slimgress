@@ -4,22 +4,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class GameEntityControlField extends GameEntity {
-	
-	public class Vertex {
+public class GameEntityControlField extends GameEntity
+{
+	public class Vertex
+	{
 		private String portalGuid;
 		private Utils.LocationE6 portalLocation;
 		
-		public Vertex(JSONObject json) throws JSONException {
+		public Vertex(JSONObject json) throws JSONException
+		{
 			portalGuid = json.getString("guid");
 			portalLocation = new Utils.LocationE6(json.getJSONObject("location"));
 		}
 
-		public String getPortalGuid() {
+		public String getPortalGuid()
+		{
 			return portalGuid;
 		}
 
-		public Utils.LocationE6 getPortalLocation() {
+		public Utils.LocationE6 getPortalLocation()
+		{
 			return portalLocation;
 		}
 	}
@@ -30,7 +34,8 @@ public class GameEntityControlField extends GameEntity {
 	private int fieldScore;
 	private Utils.Team fieldControllingTeam;
 	
-	GameEntityControlField(JSONArray json) throws JSONException {
+	GameEntityControlField(JSONArray json) throws JSONException
+	{
 		super(json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -44,23 +49,28 @@ public class GameEntityControlField extends GameEntity {
 		fieldControllingTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
 	}
 	
-	public Vertex getFieldVertexA() {
+	public Vertex getFieldVertexA()
+	{
 		return fieldVertexA;
 	}
 	
-	public Vertex getFieldVertexB() {
+	public Vertex getFieldVertexB()
+	{
 		return fieldVertexB;
 	}
 	
-	public Vertex getFieldVertexC() {
+	public Vertex getFieldVertexC()
+	{
 		return fieldVertexC;
 	}
 	
-	public int getFieldScore() {
+	public int getFieldScore()
+	{
 		return fieldScore;
 	}
 	
-	public Utils.Team getFieldControllingTeam() {
+	public Utils.Team getFieldControllingTeam()
+	{
 		return fieldControllingTeam;
 	}
 }

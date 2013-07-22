@@ -31,7 +31,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="@string/level"
+                android:text="@string/main_level"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#FFFFFF" />
 
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dip"
                     android:layout_weight="0.37"
-                    android:text="@string/agent"
+                    android:text="@string/main_agent"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
@@ -63,7 +63,7 @@
                 android:id="@+id/buttonOps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/ops_menu" />
+                android:text="@string/main_ops" />
 
         </LinearLayout>
     </FrameLayout>

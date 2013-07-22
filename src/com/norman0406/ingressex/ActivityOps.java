@@ -13,8 +13,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-public class ActivityOps extends FragmentActivity implements TabListener {
-	
+public class ActivityOps extends FragmentActivity implements TabListener
+{
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	
@@ -63,30 +63,35 @@ public class ActivityOps extends FragmentActivity implements TabListener {
 	}
 
 	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+	public void onTabReselected(Tab tab, FragmentTransaction ft)
+	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onTabSelected(Tab tab, FragmentTransaction ft) {
+	public void onTabSelected(Tab tab, FragmentTransaction ft)
+	{
 		mViewPager.setCurrentItem(tab.getPosition());		
 	}
 
 	@Override
-	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+	public void onTabUnselected(Tab tab, FragmentTransaction ft)
+	{
 		// TODO Auto-generated method stub
 		
 	}
 	
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		public SectionsPagerAdapter(FragmentManager fm) {
+	public class SectionsPagerAdapter extends FragmentPagerAdapter
+	{
+		public SectionsPagerAdapter(FragmentManager fm)
+		{
 			super(fm);
 		}
 
 		@Override
-		public Fragment getItem(int position) {
+		public Fragment getItem(int position)
+		{
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a DummySectionFragment (defined as a static inner class
 			// below) with the page number as its lone argument.
@@ -108,20 +113,22 @@ public class ActivityOps extends FragmentActivity implements TabListener {
 		}
 
 		@Override
-		public int getCount() {
+		public int getCount()
+		{
 			return 3;
 		}
 
 		@Override
-		public CharSequence getPageTitle(int position) {
+		public CharSequence getPageTitle(int position)
+		{
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.inventory).toUpperCase(l);
+				return getString(R.string.ops_inventory).toUpperCase(l);
 			case 1:
-				return getString(R.string.user).toUpperCase(l);
+				return getString(R.string.ops_user).toUpperCase(l);
 			case 2:
-				return getString(R.string.device).toUpperCase(l);
+				return getString(R.string.ops_device).toUpperCase(l);
 			}
 			return null;
 		}

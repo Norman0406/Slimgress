@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PlayerEntity extends Entity {
-
-	public enum EnergyState {
+public class PlayerEntity extends Entity
+{
+	public enum EnergyState
+	{
 		OK,
 		Depleted
 	}
@@ -19,7 +20,8 @@ public class PlayerEntity extends Entity {
 	private boolean allowNicknameEdit;
 	private boolean allowFactionChoice;	
 	
-	public PlayerEntity(JSONArray json) throws JSONException {
+	public PlayerEntity(JSONArray json) throws JSONException
+	{
 		super(json);
 
 		JSONObject playerEntity = json.getJSONObject(2);
@@ -44,7 +46,8 @@ public class PlayerEntity extends Entity {
 		}
 	}
 	
-	public void update(PlayerEntity entity) {
+	public void update(PlayerEntity entity)
+	{
 		team = entity.team;
 		ap = entity.ap;
 		energy = entity.energy;
@@ -54,31 +57,38 @@ public class PlayerEntity extends Entity {
 		allowFactionChoice = entity.allowFactionChoice;
 	}
 
-	public Utils.Team getTeam() {
+	public Utils.Team getTeam()
+	{
 		return team;
 	}
 
-	public int getAp() {
+	public int getAp()
+	{
 		return ap;
 	}
 
-	public int getEnergy() {
+	public int getEnergy()
+	{
 		return energy;
 	}
 	
-	public EnergyState getEnergyState() {
+	public EnergyState getEnergyState()
+	{
 		return energyState;
 	}
 	
-	public int getClientLevel() {
+	public int getClientLevel()
+	{
 		return clientLevel;
 	}
 
-	public boolean isAllowNicknameEdit() {
+	public boolean isAllowNicknameEdit()
+	{
 		return allowNicknameEdit;
 	}
 
-	public boolean isAllowFactionChoice() {
+	public boolean isAllowFactionChoice()
+	{
 		return allowFactionChoice;
 	}
 }

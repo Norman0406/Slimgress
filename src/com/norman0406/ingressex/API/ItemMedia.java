@@ -4,15 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemMedia extends Item {
-	
+public class ItemMedia extends Item
+{	
 	private String mediaImageUrl;
 	private String mediaUrl;
 	private String mediaDescription;
 	private boolean mediaHasBeenViewed;
 	private String mediaReleaseDate;
 	
-	public ItemMedia(JSONArray json) throws JSONException {
+	public ItemMedia(JSONArray json) throws JSONException
+	{
 		super(ItemType.Media, json);
 		
 		JSONObject item = json.getJSONObject(2);
@@ -26,23 +27,28 @@ public class ItemMedia extends Item {
 		mediaReleaseDate = storyItem.getString("releaseDate");
 	}
 
-	public String getMediaImageUrl() {
+	public String getMediaImageUrl()
+	{
 		return mediaImageUrl;
 	}
 
-	public String getMediaUrl() {
+	public String getMediaUrl()
+	{
 		return mediaUrl;
 	}
 
-	public String getMediaDescription() {
+	public String getMediaDescription()
+	{
 		return mediaDescription;
 	}
 
-	public boolean isMediaHasBeenViewed() {
+	public boolean isMediaHasBeenViewed()
+	{
 		return mediaHasBeenViewed;
 	}
 
-	public String getMediaReleaseDate() {
+	public String getMediaReleaseDate()
+	{
 		return mediaReleaseDate;
 	}
 }

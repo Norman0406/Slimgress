@@ -4,15 +4,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemPortalKey extends Item {
-
+public class ItemPortalKey extends Item
+{
 	private String portalGuid;
 	private String portalLocation;
 	private String portalImageUrl;
 	private String portalTitle;
 	private String portalAddress;
 	
-	public ItemPortalKey(JSONArray json) throws JSONException {
+	public ItemPortalKey(JSONArray json) throws JSONException
+	{
 		super(ItemType.PortalKey, json);
 
 		JSONObject item = json.getJSONObject(2);
@@ -25,23 +26,28 @@ public class ItemPortalKey extends Item {
 		portalAddress = portalCoupler.getString("portalAddress");
 	}
 
-	public String getPortalGuid() {
+	public String getPortalGuid()
+	{
 		return portalGuid;
 	}
 
-	public String getPortalLocation() {
+	public String getPortalLocation()
+	{
 		return portalLocation;
 	}
 
-	public String getPortalImageUrl() {
+	public String getPortalImageUrl()
+	{
 		return portalImageUrl;
 	}
 
-	public String getPortalTitle() {
+	public String getPortalTitle()
+	{
 		return portalTitle;
 	}
 
-	public String getPortalAddress() {
+	public String getPortalAddress()
+	{
 		return portalAddress;
 	}	
 }

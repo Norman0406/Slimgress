@@ -31,35 +31,36 @@
         android:allowBackup="true"
         android:name="com.norman0406.ingressex.IngressApplication"
         android:icon="@drawable/ic_launcher" 
-       	android:theme="@android:style/Theme.Holo" >
+       	android:theme="@android:style/Theme.Holo.NoActionBar" >
         
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/mapskey" />
         
+        <!-- start with splash activity to authenticate and get handshake data -->
         <activity
-            android:name="com.norman0406.ingressex.ActivityMain"
-            android:label="@string/app_name"
-       		android:theme="@android:style/Theme.Holo.NoActionBar" >
+            android:name="com.norman0406.ingressex.ActivitySplash"
+            android:label="@string/appname" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         
+        <!-- if necessary continue with authentication -->
         <activity
-            android:name="com.norman0406.ingressex.ActivityAuth"
-            android:label="@string/authenticate" >
+            android:name="com.norman0406.ingressex.ActivityAuth" >
         </activity>
         
+        <!-- start main activity and display map -->
         <activity
-            android:name="com.norman0406.ingressex.ActivityInventory"
-            android:label="@string/inventory" >
+            android:name="com.norman0406.ingressex.ActivityMain" >
         </activity>
-                
+        
+        <!-- ops activity with additional information -->
         <activity
             android:name="com.norman0406.ingressex.ActivityOps"
-            android:label="@string/ops" >
+       		android:theme="@android:style/Theme.Holo" >
         </activity>
     </application>
 

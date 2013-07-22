@@ -26,11 +26,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FragmentInventory extends Fragment implements OnChildClickListener {
-	
+public class FragmentInventory extends Fragment implements OnChildClickListener
+{
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
 		View rootView = inflater.inflate(R.layout.fragment_inventory,
 				container, false);
 		
@@ -119,8 +119,8 @@ public class FragmentInventory extends Fragment implements OnChildClickListener 
 	}
 
 	@Override
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+	{
 		Toast.makeText(getActivity(), "Clicked On Child", Toast.LENGTH_SHORT).show();
 		return true;
 	}
