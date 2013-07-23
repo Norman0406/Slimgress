@@ -53,8 +53,15 @@ public class ActivityAuth extends Activity
 		if (isLoggedIn()) {
 			// user is already logged in, get login data			
 			SharedPreferences prefs = getSharedPreferences(getApplicationInfo().packageName,  0);
-			String accountName = prefs.getString("account_name", null);
-			String accountToken = prefs.getString("account_token", null);
+			final String accountName = prefs.getString("account_name", null);
+			final String accountToken = prefs.getString("account_token", null);
+
+			// update username string
+			runOnUiThread(new Runnable() {
+				public void run() {
+					((TextView)findViewById(R.id.username)).setText(accountName);
+				}
+			});
 			
 			// check if there is a matching account available
 			boolean found = false;

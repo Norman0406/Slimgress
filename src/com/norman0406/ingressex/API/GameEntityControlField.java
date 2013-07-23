@@ -36,7 +36,7 @@ public class GameEntityControlField extends GameEntity
 	
 	GameEntityControlField(JSONArray json) throws JSONException
 	{
-		super(json);
+		super(GameEntityType.ControlField, json);
 		
 		JSONObject item = json.getJSONObject(2);
 		

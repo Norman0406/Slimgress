@@ -1,15 +1,29 @@
 package com.norman0406.ingressex;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.common.geometry.S2LatLng;
+import com.google.common.geometry.S2LatLngRect;
 import com.norman0406.ingressex.API.Agent;
+import com.norman0406.ingressex.API.GameEntity;
+import com.norman0406.ingressex.API.GameEntityControlField;
+import com.norman0406.ingressex.API.GameEntityLink;
+import com.norman0406.ingressex.API.GameEntityPortal;
 import com.norman0406.ingressex.API.Utils;
+import com.norman0406.ingressex.API.World;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -32,6 +46,9 @@ public class ActivityMain extends FragmentActivity
 
 		// update agent data
 		updateAgent();
+        
+		// initialize map view
+		initMap();
 
 		// update world every 5 seconds
 		/*new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -40,10 +57,7 @@ public class ActivityMain extends FragmentActivity
 				updateWorld();
 			}
 		}, 0, 5 * 1000);*/
-		updateWorld();
-        
-		// initialize map view
-		initMap();
+		//updateWorld();
         
 		// create ops button callback
         final Button buttonOps = (Button)findViewById(R.id.buttonOps);
@@ -85,7 +99,8 @@ public class ActivityMain extends FragmentActivity
 		}
 		
 		// get inventory
-		mApp.getInterface().intGetInventory(new Runnable() {
+		Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
+		mApp.getInterface().intGetInventory(playerLocation, new Runnable() {
 			@Override
 			public void run() {
 				// inventory is loaded
@@ -97,13 +112,116 @@ public class ActivityMain extends FragmentActivity
 	private void updateWorld()
 	{
 		Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
-		double area = 1000 * 1000;
-		
-		mApp.getInterface().intGetObjectsInCells(playerLocation, area, new Runnable() {
+
+		// get visible region
+		LatLng northeast = mMap.getProjection().getVisibleRegion().latLngBounds.northeast;
+		LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;		
+		S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
+				S2LatLng.fromDegrees(northeast.latitude, northeast.longitude));
+				
+		mApp.getInterface().intGetObjectsInCells(playerLocation, region, new Runnable() {
 			@Override
 			public void run() {
+				
+				// clear map first
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						mMap.clear();
+					}
+				});
+				
 				// finished loading world
 				System.out.println("world updated");
+				World world = mApp.getInterface().getWorld();
+				Map<String, GameEntity> entities = world.getGameEntities();
+				
+				/*List<XMParticle> xmParticles = world.getXMParticles();
+				for (XMParticle particle : xmParticles) {
+					final Utils.LocationE6 location = particle.getCellLocation();
+					
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mMap.addMarker(new MarkerOptions()
+							.position(location.getLatLng())
+							.title("xm"));
+						}
+					});
+				}*/
+				
+				Set<String> keys = entities.keySet();
+				for (String key : keys) {
+					GameEntity entity = entities.get(key);
+					
+					if (entity.getGameEntityType() == GameEntity.GameEntityType.Portal) {
+						final GameEntityPortal portal = (GameEntityPortal)entity;
+						if (mMap != null) {
+							final Utils.LocationE6 location = portal.getPortalLocation();
+							
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									mMap.addMarker(new MarkerOptions()
+									.position(location.getLatLng())
+									.title(portal.getPortalTitle()));
+								}
+							});
+						}
+					}
+					else if (entity.getGameEntityType() == GameEntity.GameEntityType.Link) {
+						final GameEntityLink link = (GameEntityLink)entity;
+						if (mMap != null) {
+							final Utils.LocationE6 origin = link.getLinkOriginLocation();
+							final Utils.LocationE6 dest = link.getLinkDestinationLocation();
+														
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									int color = 0xff0000ff;	// blue with alpha
+									Utils.Team team = link.getLinkControllingTeam();
+									if (team == Utils.Team.Enlightened)
+										color = 0xff00ff00;	// green with alpha
+									
+									PolylineOptions line = new PolylineOptions();
+									line.add(origin.getLatLng());
+									line.add(dest.getLatLng());
+									line.color(color);
+									line.width(2);
+									line.zIndex(2);
+									mMap.addPolyline(line);
+								}
+							});
+						}
+					}
+					else if (entity.getGameEntityType() == GameEntity.GameEntityType.ControlField) {
+						final GameEntityControlField field = (GameEntityControlField)entity;
+						if (mMap != null) {
+							final Utils.LocationE6 vA = field.getFieldVertexA().getPortalLocation();
+							final Utils.LocationE6 vB = field.getFieldVertexB().getPortalLocation();
+							final Utils.LocationE6 vC = field.getFieldVertexC().getPortalLocation();
+							
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									int color = 0x320000ff;	// blue with alpha
+									Utils.Team team = field.getFieldControllingTeam();
+									if (team == Utils.Team.Enlightened)
+										color = 0x3200ff00;	// green with alpha
+									
+									PolygonOptions polygon = new PolygonOptions();
+									polygon.add(vA.getLatLng());
+									polygon.add(vB.getLatLng());
+									polygon.add(vC.getLatLng());
+									polygon.fillColor(color);
+									polygon.strokeWidth(0);
+									polygon.zIndex(1);
+									mMap.addPolygon(polygon);
+								}
+							});
+						}
+					}
+				}
 			}
 		});
 	}
@@ -121,8 +239,8 @@ public class ActivityMain extends FragmentActivity
             CameraPosition pos = mMap.getCameraPosition();
             CameraPosition newPos = new CameraPosition.Builder(pos)
             .target(myPos)
-            .zoom(16)
-            .tilt(50)
+            .zoom(15)
+            .tilt(40)
             .build();
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
             
@@ -131,10 +249,17 @@ public class ActivityMain extends FragmentActivity
             UiSettings ui = mMap.getUiSettings();
             ui.setCompassEnabled(false);
             ui.setZoomControlsEnabled(false);
-            ui.setZoomGesturesEnabled(true);
-            ui.setRotateGesturesEnabled(true);
-            ui.setScrollGesturesEnabled(false);
-            ui.setTiltGesturesEnabled(false);
+            //ui.setZoomGesturesEnabled(true);
+            //ui.setRotateGesturesEnabled(true);
+            //ui.setScrollGesturesEnabled(false);
+            //ui.setTiltGesturesEnabled(false);
+            
+            mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+				@Override
+				public void onCameraChange(CameraPosition arg0) {
+					updateWorld();
+				}
+            });
         }
 	}
 }

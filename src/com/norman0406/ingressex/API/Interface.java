@@ -3,6 +3,7 @@ package com.norman0406.ingressex.API;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -17,6 +18,7 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -171,7 +173,7 @@ public class Interface
 		}).start();
 	}
 	
-	protected void request(final Handshake handshake, final String requestString,
+	protected void request(final Handshake handshake, final String requestString, final Utils.LocationE6 playerLocation,
 			final JSONObject requestParams, final GameBasket.Callback callback) throws InterruptedException
 	{
 		if (!handshake.isValid() || handshake.getXSRFToken().length() == 0)
@@ -179,10 +181,22 @@ public class Interface
 		
 		new Thread(new Runnable() {
 		    public void run() {
-		    	
+
 		    	JSONObject params = new JSONObject();
-		    	try {
+		    	try {		    		
 					params.put("params", requestParams);
+										
+					// add persistent request parameters
+					String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
+					params.getJSONObject("params").put("playerLocation", loc);
+					params.getJSONObject("params").put("location", loc);
+					params.getJSONObject("params").put("knobSyncTimestamp", getCurrentTimestamp());
+					
+					JSONArray collectedEnergy = new JSONArray();
+					
+					// UNDONE: add collected energy guids
+					
+					params.getJSONObject("params").put("energyGlobGuids", collectedEnergy);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -211,27 +225,27 @@ public class Interface
 				// execute and get the response.
 				try {
 					HttpResponse response = null;
+					String content = null;
+					
 					synchronized(Interface.this) {
 						response = mClient.execute(post);
-					}
-					assert(response != null);
-
-					if (response.getStatusLine().getStatusCode() == 401) {
-						// token expired or similar
-						//isAuthenticated = false;
-						response.getEntity().consumeContent();
-					}
-					else {
-						HttpEntity entity = response.getEntity();
-						
-						if (entity != null) {
-							String content = EntityUtils.toString(entity);
-							entity.consumeContent();
-							
-							// handle game basket
-							callback.handle(new GameBasket(new JSONObject(content)));
+						assert(response != null);
+	
+						if (response.getStatusLine().getStatusCode() == 401) {
+							// token expired or similar
+							//isAuthenticated = false;
+							response.getEntity().consumeContent();
 						}
-					}						
+						else {
+							HttpEntity entity = response.getEntity();
+							content = EntityUtils.toString(entity);
+							entity.consumeContent();
+						}
+					}
+
+					// handle game basket
+					if (content != null)
+						callback.handle(new GameBasket(new JSONObject(content)));
 				}
 				catch (ClientProtocolException e) {
 					e.printStackTrace();
@@ -244,5 +258,10 @@ public class Interface
 				}
 		    }
 		}).start();
+	}
+	
+	private long getCurrentTimestamp()
+	{
+		return (new Date()).getTime();
 	}
 }

@@ -14,7 +14,7 @@ public class GameEntityLink extends GameEntity
 
 	GameEntityLink(JSONArray json) throws JSONException
 	{
-		super(json);
+		super(GameEntityType.Link, json);
 		
 		JSONObject item = json.getJSONObject(2);
 

@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.geometry.S2LatLngRect;
+
 public class IngressInterface
 {
 	private static IngressInterface mSingleton = null;
@@ -68,7 +70,7 @@ public class IngressInterface
 			mAgent.update(playerEntity);
 	}
 	
-	public void intGetInventory(final Runnable callback)
+	public void intGetInventory(final Utils.LocationE6 playerLocation, final Runnable callback)
 	{
 		new Thread(new Runnable() {
 			@Override
@@ -81,7 +83,7 @@ public class IngressInterface
 					params.put("lastQueryTimestamp", mLastSyncTimestamp);
 					
 					// request basket
-					mInterface.request(mHandshake, "playerUndecorated/getInventory", params, new GameBasket.Callback() {
+					mInterface.request(mHandshake, "playerUndecorated/getInventory", playerLocation, params, new GameBasket.Callback() {
 						@Override
 						public void handle(GameBasket gameBasket) {
 							// process basket
@@ -99,7 +101,7 @@ public class IngressInterface
 		}).start();
 	}
 		
-	public void intGetObjectsInCells(final Utils.LocationE6 playerLocation, final double areaM2, final Runnable callback)
+	public void intGetObjectsInCells(final Utils.LocationE6 playerLocation, final S2LatLngRect region, final Runnable callback)
 	{
 		new Thread(new Runnable() {
 			@Override
@@ -108,7 +110,7 @@ public class IngressInterface
 					checkInterface();
 					
 					// get cell ids for surrounding area
-					String cellIds[] = Utils.getCellIdsFromLocationArea(playerLocation, 16, 16, areaM2);
+					String cellIds[] = Utils.getCellIdsFromRegion(region, 16, 16);
 			
 					// create cells
 					JSONArray cellsAsHex = new JSONArray();
@@ -124,12 +126,9 @@ public class IngressInterface
 					JSONObject params = new JSONObject();
 					params.put("cellsAsHex", cellsAsHex);
 					params.put("dates", dates);
-					String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
-					params.put("playerLocation", loc);
-					//params.put("knobSyncTimestamp", syncTimestamp);	// necessary?
-					
+															
 					// request basket
-					mInterface.request(mHandshake, "gameplay/getObjectsInCells", params, new GameBasket.Callback() {
+					mInterface.request(mHandshake, "gameplay/getObjectsInCells", playerLocation, params, new GameBasket.Callback() {
 						@Override
 						public void handle(GameBasket gameBasket) {
 							// process basket
@@ -137,6 +136,13 @@ public class IngressInterface
 							callback.run();
 						}
 					});
+					/*mInterface.request(mHandshake, "gameplay/getObjectsInCells", playerLocation, params, new GameBasket.Callback() {
+						@Override
+						public void handle(GameBasket gameBasket) {
+							// process basket
+							processGameBasket(gameBasket);
+						}
+					});*/
 				} catch (JSONException e) {
 					e.printStackTrace();
 				} catch (InterruptedException e) {

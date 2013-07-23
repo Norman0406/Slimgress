@@ -34,7 +34,7 @@ public class GameEntityPortal extends GameEntity
 		public int level;
 	}
 
-	Utils.LocationE6 mPortalLocation;
+	private Utils.LocationE6 mPortalLocation;
 	private Utils.Team mPortalTeam;
 	private String mPortalTitle;
 	private String mPortalAddress;
@@ -47,7 +47,7 @@ public class GameEntityPortal extends GameEntity
 	
 	GameEntityPortal(JSONArray json) throws JSONException
 	{
-		super(json);
+		super(GameEntityType.Portal, json);
 		
 		JSONObject item = json.getJSONObject(2);
 		
@@ -93,7 +93,7 @@ public class GameEntityPortal extends GameEntity
 		// get description
 		JSONObject descriptiveText = portalV2.getJSONObject("descriptiveText");
 		mPortalTitle = descriptiveText.getString("TITLE");
-		mPortalAddress = descriptiveText.getString("ADDRESS");
+		mPortalAddress = descriptiveText.optString("ADDRESS");
 		mPortalAttribution = descriptiveText.optString("ATTRIBUTION");
 		mPortalAttributionLink = descriptiveText.optString("ATTRIBUTION_LINK");
 		
@@ -102,21 +102,27 @@ public class GameEntityPortal extends GameEntity
 		JSONObject resonatorArray = item.getJSONObject("resonatorArray");
 		JSONArray resonators = resonatorArray.getJSONArray("resonators");
 		for (int i = 0; i < resonators.length(); i++) {
-			JSONObject resonator = resonators.getJSONObject(i);
+			JSONObject resonator = resonators.optJSONObject(i);
 			
-			LinkedResonator newResonator = new LinkedResonator();
-			newResonator.level = resonator.getInt("level");
-			newResonator.distanceToPortal = resonator.getInt("distanceToPortal");
-			newResonator.ownerGuid = resonator.getString("ownerGuid");
-			newResonator.energyTotal = resonator.getInt("energyTotal");
-			newResonator.slot = resonator.getInt("slot");
-			newResonator.id = resonator.getString("id");
-			
-			mPortalResonators.add(newResonator);			
+			if (resonator != null) {
+				LinkedResonator newResonator = new LinkedResonator();
+				newResonator.level = resonator.getInt("level");
+				newResonator.distanceToPortal = resonator.getInt("distanceToPortal");
+				newResonator.ownerGuid = resonator.getString("ownerGuid");
+				newResonator.energyTotal = resonator.getInt("energyTotal");
+				newResonator.slot = resonator.getInt("slot");
+				newResonator.id = resonator.getString("id");
+				
+				mPortalResonators.add(newResonator);
+			}
+			else {
+				// resonator == null means the slot is unused
+				mPortalResonators.add(null);
+			}
 		}
 	}
 
-	Utils.LocationE6 getPortalLocation()
+	public Utils.LocationE6 getPortalLocation()
 	{
 		return mPortalLocation;
 	}
