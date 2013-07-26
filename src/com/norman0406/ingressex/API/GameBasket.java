@@ -11,7 +11,7 @@ public class GameBasket
 {
 	public interface Callback
 	{
-		public void handle(GameBasket gameBasket);
+		public void handle(JSONObject json, GameBasket gameBasket);
 	}
 	
 	private String mLastSyncTimestamp;
@@ -23,10 +23,9 @@ public class GameBasket
 	
 	public GameBasket(JSONObject json) throws JSONException
 	{
-		if (json.has("exception")) {
-			String excMsg = json.getString("exception");
-			throw new RuntimeException(excMsg);
-		}
+		// don't process if an error or exception occurred
+		if (!json.has("result"))
+			return;
 		
 		JSONObject gameBasket = json.getJSONObject("gameBasket");
 		

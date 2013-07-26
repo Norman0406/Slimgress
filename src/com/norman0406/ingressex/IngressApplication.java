@@ -1,6 +1,6 @@
 package com.norman0406.ingressex;
 
-import com.norman0406.ingressex.API.IngressInterface;
+import com.norman0406.ingressex.API.Game;
 import com.norman0406.ingressex.API.Interface;
 
 import android.app.Application;
@@ -10,7 +10,7 @@ public class IngressApplication extends Application
 {
 	private static IngressApplication mSingleton;
 	private boolean mLoggedIn = false;
-	protected IngressInterface mIngress = IngressInterface.getInstance();
+	protected Game mGame;
 	
 	@Override
 	public void onCreate()
@@ -18,6 +18,7 @@ public class IngressApplication extends Application
 		super.onCreate();
 						
 		mSingleton = this;
+		mGame = new Game();
 	}
 
 	@Override
@@ -30,9 +31,9 @@ public class IngressApplication extends Application
         return mSingleton;
     }
 	
-	public IngressInterface getInterface()
+	public Game getGame()
 	{
-		return mIngress;
+		return mGame;
 	}
 	
 	public boolean isLoggedIn()

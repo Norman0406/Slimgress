@@ -41,11 +41,6 @@ public class Interface
 	private static final String mApiLogin = "_ah/login?continue=http://localhost/&auth=";
 	private static final String mApiHandshake = "handshake?json=";
 	private static final String mApiRequest = "rpc/";
-		
-	public interface CallbackRequest
-	{
-		public void handle(GameBasket gameBasket);
-	}
 	
 	protected Interface()
 	{
@@ -182,28 +177,44 @@ public class Interface
 		new Thread(new Runnable() {
 		    public void run() {
 
-		    	JSONObject params = new JSONObject();
-		    	try {		    		
-					params.put("params", requestParams);
-										
-					// add persistent request parameters
-					String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
-					params.getJSONObject("params").put("playerLocation", loc);
-					params.getJSONObject("params").put("location", loc);
-					params.getJSONObject("params").put("knobSyncTimestamp", getCurrentTimestamp());
-					
-					JSONArray collectedEnergy = new JSONArray();
-					
-					// UNDONE: add collected energy guids
-					
-					params.getJSONObject("params").put("energyGlobGuids", collectedEnergy);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-		    	
+		    	// create post
 				String postString = mApiBaseURL + mApiRequest + requestString;
-				
 				HttpPost post = new HttpPost(postString);
+				
+				// set additional parameters
+		    	JSONObject params = new JSONObject();
+		    	if (requestParams != null) {
+		    		if (requestParams.has("params"))
+		    			params = requestParams;
+		    		else {
+			    		try {
+				    		params.put("params", requestParams);
+							
+							// add persistent request parameters
+				    		if (playerLocation != null) {
+								String loc = String.format("%08x,%08x", playerLocation.getLatitude(), playerLocation.getLongitude());
+								params.getJSONObject("params").put("playerLocation", loc);
+								params.getJSONObject("params").put("location", loc);
+				    		}				    		
+							params.getJSONObject("params").put("knobSyncTimestamp", getCurrentTimestamp());
+							
+							JSONArray collectedEnergy = new JSONArray();
+							
+							// UNDONE: add collected energy guids
+							
+							params.getJSONObject("params").put("energyGlobGuids", collectedEnergy);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+		    		}
+		    	}
+		    	else {
+		    		try {
+						params.put("params", null);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+		    	}
 				
 				try {
 					StringEntity entity = new StringEntity(params.toString(), "UTF-8");
@@ -212,8 +223,9 @@ public class Interface
 				}
 				catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
-				}
+				}		
 				
+		    	// set header
 				post.setHeader("Content-Type", "application/json;charset=UTF-8");
 				//post.setHeader("Accept-Encoding", "gzip");	// TODO: decode
 				post.setHeader("User-Agent", "Nemesis (gzip)");
@@ -244,8 +256,16 @@ public class Interface
 					}
 
 					// handle game basket
-					if (content != null)
-						callback.handle(new GameBasket(new JSONObject(content)));
+					if (content != null) {
+						JSONObject json = new JSONObject(content);
+						
+						if (json.has("exception")) {
+							String excMsg = json.getString("exception");
+							throw new RuntimeException(excMsg);
+						}
+						
+						callback.handle(json, new GameBasket(json));
+					}
 				}
 				catch (ClientProtocolException e) {
 					e.printStackTrace();

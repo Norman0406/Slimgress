@@ -2,6 +2,7 @@ package com.norman0406.ingressex;
 
 import java.io.IOException;
 
+import com.norman0406.ingressex.API.Game;
 import com.norman0406.ingressex.API.Interface;
 
 import android.accounts.Account;
@@ -21,8 +22,9 @@ import android.widget.TextView;
 
 public class ActivityAuth extends Activity
 {
-	private AccountManager mAccountMgr;
 	private IngressApplication mApp = IngressApplication.getInstance();
+	private Game mGame = mApp.getGame();
+	private AccountManager mAccountMgr;
 	private int mNumAttempts = 0;
 	private static final int mMaxNumAttempts = 2;
 	
@@ -221,7 +223,7 @@ public class ActivityAuth extends Activity
 			@Override
 			public void run() {
 				// authenticate ingress
-				Interface.AuthSuccess success = mApp.getInterface().intAuthenticate(token);
+				Interface.AuthSuccess success = mGame.intAuthenticate(token);
 				
 				if (success == Interface.AuthSuccess.Successful) {
 					

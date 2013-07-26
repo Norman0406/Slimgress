@@ -1,7 +1,6 @@
 package com.norman0406.ingressex.API;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ public class World
 {
 	private Map<String, GameEntity> mGameEntities = new HashMap<String, GameEntity>();
 	private Map<String, XMParticle> mXMParticles = new HashMap<String, XMParticle>();
-		
+	
 	public void processGameBasket(GameBasket basket)
 	{
 		// only add non-existing game entities

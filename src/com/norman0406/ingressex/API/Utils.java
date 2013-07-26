@@ -36,6 +36,16 @@ public class Utils
 			throw new RuntimeException("invalid team string: " + teamString);
 	}
 	
+	public static String getTeam(Team team)
+	{
+		if (team == Team.Resistance)
+			return "RESISTANCE";
+		else if (team == Team.Enlightened)
+			return "ALIENS";
+
+		return "NEUTRAL";
+	}
+	
 	// get team enum from json object
 	public static Team getTeam(JSONObject json) throws JSONException
 	{
@@ -99,7 +109,7 @@ public class Utils
 	
 	public static String[] getCellIdsFromLocationArea(Utils.LocationE6 location, double areaM2, int minLevel, int maxLevel)
 	{
-		final double radius_m2 = 6371 * 1000; 
+		final double radius_m2 = 6371 * 1000;
 		final double sr = areaM2 / (radius_m2 * radius_m2);
 
 		S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());

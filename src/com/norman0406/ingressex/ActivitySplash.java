@@ -1,5 +1,7 @@
 package com.norman0406.ingressex;
 
+import com.norman0406.ingressex.API.Game;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 public class ActivitySplash extends Activity
 {
 	private IngressApplication mApp = IngressApplication.getInstance();
+	private Game mGame = mApp.getGame();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -36,7 +39,7 @@ public class ActivitySplash extends Activity
 				mApp.setLoggedIn(true);
 				
 				// perform handshake
-				mApp.getInterface().intHandshake(new Runnable() {
+				mGame.intHandshake(new Runnable() {
 					@Override
 					public void run() {				        
 				        // start main activity

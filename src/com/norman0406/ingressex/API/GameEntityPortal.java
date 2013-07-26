@@ -121,6 +121,35 @@ public class GameEntityPortal extends GameEntity
 			}
 		}
 	}
+	
+	public int getPortalEnergy()
+	{
+		// TODO: don't recalculate every time
+		int energy = 0;
+		for (LinkedResonator resonator : mPortalResonators) {
+			if (resonator != null)
+				energy += resonator.energyTotal;
+		}		
+		return energy;
+	}
+	
+	public int getPortalLevel()
+	{
+		// TODO: don't recalculate every time
+		int level = 0;
+		int resonatorCount = 0;
+		for (LinkedResonator resonator : mPortalResonators) {
+			if (resonator != null) {
+				level += resonator.level;
+				resonatorCount++;
+			}
+		}
+		
+		if (resonatorCount == 0)
+			return 0;
+		
+		return level / resonatorCount;
+	}
 
 	public Utils.LocationE6 getPortalLocation()
 	{
