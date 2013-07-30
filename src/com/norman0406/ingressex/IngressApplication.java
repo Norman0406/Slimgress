@@ -1,10 +1,8 @@
 package com.norman0406.ingressex;
 
 import com.norman0406.ingressex.API.Game;
-import com.norman0406.ingressex.API.Interface;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 public class IngressApplication extends Application
 {

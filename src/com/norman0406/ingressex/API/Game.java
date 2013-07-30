@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2LatLngRect;
@@ -971,10 +972,12 @@ public class Game
 	
 	public void intSetNotificationSettings(final Handler.Callback handler)
 	{
+		Log.w("Game", "intSetNotificationSettings not yet implemented");
 	}
 	
 	public void intGetModifiedEntity(final Handler.Callback handler)
 	{
+		Log.w("Game", "intSetNotificationSettings not yet implemented");
 	}
 	
 	public void intFlipPortal(GameEntityPortal portal, ItemVirus virus, Utils.LocationE6 playerLocation, final Handler.Callback handler)
@@ -1012,6 +1015,7 @@ public class Game
 	
 	public void intSetPortalDetailsForCuration(final Handler.Callback handler)
 	{
+		Log.w("Game", "intSetPortalDetailsForCuration not yet implemented");
 	}
 	
 	public void intGetUploadUrl(final Handler.Callback handler)
@@ -1040,11 +1044,12 @@ public class Game
 	
 	public void intUploadPortalPhotoByUrl(String requestId, String imageUrl, final Handler.Callback handler)
 	{
-		//Log.w("", "not yet implemented");
+		Log.w("Game", "intUploadPortalPhotoByUrl not yet implemented");
 	}
 	
 	public void intUploadPortalImage(final Handler.Callback handler)
 	{
+		Log.w("Game", "intUploadPortalImage not yet implemented");
 	}
 	
 	public void intFindNearbyPortals(int maxPortals, Utils.LocationE6 playerLocation, final Handler.Callback handler)

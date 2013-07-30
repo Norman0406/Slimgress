@@ -29,12 +29,12 @@ import android.util.Log;
 
 public class Interface
 {
-    public enum AuthSuccess
-    {
-    	Successful,
-    	TokenExpired,
-    	UnknownError
-    }
+	public enum AuthSuccess
+	{
+		Successful,
+		TokenExpired,
+		UnknownError
+	}
 	
 	private DefaultHttpClient mClient;
 	private String mCookie;
@@ -240,7 +240,7 @@ public class Interface
 				}
 				catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
-				}		
+				}
 				
 		    	// set header
 				post.setHeader("Content-Type", "application/json;charset=UTF-8");
