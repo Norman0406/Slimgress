@@ -19,5 +19,10 @@ public class Inventory
 			mItems.clear();
 			mItems.addAll(basket.getInventory());
 		}
-	}	
+	}
+	
+	public final List<Item> getItems()
+	{
+		return mItems;
+	}
 }

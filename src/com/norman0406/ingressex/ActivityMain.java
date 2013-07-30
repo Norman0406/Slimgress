@@ -2,23 +2,17 @@ package com.norman0406.ingressex;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import org.osmdroid.tileprovider.MapTile;
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.MapTileRequestState;
-import org.osmdroid.tileprovider.modules.MapTileDownloader;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.TilesOverlay;
 
 import com.google.android.gms.maps.GoogleMap;
 import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -26,11 +20,12 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.common.geometry.S2Cap;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2LatLngRect;
 import com.norman0406.ingressex.API.Agent;
@@ -43,24 +38,17 @@ import com.norman0406.ingressex.API.Utils;
 import com.norman0406.ingressex.API.World;
 import com.norman0406.ingressex.API.XMParticle;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Pair;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ActivityMain extends FragmentActivity
@@ -81,6 +69,44 @@ public class ActivityMain extends FragmentActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		/*ContextThemeWrapper ctw = new ContextThemeWrapper(this, R.style.MyDialog); 
+		//ContextThemeWrapper ctw = new ContextThemeWrapper(this, android.R.style.Theme_Translucent);
+		//AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.MyDialog);
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctw);
+		
+		builder.setTitle("Hacking");
+		builder.setMessage("Hallo");
+		
+		Dialog dialog = builder.create();
+		//dialog.setContentView(R.style.MyDialog);
+		//dialog.getWindow().setContentView(R.style.MyDialog);
+		dialog.show();
+		TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+		messageText.setGravity(Gravity.CENTER);
+		
+		WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+		lp.dimAmount = 0.0f;
+		lp.gravity = Gravity.BOTTOM;
+		//lp.alpha = 0.3f;
+		//lp.format = PixelFormat.TRANSLUCENT;
+		dialog.getWindow().setAttributes(lp);
+		dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+		dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);*/
+		
+		/*AlphaAnimation anim = new AlphaAnimation(0, 1);
+		anim.setStartTime(0);
+		anim.setDuration(2000);
+		anim.setFillAfter(true);		
+		View view = dialog.getWindow().getDecorView();
+		view.setAnimation(anim);
+		view.postInvalidate();*/
+		
+		/*Drawable background = new ColorDrawable(android.graphics.Color.BLUE);
+		background.setAlpha(100);
+		dialog.getWindow().setBackgroundDrawable(background);*/
+		
+		
 				
 		/*mGLSurfaceView = new GLSurfaceView(this);
 		mGLSurfaceView.setEGLContextClientVersion(2);
@@ -189,17 +215,25 @@ public class ActivityMain extends FragmentActivity
 		}
 		
 		// get inventory
-		Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
-		//Utils.LocationE6 playerLocation = new Utils.LocationE6(0, 0);
-		/*mApp.getInterface().intGetInventory(playerLocation, new Runnable() {
+		//Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
+		/*mGame.intGetInventory(playerLocation, new Handler.Callback() {
 			@Override
-			public void run() {
+	        public boolean handleMessage(Message msg) {
 				// inventory is loaded
 				System.out.println("inventory loaded");
+				return true;
 			}
-		});
+		});*/
 		
-		mApp.getInterface().intGetGameScore(new Handler.Callback() {
+		// 2f116dad563a45f4bbb547873cd7a010.5
+		/*mGame.intRecycleItem(mGame.getInventory().getItems().get(0), playerLocation, new Handler.Callback() {
+			@Override
+	        public boolean handleMessage(Message msg) {
+				return true;
+			}
+		});*/
+		
+		/*mApp.getInterface().intGetGameScore(new Handler.Callback() {
 	        public boolean handleMessage(Message msg) {
 				int resistanceScore = msg.getData().getInt("ResistanceScore");
 				int enlightenedScore = msg.getData().getInt("EnlightenedScore");
@@ -250,7 +284,7 @@ public class ActivityMain extends FragmentActivity
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						mMap.clear();
+						//mMap.clear();
 					}
 				});
 				
@@ -294,7 +328,6 @@ public class ActivityMain extends FragmentActivity
 							runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
-									
 									Bitmap portalIcon = null;
 									if (team == Utils.Team.Resistance)
 										portalIcon = mPortalIconResistance;
@@ -321,7 +354,7 @@ public class ActivityMain extends FragmentActivity
 						if (mMap != null) {
 							final Utils.LocationE6 origin = link.getLinkOriginLocation();
 							final Utils.LocationE6 dest = link.getLinkDestinationLocation();
-														
+							
 							runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
@@ -393,15 +426,45 @@ public class ActivityMain extends FragmentActivity
             .build();
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
             
-            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            
             UiSettings ui = mMap.getUiSettings();
+            ui.setAllGesturesEnabled(false);
             ui.setCompassEnabled(false);
+            ui.setScrollGesturesEnabled(true);
+            ui.setRotateGesturesEnabled(true);
             ui.setZoomControlsEnabled(false);
-            //ui.setZoomGesturesEnabled(true);
+            //ui.setZoomGesturesEnabled(false);
             //ui.setRotateGesturesEnabled(true);
             //ui.setScrollGesturesEnabled(false);
             //ui.setTiltGesturesEnabled(false);
+            
+            mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+            
+            // create a custom tile provider with an ingress-like map
+            TileProvider tiles = new UrlTileProvider(256, 256) {
+				@Override
+				public synchronized URL getTileUrl(int x, int y, int zoom) {
+					final String apistyle = "s.e%3Al%7Cp.v%3Aoff%2Cs.e%3Ag%7Cp.c%3A%23ff000000%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5e9391";
+					final String style = "59,37%7Csmartmaps";
+					
+	                final String format = "http://mt1.googleapis.com/vt?lyrs=m&src=apiv3&hl=de-DE&x=%d&s=&y=%d&z=%d&s=Galileo";	                
+	                String mapUrl = String.format(Locale.US, format, x, y, zoom);
+	                
+	                mapUrl += "&apistyle=" + apistyle + "&style=" + style;
+	                
+	                URL url = null;
+	                try {
+	                    url = new URL(mapUrl);
+	                } catch (MalformedURLException e) {
+	                    throw new AssertionError(e);
+	                }
+	                return url;
+				}            	
+            };
+            
+            TileOverlayOptions tileOverlay = new TileOverlayOptions();
+            tileOverlay.tileProvider(tiles);
+            
+            mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tiles));
             
             mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 				@Override

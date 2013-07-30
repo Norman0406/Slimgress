@@ -355,14 +355,16 @@ public class Game
 			mInterface.request(mHandshake, "playerUndecorated/validateNickname", null, params, new GameBasket.Callback() {
 				@Override
 				public void handle(JSONObject json, GameBasket gameBasket) {
-					Bundle bundle = new Bundle();
-					
-					String errorMsg = json.optString("error");	//INVALID_CHARACTERS, TOO_SHORT, BAD_WORDS, NOT_UNIQUE, CANNOT_EDIT
-					if (errorMsg.length() > 0)
-						bundle.putString("Error", errorMsg);
-					
 					Message msg = new Message();
-					msg.setData(bundle);
+					
+					// INVALID_CHARACTERS, TOO_SHORT, BAD_WORDS, NOT_UNIQUE, CANNOT_EDIT
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					
 					handler.handleMessage(msg);
 				}
 			});
@@ -386,14 +388,15 @@ public class Game
 			mInterface.request(mHandshake, "playerUndecorated/persistNickname", null, params, new GameBasket.Callback() {
 				@Override
 				public void handle(JSONObject json, GameBasket gameBasket) {
-					Bundle bundle = new Bundle();
+					Message msg = new Message();
 					
 					String errorMsg = json.optString("error");
-					if (errorMsg.length() > 0)
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
 						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
 					
-					Message msg = new Message();
-					msg.setData(bundle);
 					handler.handleMessage(msg);
 				}
 			});
@@ -417,14 +420,15 @@ public class Game
 			mInterface.request(mHandshake, "playerUndecorated/chooseFaction", null, params, new GameBasket.Callback() {
 				@Override
 				public void handle(JSONObject json, GameBasket gameBasket) {
-					Bundle bundle = new Bundle();
+					Message msg = new Message();
 					
 					String errorMsg = json.optString("error");
-					if (errorMsg.length() > 0)
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
 						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
 					
-					Message msg = new Message();
-					msg.setData(bundle);
 					handler.handleMessage(msg);
 				}
 			});
@@ -487,44 +491,582 @@ public class Game
 		}
 	}
 	
-	public void intFireXMP()
+	public void intFireXMP(ItemXMP xmp, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", xmp.getEntityGuid());
+			
+			mInterface.request(mHandshake, "gameplay/fireUntargetedRadialWeapon", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// PLAYER_DEPLETED, WEAPON_DOES_NOT_EXIST
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intHackPortal(GameEntityPortal portal, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", portal.getEntityGuid());
+			
+			mInterface.request(mHandshake, "gameplay/collectItemsFromPortal", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// TOO_SOON_BIG, TOO_SOON_(x), TOO_OFTEN, OUT_OF_RANGE, NEED_MORE_ENERGY, SERVER_ERROR
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intDeployResonator(ItemResonator resonator, GameEntityPortal portal, int slot, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("portalGuid", portal.getEntityGuid());
+			params.put("preferredSlot", slot);
+			
+			JSONArray resonators = new JSONArray();
+			resonators.put(resonator.getEntityGuid());
+			params.put("itemGuids", resonators);
+			
+			mInterface.request(mHandshake, "gameplay/deployResonatorV2", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// PORTAL_OUT_OF_RANGE, TOO_MANY_RESONATORS_FOR_LEVEL_BY_USER, PORTAL_AT_MAX_RESONATORS, ITEM_DOES_NOT_EXIST, SERVER_ERROR
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intUpgradeResonator(ItemResonator resonator, GameEntityPortal portal, int slot, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("emitterGuid", resonator.getEntityGuid());
+			params.put("portalGuid", portal.getEntityGuid());
+			params.put("resonatorSlotToUpgrade", slot);
+			
+			mInterface.request(mHandshake, "gameplay/upgradeResonatorV2", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// PORTAL_OUT_OF_RANGE, CAN_ONLY_UPGRADE_TO_HIGHER_LEVEL, TOO_MANY_RESONATORS_FOR_LEVEL_BY_USER
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intAddMod(ItemMod mod, GameEntityPortal portal, int slot, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("modResourceGuid", mod.getEntityGuid());
+			params.put("modableGuid", portal.getEntityGuid());
+			params.put("index", slot);
+			
+			mInterface.request(mHandshake, "gameplay/addMod", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// PORTAL_OUT_OF_RANGE, (there must be others)
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intRemoveMod(GameEntityPortal portal, int slot, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("modableGuid", portal.getEntityGuid());
+			params.put("index", slot);
+			
+			mInterface.request(mHandshake, "gameplay/removeMod", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// PORTAL_OUT_OF_RANGE, (there must be others)
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intDropItem(Item item, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", item.getEntityGuid());
+			
+			mInterface.request(mHandshake, "gameplay/dropItem", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					handler.handleMessage(new Message());
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intPickupItem(String guid, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", guid);
+			
+			mInterface.request(mHandshake, "gameplay/pickUp", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// RESOURCE_NOT_AVAILABLE
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intRecycleItem(Item item, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", item.getEntityGuid());
+			
+			mInterface.request(mHandshake, "gameplay/recycleItem", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// DOES_NOT_EXIST
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else if (json.optJSONObject("result") != null) {
+						// result contains the gained xm value, put into msg
+						processGameBasket(gameBasket);
+					}
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intUsePowerCube(ItemPowerCube powerCube, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("itemGuid", powerCube.getEntityGuid());
+			
+			mInterface.request(mHandshake, "gameplay/dischargePowerCube", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					// DOES_NOT_EXIST
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else if (json.optJSONObject("result") != null) {
+						// result contains the gained xm value, put into msg
+						processGameBasket(gameBasket);
+					}
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intRechargePortal(GameEntityPortal portal, int[] slots, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("portalGuid", portal.getEntityGuid());
+			
+			JSONArray resonatorSlots = new JSONArray();
+			for (int slot : slots) {
+				resonatorSlots.put(slot);
+			}
+			params.put("resonatorSlots", resonatorSlots);
+			
+			mInterface.request(mHandshake, "gameplay/rechargeResonatorsV2", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intRemoteRechargePortal(GameEntityPortal portal, ItemPortalKey key, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("portalGuid", portal.getEntityGuid());
+			params.put("portalKeyGuid", key.getEntityGuid());
+			
+			JSONArray resonatorSlots = new JSONArray();
+			for (int i = 0; i < 8; i++) 
+				resonatorSlots.put(i);
+			params.put("resonatorSlots", resonatorSlots);
+			
+			mInterface.request(mHandshake, "gameplay/remoteRechargeResonatorsV2", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intQueryLinkablilityForPortal(GameEntityPortal portal, ItemPortalKey key, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("originPortalGuid", portal.getEntityGuid());
+			
+			JSONArray queryForPortals = new JSONArray();
+			queryForPortals.put(key.getEntityGuid());
+			params.put("portalLinkKeyGuidSet", queryForPortals);
+			
+			mInterface.request(mHandshake, "gameplay/getLinkabilityImpediment", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					
+					// TODO: don't know the result yet
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intLinkPortal(GameEntityPortal portal, ItemPortalKey toKey, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("originPortalGuid", portal.getEntityGuid());
+			params.put("destinationPortalGuid", toKey.getPortalGuid());
+			params.put("linkKeyGuid", toKey.getEntityGuid());
+						
+			mInterface.request(mHandshake, "gameplay/createLink", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intSetNotificationSettings(final Handler.Callback handler)
 	{
 	}
 	
-	public void intHackPortal()
+	public void intGetModifiedEntity(final Handler.Callback handler)
 	{
 	}
 	
-	public void intDeployResonator()
+	public void intFlipPortal(GameEntityPortal portal, ItemVirus virus, Utils.LocationE6 playerLocation, final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			JSONObject params = new JSONObject();
+			params.put("portalGuid", portal.getEntityGuid());
+			params.put("resourceGuid", virus.getEntityGuid());
+						
+			mInterface.request(mHandshake, "gameplay/flipPortal", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					Message msg = new Message();
+
+					String errorMsg = json.optString("error");
+					if (errorMsg.length() > 0) {
+						Bundle bundle = new Bundle();
+						bundle.putString("Error", errorMsg);
+						msg.setData(bundle);
+					}
+					else
+						processGameBasket(gameBasket);
+					
+					handler.handleMessage(msg);
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intSetPortalDetailsForCuration(final Handler.Callback handler)
 	{
 	}
 	
-	public void intUpgradeResonator()
+	public void intGetUploadUrl(final Handler.Callback handler)
+	{
+		try {
+			checkInterface();
+
+			mInterface.request(mHandshake, "playerUndecorated/getUploadUrl", null, null, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					try {
+						Bundle bundle = new Bundle();
+						bundle.putString("Result", json.getString("result"));
+						Message msg = new Message();
+						msg.setData(bundle);
+						handler.handleMessage(msg);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void intUploadPortalPhotoByUrl(String requestId, String imageUrl, final Handler.Callback handler)
+	{
+		//Log.w("", "not yet implemented");
+	}
+	
+	public void intUploadPortalImage(final Handler.Callback handler)
 	{
 	}
 	
-	public void intAddMod()
+	public void intFindNearbyPortals(int maxPortals, Utils.LocationE6 playerLocation, final Handler.Callback handler)
 	{
-	}
+		try {
+			checkInterface();
 	
-	public void intRemoveMod()
-	{
-	}
-	
-	public void intDropItem()
-	{
-	}
-	
-	public void intPickupItem()
-	{
-	}
-	
-	public void intRecycleItem()
-	{
-	}
-	
-	public void intUsePowerCube()
-	{
+			JSONObject params = new JSONObject();
+			params.put("maxPortals", maxPortals);
+						
+			mInterface.request(mHandshake, "gameplay/findNearbyPortals", playerLocation, params, new GameBasket.Callback() {
+				@Override
+				public void handle(JSONObject json, GameBasket gameBasket) {
+					// UNDONE
+					handler.handleMessage(new Message());
+				}
+			});
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public synchronized World getWorld()

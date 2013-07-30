@@ -43,8 +43,8 @@ public class ActivitySplash extends Activity
 					@Override
 					public void run() {				        
 				        // start main activity
-				        ActivitySplash.this.startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
 				        ActivitySplash.this.finish();
+				        ActivitySplash.this.startActivity(new Intent(ActivitySplash.this, ActivityMain.class));
 					}
 				});
 			}

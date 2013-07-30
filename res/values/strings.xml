@@ -19,6 +19,7 @@
     <string name="main_agent">Agent</string>
     <string name="main_agentinfo">AP: 0 / XM: 0 %</string>
     <string name="main_ops">OPS</string>
+    <string name="main_comm">COMM</string>
     <string name="ops_inventory">Inventory</string>
     <string name="ops_user">User</string>
     <string name="ops_device">Device</string>

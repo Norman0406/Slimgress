@@ -1,13 +1,16 @@
 package com.norman0406.ingressex.API;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
+import java.util.zip.GZIPInputStream;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -21,6 +24,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Log;
 
 public class Interface
 {
@@ -36,7 +41,7 @@ public class Interface
 	
 	// ingress api definitions
 	private static final String mApiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
-	private static final String mApiBase = "betaspike.appspot.com";
+	private static final String mApiBase = "m-dot-betaspike.appspot.com";
 	private static final String mApiBaseURL = "https://" + mApiBase + "/";
 	private static final String mApiLogin = "_ah/login?continue=http://localhost/&auth=";
 	private static final String mApiHandshake = "handshake?json=";
@@ -62,6 +67,7 @@ public class Interface
 					HttpResponse response = null;
 					synchronized(Interface.this) {
 						mClient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
+						Log.i("Interface", "executing authentication");
 						response = mClient.execute(get);
 					}
 					assert(response != null);
@@ -69,10 +75,12 @@ public class Interface
 					
 					if (response.getStatusLine().getStatusCode() == 401) {
 						// the token has expired
+						Log.i("Interface", "authentication token has expired");
 						return AuthSuccess.TokenExpired;
 					}
 					else if (response.getStatusLine().getStatusCode() != 302) {
 						// Response should be a redirect
+						Log.i("Interface", "unknown error: " + response.getStatusLine().getReasonPhrase());
 						return AuthSuccess.UnknownError;
 					}
 					else {
@@ -84,6 +92,7 @@ public class Interface
 								}
 							}
 						}
+						Log.i("Interface", "authentication successful");
 						return AuthSuccess.Successful;
 					}
 				}
@@ -140,19 +149,27 @@ public class Interface
 					// do handshake
 					HttpResponse response = null;
 					synchronized(Interface.this) {
+						Log.i("Interface", "executing handshake");
 						response = mClient.execute(get);
 					}
 					assert(response != null);
 					HttpEntity entity = response.getEntity();
+					
+					// check for content type json
+					Header contentType = entity.getContentType();
+					if (!contentType.getName().equals("Content-Type") || !contentType.getValue().contains("application/json"))
+						throw new RuntimeException("content type is not json");
 	
 					if (entity != null) {
 					    String content = EntityUtils.toString(entity);
 					    entity.consumeContent();
-					    
+						
 					    content = content.replace("while(1);", "");
 					    
 					    // handle handshake data
 					    callback.handle(new Handshake(new JSONObject(content)));
+					    
+						Log.i("Interface", "handshake finished");
 					}
 				}
 		    	catch (ClientProtocolException e) {
@@ -227,7 +244,7 @@ public class Interface
 				
 		    	// set header
 				post.setHeader("Content-Type", "application/json;charset=UTF-8");
-				//post.setHeader("Accept-Encoding", "gzip");	// TODO: decode
+				post.setHeader("Accept-Encoding", "gzip");
 				post.setHeader("User-Agent", "Nemesis (gzip)");
 				post.setHeader("X-XsrfToken", handshake.getXSRFToken());
 				post.setHeader("Host", mApiBase);
@@ -250,13 +267,20 @@ public class Interface
 						}
 						else {
 							HttpEntity entity = response.getEntity();
-							content = EntityUtils.toString(entity);
+							
+							// decompress gzip if necessary
+							Header contentEncoding = entity.getContentEncoding();
+							if (contentEncoding != null && contentEncoding.getValue().equalsIgnoreCase("gzip"))
+								content = decompressGZIP(entity);
+							else
+								content = EntityUtils.toString(entity);
+							
 							entity.consumeContent();
 						}
 					}
 
 					// handle game basket
-					if (content != null) {
+					if (content != null) {						
 						JSONObject json = new JSONObject(content);
 						
 						if (json.has("exception")) {
@@ -278,6 +302,21 @@ public class Interface
 				}
 		    }
 		}).start();
+	}
+	
+	public static String decompressGZIP(HttpEntity compressedEntity) throws IOException {
+	    final int bufferSize = 8192;
+	    InputStream input = compressedEntity.getContent();
+	    GZIPInputStream gzipStream = new GZIPInputStream(input, bufferSize);
+	    StringBuilder string = new StringBuilder();
+	    byte[] data = new byte[bufferSize];
+	    int bytesRead;
+	    while ((bytesRead = gzipStream.read(data)) != -1) {
+	        string.append(new String(data, 0, bytesRead));
+	    }
+	    gzipStream.close();
+	    input.close();
+	    return string.toString();
 	}
 	
 	private long getCurrentTimestamp()

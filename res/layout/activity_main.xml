@@ -21,70 +21,83 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            style="@style/AppTheme"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/agentlevel"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:shadowColor="#000000"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="1"
-                android:text="@string/main_level"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#FFFFFF" />
+            android:layout_height="match_parent" >
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.87"
-                android:orientation="vertical" >
-
-                <ProgressBar
-                    android:id="@+id/agentxm"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="false"
-                    android:progress="100" />
+                style="@style/AppTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
 
                 <TextView
-                    android:id="@+id/agentname"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/agentlevel"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:shadowColor="#000000"
                     android:shadowDx="1"
                     android:shadowDy="1"
                     android:shadowRadius="1"
-                    android:text="@string/main_agent"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/main_level"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#FFFFFF" />
 
-                <TextView
-                    android:id="@+id/agentinfo"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:shadowColor="#000000"
-                    android:shadowDx="1"
-                    android:shadowDy="1"
-                    android:shadowRadius="1"
-                    android:text="@string/main_agentinfo"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#FFFFFF" />
+                    android:layout_weight="0.87"
+                    android:orientation="vertical" >
 
+                    <ProgressBar
+                        android:id="@+id/agentxm"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="false"
+                        android:progress="100" />
+
+                    <TextView
+                        android:id="@+id/agentname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
+                        android:text="@string/main_agent"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/agentinfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"
+                        android:text="@string/main_agentinfo"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textColor="#FFFFFF" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/buttonOps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_ops" />
             </LinearLayout>
 
             <Button
-                android:id="@+id/buttonOps"
+                android:id="@+id/buttonComm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/main_ops" />
-        </LinearLayout>
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:text="@string/main_comm" />
+
+        </RelativeLayout>
 
     </FrameLayout>
 
