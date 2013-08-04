@@ -40,7 +40,7 @@ public class Interface
 	private String mCookie;
 	
 	// ingress api definitions
-	private static final String mApiVersion = "2013-07-12T15:48:09Z d6f04b1fab4f opt";
+	private static final String mApiVersion = "2013-07-29T18:57:27Z 7af0d9a744b opt";
 	private static final String mApiBase = "m-dot-betaspike.appspot.com";
 	private static final String mApiBaseURL = "https://" + mApiBase + "/";
 	private static final String mApiLogin = "_ah/login?continue=http://localhost/&auth=";
@@ -186,7 +186,7 @@ public class Interface
 	}
 	
 	protected void request(final Handshake handshake, final String requestString, final Utils.LocationE6 playerLocation,
-			final JSONObject requestParams, final GameBasket.Callback callback) throws InterruptedException
+			final JSONObject requestParams, final RequestResult result) throws InterruptedException
 	{
 		if (!handshake.isValid() || handshake.getXSRFToken().length() == 0)
 			throw new RuntimeException("handshake is not valid");
@@ -217,10 +217,11 @@ public class Interface
 							
 							JSONArray collectedEnergy = new JSONArray();
 							
-							// UNDONE: add collected energy guids
+							// TODO: add collected energy guids
 							
 							params.getJSONObject("params").put("energyGlobGuids", collectedEnergy);
-						} catch (JSONException e) {
+						}
+			    		catch (JSONException e) {
 							e.printStackTrace();
 						}
 		    		}
@@ -228,7 +229,8 @@ public class Interface
 		    	else {
 		    		try {
 						params.put("params", null);
-					} catch (JSONException e) {
+					}
+		    		catch (JSONException e) {
 						e.printStackTrace();
 					}
 		    	}
@@ -279,16 +281,10 @@ public class Interface
 						}
 					}
 
-					// handle game basket
+					// handle request result
 					if (content != null) {						
 						JSONObject json = new JSONObject(content);
-						
-						if (json.has("exception")) {
-							String excMsg = json.getString("exception");
-							throw new RuntimeException(excMsg);
-						}
-						
-						callback.handle(json, new GameBasket(json));
+						RequestResult.handleRequest(json, result);
 					}
 				}
 				catch (ClientProtocolException e) {
@@ -304,7 +300,7 @@ public class Interface
 		}).start();
 	}
 	
-	public static String decompressGZIP(HttpEntity compressedEntity) throws IOException {
+	private static String decompressGZIP(HttpEntity compressedEntity) throws IOException {
 	    final int bufferSize = 8192;
 	    InputStream input = compressedEntity.getContent();
 	    GZIPInputStream gzipStream = new GZIPInputStream(input, bufferSize);

@@ -64,10 +64,14 @@ public abstract class Item extends Entity
 					mItemRarity = Item.Rarity.VeryCommon;
 				else if (rarity.equals("COMMON"))
 					mItemRarity = Item.Rarity.Common;
+                else if (rarity.equals("LESS_COMMON"))
+                    mItemRarity = Item.Rarity.LessCommon;
 				else if (rarity.equals("RARE"))
 					mItemRarity = Item.Rarity.Rare;
 				else if (rarity.equals("VERY_RARE"))
 					mItemRarity = Item.Rarity.VeryRare;
+                else if (rarity.equals("EXTREMELY_RARE"))
+                    mItemRarity = Item.Rarity.ExtraRare;
 			}
 		}
 

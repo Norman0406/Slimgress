@@ -17,7 +17,9 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
     	
-	<style name="MyDialog" parent="@android:style/Theme.Holo.Dialog">       
+	<style name="FadeAnimation">
+		<item name="android:windowEnterAnimation">@anim/fade_in</item>
+		<item name="android:windowExitAnimation">@anim/fade_out</item>    
 	</style>
     
 </resources>

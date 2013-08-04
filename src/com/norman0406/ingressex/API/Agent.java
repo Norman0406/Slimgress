@@ -6,7 +6,6 @@ import org.json.JSONException;
 public class Agent extends PlayerEntity
 {
 	private final String mNickname;
-	private Inventory mInventory;
 	
 	private static int[] mLevels = {
 			0,
@@ -30,11 +29,6 @@ public class Agent extends PlayerEntity
 		return mNickname;
 	}
 	
-	public final Inventory getInventory()
-	{
-		return mInventory;
-	}
-	
 	public int getLevel()
 	{
 		// TODO: more efficient?
@@ -50,9 +44,5 @@ public class Agent extends PlayerEntity
 	public int getEnergyMax()
 	{
 		return 2000 + (getLevel() * 1000);
-	}
-	
-	public void updateInventory()
-	{		
 	}
 }

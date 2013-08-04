@@ -10,57 +10,54 @@ public class Handshake
 	{
 		public void handle(Handshake handshake);
 	}
+    
+    public enum PregameStatus
+    {
+        ClientMustUpgrade,
+        NoActionsRequired
+    }
 	
-	enum VersionMatch {
-		Current,
-		OldIncompatible
-	}
-	
-	private VersionMatch mVersionMatch;
+	private PregameStatus mPregameStatus;
 	private String mServerVersion;
 	private String mNickname;
-	private boolean mCanPlay;	
 	private String mXSRFToken;
-	private String mSyncTimestamp;
 	private Agent mAgent = null;
 	
 	public Handshake(JSONObject json) throws JSONException
 	{
 		JSONObject result = json.getJSONObject("result");
 		
-		String versionMatch = result.getString("versionMatch");
-		if (versionMatch.equals("CURRENT"))
-			mVersionMatch = VersionMatch.Current;
-		else if (versionMatch.equals("OLD_INCOMPATIBLE"))
-			mVersionMatch = VersionMatch.OldIncompatible;
+		String pregameStatus = result.getJSONObject("pregameStatus").getString("action");
+		if (pregameStatus.equals("CLIENT_MUST_UPGRADE"))
+		        mPregameStatus = PregameStatus.ClientMustUpgrade;
+		else if (pregameStatus.equals("NO_ACTIONS_REQUIRED"))
+            mPregameStatus = PregameStatus.NoActionsRequired;
 		else
-			throw new RuntimeException("unknown version match");
-		
+		    throw new RuntimeException("unknown pregame status " + pregameStatus);
+				
 		mServerVersion = result.getString("serverVersion");
 		
 		// get player entity
-		mNickname = result.getString("nickname");
+		mNickname = result.optString("nickname");
 		JSONArray playerEntity = result.optJSONArray("playerEntity");
 		if (playerEntity != null)
 			mAgent = new Agent(playerEntity, mNickname);
 		
 		mXSRFToken = result.optString("xsrfToken");
-		mCanPlay = result.getBoolean("canPlay");
 	}
 
 	public boolean isValid()
 	{
 		return mAgent != null &&
-				mXSRFToken.length() > 0 &&
-				mVersionMatch == VersionMatch.Current &&
-				mCanPlay == true;
+		        mXSRFToken.length() > 0 &&
+				mPregameStatus == PregameStatus.NoActionsRequired;
 	}
 	
-	public VersionMatch getVersionMatch()
+	public PregameStatus getPregameStatus()
 	{
-		return mVersionMatch;
+	    return mPregameStatus;
 	}
-	
+		
 	public String getServerVersion()
 	{
 		return mServerVersion;
@@ -71,19 +68,9 @@ public class Handshake
 		return mNickname;
 	}
 	
-	public boolean getCanPlay()
-	{
-		return mCanPlay;
-	}
-	
 	public String getXSRFToken()
 	{
 		return mXSRFToken;
-	}
-	
-	public String getSyncTimestamp()
-	{
-		return mSyncTimestamp;
 	}
 	
 	public Agent getAgent()

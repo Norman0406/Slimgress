@@ -9,6 +9,6 @@ public class ItemXMP extends Item
 	{
 		super(ItemType.XMP, json);
 		
-		// UNDONE: which information is needed from the JSONObject?
+		// TODO: which information is needed from the JSONObject?
 	}	
 }

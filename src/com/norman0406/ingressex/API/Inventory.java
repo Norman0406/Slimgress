@@ -11,14 +11,18 @@ public class Inventory
 	{
 		mItems = new LinkedList<Item>();
 	}
+    
+    public void clear()
+    {
+        mItems.clear();
+    }
 	
 	public void processGameBasket(GameBasket basket)
 	{
+	    // add new inventory items
 		List<Item> newInv = basket.getInventory();
-		if (newInv != null) {
-			mItems.clear();
+		if (newInv != null)
 			mItems.addAll(basket.getInventory());
-		}
 	}
 	
 	public final List<Item> getItems()

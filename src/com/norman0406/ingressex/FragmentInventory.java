@@ -3,6 +3,7 @@ package com.norman0406.ingressex;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.norman0406.ingressex.API.Game;
 import com.norman0406.ingressex.API.Interface;
 import com.norman0406.ingressex.API.Inventory;
 import com.norman0406.ingressex.API.Item;
@@ -28,6 +29,16 @@ import android.widget.Toast;
 
 public class FragmentInventory extends Fragment implements OnChildClickListener
 {
+    private IngressApplication mApp = IngressApplication.getInstance();
+    private Game mGame = mApp.getGame();
+    
+    List<Item> mItemsMedia;
+    List<Item> mItemsMods;
+    List<Item> mItemsPortalKeys;
+    List<Item> mItemsPowerCubes;
+    List<Item> mItemsResonators;
+    List<Item> mItemsWeapons;
+    
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -45,14 +56,23 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
 		groupItem.add("PowerCubes");
 		groupItem.add("Resonators");
 		groupItem.add("Weapons");
+
+	    mItemsMedia = new ArrayList<Item>();
+	    mItemsMods = new ArrayList<Item>();
+	    mItemsPortalKeys = new ArrayList<Item>();
+	    mItemsPowerCubes = new ArrayList<Item>();
+	    mItemsResonators = new ArrayList<Item>();
+	    mItemsWeapons = new ArrayList<Item>();
+	    
+	    fillInventory();
 		
 		ArrayList<String> childMedia = new ArrayList<String>();
 		ArrayList<String> childMods = new ArrayList<String>();
 		ArrayList<String> childPortalKeys = new ArrayList<String>();
 		ArrayList<String> childPowerCubes = new ArrayList<String>();
 		ArrayList<String> childResonators = new ArrayList<String>();
-		ArrayList<String> childWeapons = new ArrayList<String>();	
-		
+		ArrayList<String> childWeapons = new ArrayList<String>();
+				
 		/*MainActivity mainAct = (MainActivity)this.getActivity();
 		
 		Interface ingInt = mainAct.ingressInterface;
@@ -118,9 +138,33 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
 		return rootView;
 	}
 	
-	private void fillInventory(Inventory inventory)
+	private void fillInventory()
 	{
-		
+	    new Thread(new Runnable() {
+            @Override
+            public void run()
+            {
+                Inventory inv = mGame.getInventory();
+                List<Item> items = inv.getItems();
+                
+                for (Item item : items) {
+                    if (item.getItemType() == Item.ItemType.Media)
+                        mItemsMedia.add(item);
+                    else if (item.getItemType() == Item.ItemType.Mod)
+                        mItemsMods.add(item);
+                    else if (item.getItemType() == Item.ItemType.PortalKey)
+                        mItemsPortalKeys.add(item);
+                    else if (item.getItemType() == Item.ItemType.PowerCube)
+                        mItemsPowerCubes.add(item);
+                    else if (item.getItemType() == Item.ItemType.Resonator)
+                        mItemsResonators.add(item);
+                    else if (item.getItemType() == Item.ItemType.Virus)
+                        mItemsWeapons.add(item);
+                    else if (item.getItemType() == Item.ItemType.XMP)
+                        mItemsWeapons.add(item);
+                }                
+            }
+	    }).start();
 	}
 
 	@Override

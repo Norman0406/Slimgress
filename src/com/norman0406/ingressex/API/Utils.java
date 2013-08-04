@@ -128,19 +128,6 @@ public class Utils
 	// retrieve cell ids from location and covering area in m2
 	public static String[] getCellIdsFromRegion(S2Region region, int minLevel, int maxLevel)
 	{
-		//S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());
-		
-		//double area_m2 = 2000 * 2000;	// 1 km2
-		//double radius_m2 = 6371 * 1000; 
-		//double sr = area_m2 / (radius_m2 * radius_m2);
-
-		//S2Cap h1 = S2Cap.fromAxisArea(S2Point.normalize(pointLatLng.toPoint()), sr);
-		
-		/*S2LatLng min = S2LatLng.fromDegrees(50.34056, 7.5505);
-		S2LatLng max = S2LatLng.fromDegrees(50.3655, 7.615607);
-		
-		S2LatLngRect rect = new S2LatLngRect(min, max);*/
-		
 		S2RegionCoverer rCov = new S2RegionCoverer();
 
 		rCov.setMinLevel(minLevel);

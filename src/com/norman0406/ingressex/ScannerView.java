@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -13,6 +12,7 @@ import java.util.Set;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -48,7 +48,7 @@ import com.norman0406.ingressex.API.Utils;
 import com.norman0406.ingressex.API.XMParticle;
 
 public class ScannerView extends SupportMapFragment
-{   
+{
     private IngressApplication mApp = IngressApplication.getInstance();
     private Game mGame = mApp.getGame();
     private GoogleMap mMap = null;
@@ -78,18 +78,6 @@ public class ScannerView extends SupportMapFragment
         mLines = new HashMap<String, Polyline>();
         mPolygons = new HashMap<String, Polygon>();
         
-        // TODO: use location manager and set location to Game class
-        LatLng myPos = new LatLng(50.345963, 7.588223);
-        
-        // set the camera and tilt a little
-        CameraPosition pos = mMap.getCameraPosition();
-        CameraPosition newPos = new CameraPosition.Builder(pos)
-        .target(myPos)
-        .zoom(16)
-        .tilt(40)
-        .build();
-        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(newPos));
-        
         // disable most ui elements
         UiSettings ui = mMap.getUiSettings();
         ui.setAllGesturesEnabled(false);
@@ -97,20 +85,35 @@ public class ScannerView extends SupportMapFragment
         ui.setScrollGesturesEnabled(true);
         ui.setRotateGesturesEnabled(true);
         ui.setZoomControlsEnabled(false);
+        ui.setMyLocationButtonEnabled(false);
+        
+        mMap.setMyLocationEnabled(true);
+        
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location myLocation)
+            {
+                // update camera position
+                CameraPosition pos = mMap.getCameraPosition();
+                CameraPosition newPos = new CameraPosition.Builder(pos)
+                .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                .zoom(16)
+                .tilt(40)
+                .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPos));
+                
+                // update game position
+                mGame.updateLocation(new Utils.LocationE6(myLocation.getLatitude(), myLocation.getLongitude()));
+
+                //updateWorld();
+            }
+        });
         
         // deactivate standard map
         mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
         
         // add custom map tiles
         addIngressTiles();
-        
-        // update world everytime the camera changes
-        mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(CameraPosition arg0) {
-                updateWorld();
-            }
-        });
     }
     
     private void loadAssets()
@@ -170,15 +173,13 @@ public class ScannerView extends SupportMapFragment
     
     private void updateWorld()
     {
-        Utils.LocationE6 playerLocation = new Utils.LocationE6(50.345963, 7.588223);
-
         // get visible region
         LatLng northeast = mMap.getProjection().getVisibleRegion().latLngBounds.northeast;
         LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;      
-        S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
+        final S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
                 S2LatLng.fromDegrees(northeast.latitude, northeast.longitude));
-                
-        mGame.intGetObjectsInCells(playerLocation, region, new Handler.Callback() {
+
+        mGame.intGetObjectsInCells(region, new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 
@@ -211,7 +212,7 @@ public class ScannerView extends SupportMapFragment
                 
                 return true;
             }
-        });
+        }));
     }
     
     private void drawXMParticles()

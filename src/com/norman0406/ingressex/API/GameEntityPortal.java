@@ -18,7 +18,7 @@ public class GameEntityPortal extends GameEntity
 	
 	public class LinkedMod
 	{
-		// UNDONE: vielleicht mit ItemMod koppeln?
+		// TODO: UNDONE: link with ItemMod?
 		
 		public String installingUser;
 		public String displayName;
@@ -53,6 +53,10 @@ public class GameEntityPortal extends GameEntity
 		
 		mPortalTeam = Utils.getTeam(item.getJSONObject("controllingTeam"));
 		mPortalLocation = new Utils.LocationE6(item.getJSONObject("locationE6"));
+
+        JSONObject imageUrl = item.optJSONObject("imageByUrl");
+        if (imageUrl != null)
+            mPortalImageUrl = imageUrl.getString("imageUrl");
 		
 		JSONObject portalV2 = item.getJSONObject("portalV2");
 		
@@ -80,7 +84,7 @@ public class GameEntityPortal extends GameEntity
 				newMod.installingUser = mod.getString("installingUser");
 				newMod.displayName = mod.getString("displayName");
 				
-				// UNDONE
+				// TODO: UNDONE
 				
 				mPortalMods.add(newMod);
 			}

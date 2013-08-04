@@ -6,8 +6,20 @@ import java.util.Map;
 
 public class World
 {
-	private Map<String, GameEntity> mGameEntities = new HashMap<String, GameEntity>();
-	private Map<String, XMParticle> mXMParticles = new HashMap<String, XMParticle>();
+	private Map<String, GameEntity> mGameEntities;
+	private Map<String, XMParticle> mXMParticles;
+	
+	public World()
+	{
+	    mGameEntities = new HashMap<String, GameEntity>();
+	    mXMParticles = new HashMap<String, XMParticle>();
+	}
+	
+	public void clear()
+	{
+	    mGameEntities.clear();
+	    mXMParticles.clear();
+	}
 	
 	public void processGameBasket(GameBasket basket)
 	{

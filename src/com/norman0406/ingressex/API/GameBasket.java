@@ -7,51 +7,44 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class GameBasket
 {
-	public interface Callback
-	{
-		public void handle(JSONObject json, GameBasket gameBasket);
-	}
-	
-	private String mLastSyncTimestamp;
 	private PlayerEntity mPlayerEntity;
-	private List<GameEntity> mGameEntities = new LinkedList<GameEntity>();
-	private List<Item> mInventory = new LinkedList<Item>();
-	private List<String> mDeletedEntityGuids = new LinkedList<String>();
-	private List<XMParticle> mEnergyGlobGuids = new LinkedList<XMParticle>();
+	private List<GameEntity> mGameEntities;
+	private List<Item> mInventory;
+	private List<String> mDeletedEntityGuids;
+	private List<XMParticle> mEnergyGlobGuids;
+	private List<PlayerDamage> mPlayerDamages;
+	private List<APGain> mAPGains;
 	
 	public GameBasket(JSONObject json) throws JSONException
 	{
-		// don't process if an error or exception occurred
-		if (!json.has("result"))
-			return;
-		
-		JSONObject gameBasket = json.getJSONObject("gameBasket");
-		
-		processPlayerDamages(gameBasket.optJSONArray("playerDamages"));
-		processPlayerEntity(gameBasket.optJSONArray("playerEntity"));
-		processGameEntities(gameBasket.getJSONArray("gameEntities"));
-		processAPGains(gameBasket.optJSONArray("apGains"));
-		processLevelUp(gameBasket.optJSONObject("levelUp"));
-		processInventory(gameBasket.getJSONArray("inventory"));
-		processDeletedEntityGuids(gameBasket.getJSONArray("deletedEntityGuids"));
-		processEnergyGlobGuids(gameBasket.optJSONArray("energyGlobGuids"), gameBasket.optString("energyGlobTimestamp"));
-	
-		mLastSyncTimestamp = json.getString("result");
+	    mPlayerEntity = null;
+	    mGameEntities = new LinkedList<GameEntity>();
+	    mInventory = new LinkedList<Item>();
+	    mDeletedEntityGuids = new LinkedList<String>();
+	    mEnergyGlobGuids = new LinkedList<XMParticle>();
+	    mPlayerDamages = new LinkedList<PlayerDamage>();
+	    mAPGains = new LinkedList<APGain>();
+	    
+		processPlayerDamages(json.optJSONArray("playerDamages"));
+		processPlayerEntity(json.optJSONArray("playerEntity"));
+		processGameEntities(json.getJSONArray("gameEntities"));
+		processAPGains(json.optJSONArray("apGains"));
+		processLevelUp(json.optJSONObject("levelUp"));
+		processInventory(json.getJSONArray("inventory"));
+		processDeletedEntityGuids(json.getJSONArray("deletedEntityGuids"));
+		processEnergyGlobGuids(json.optJSONArray("energyGlobGuids"), json.optString("energyGlobTimestamp"));
 	}
 	
 	private void processPlayerDamages(JSONArray playerDamages) throws JSONException
 	{
 		if (playerDamages != null) {
 			for (int i = 0; i < playerDamages.length(); i++) {
-				// UNDONE
-				
-				/*JSONObject damage = playerDamages.getJSONObject(i);
-				
-				int damageAmount = Integer.parseInt(damage.getString("damageAmount"));
-				String attackerGuid = damage.getString("attackerGuid");
-				String weaponSerializationTag = damage.getString("weaponSerializationTag");*/
+				PlayerDamage playerDamage = new PlayerDamage(playerDamages.getJSONObject(i));
+				mPlayerDamages.add(playerDamage);
 			}
 		}
 	}
@@ -79,19 +72,21 @@ public class GameBasket
 		}
 	}
 	
-	private void processAPGains(JSONArray apGains)
+	private void processAPGains(JSONArray apGains) throws JSONException
 	{
 		if (apGains != null) {
 			for (int i = 0; i < apGains.length(); i++) {
-				// UNDONE
+			    APGain newGain = new APGain(apGains.getJSONObject(i));
+			    mAPGains.add(newGain);
 			}
 		}
 	}
 	
-	private void processLevelUp(JSONObject levelUp)
+	private void processLevelUp(JSONObject levelUp) throws JSONException
 	{
+        // TODO: UNDONE
 		if (levelUp != null) {
-			// UNDONE
+		    Log.d("GameBasket", "level up: " + levelUp.toString());
 		}
 	}
 	
@@ -113,7 +108,12 @@ public class GameBasket
 	
 	private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException
 	{
-		// UNDONE
+		// TODO: UNDONE
+	    if (deletedEntityGuids != null) {
+            Log.d("GameBasket", "deleted entity guids: " + deletedEntityGuids.toString());
+            for (int i = 0; i < deletedEntityGuids.length(); i++) {
+            }
+	    }
 	}
 
 	private void processEnergyGlobGuids(JSONArray energyGlobGuids, String timestamp) throws JSONException
@@ -126,11 +126,6 @@ public class GameBasket
 				mEnergyGlobGuids.add(newParticle);
 			}
 		}
-	}
-	
-	public final String getLastSyncTimestamp()
-	{
-		return mLastSyncTimestamp;
 	}
 	
 	public final PlayerEntity getPlayerEntity()
@@ -157,4 +152,14 @@ public class GameBasket
 	{
 		return mEnergyGlobGuids;
 	}
+	
+	public List<PlayerDamage> getPlayerDamages()
+    {
+        return mPlayerDamages;
+    }
+	
+	public List<APGain> getAPGains()
+    {
+        return mAPGains;
+    }
 }
