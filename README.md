@@ -1,2 +1,2 @@
-IngressEX
+Slimgress
 =========

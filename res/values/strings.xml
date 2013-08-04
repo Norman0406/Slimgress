@@ -2,10 +2,10 @@
 <resources>
 
     <!-- general strings -->
-    <string name="appname">IngressEx</string>
+    <string name="appname">Slimgress</string>
  	<string name="ok">OK</string>
  	<string name="cancel">Cancel</string>
- 	<string name="mapskey">AIzaSyBpKdJkocix1RLPiSO0oNoHVHl6TtRXI5E</string>
+ 	<string name="mapskey">AIzaSyAAUm-zllH4VMqtpEvmeFhjqr8ZvDpNUvM</string>
  	
  	<!-- activity strings --> 	
     <string name="auth_login">Logging in&#8230;</string>
