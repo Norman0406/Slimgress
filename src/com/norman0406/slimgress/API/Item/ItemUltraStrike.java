@@ -18,49 +18,17 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class ItemUltraStrike extends ItemWeapon
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
+    public ItemUltraStrike(JSONArray json) throws JSONException
     {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
-	}
+        super(ItemType.UltraStrike, json);
+        
+        // TODO: which information is needed from the JSONObject?
+    }   
 }

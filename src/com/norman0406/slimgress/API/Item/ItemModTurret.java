@@ -18,49 +18,35 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+public class ItemModTurret extends ItemMod
+{	
+	private int mAttackFrequency;
+	private int mHitBonus;
 	
-	@Override
-	public void onCreate()
+	public ItemModTurret(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		super(json);
+		
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mAttackFrequency = Integer.parseInt(stats.getString("ATTACK_FREQUENCY"));
+		mHitBonus = Integer.parseInt(stats.getString("HIT_BONUS"));
 	}
 	
-	public boolean isLoggedIn()
+	public int getAttackFrequency()
 	{
-		return mLoggedIn;
+		return mAttackFrequency;
 	}
 	
-	public void setLoggedIn(boolean loggedIn)
+	public int getHitBonus()
 	{
-		mLoggedIn = loggedIn;
+		return mHitBonus;
 	}
 }

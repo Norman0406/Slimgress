@@ -18,49 +18,28 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
+public class ItemModForceAmp extends ItemMod
+{	
+	private int mForceAmplifier;
 
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
+	public ItemModForceAmp(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		super(json);
+		
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mForceAmplifier = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
 	}
 	
-	public boolean isLoggedIn()
+	public int getForceAmplifier() 
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mForceAmplifier;
 	}
 }

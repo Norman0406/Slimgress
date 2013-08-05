@@ -22,9 +22,10 @@ package com.norman0406.slimgress;
 
 import android.support.v4.app.FragmentActivity;
 
-import com.norman0406.slimgress.API.Agent;
-import com.norman0406.slimgress.API.Game;
-import com.norman0406.slimgress.API.Utils;
+import com.norman0406.slimgress.API.Common.Location;
+import com.norman0406.slimgress.API.Common.Team;
+import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.Player.Agent;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -39,7 +40,7 @@ import android.widget.TextView;
 public class ActivityMain extends FragmentActivity
 {
 	private IngressApplication mApp = IngressApplication.getInstance();
-	private Game mGame = mApp.getGame();
+	private GameState mGame = mApp.getGame();
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
@@ -95,8 +96,8 @@ public class ActivityMain extends FragmentActivity
 		
 		if (agent != null) {
 			int textColor = Color.BLUE;
-			Utils.Team team = agent.getTeam();
-			if (team == Utils.Team.Resistance)
+			Team team = agent.getTeam();
+			if (team.getTeamType() == Team.TeamType.Resistance)
 				textColor = Color.BLUE;
 			else
 				textColor = Color.GREEN;
@@ -117,7 +118,7 @@ public class ActivityMain extends FragmentActivity
 		}
 
 		// update current position
-        mGame.updateLocation(new Utils.LocationE6(50.345963, 7.588223));
+        mGame.updateLocation(new Location(50.345963, 7.588223));
 		
 		mGame.intGetInventory(new Handler(new Handler.Callback() {
 			@Override

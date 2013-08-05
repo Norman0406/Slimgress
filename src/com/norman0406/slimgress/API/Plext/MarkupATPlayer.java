@@ -18,49 +18,29 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Plext;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.Common.Team;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class MarkupATPlayer extends Markup
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
+    private String mGUID;
+    private Team mTeam;
+    
+    public MarkupATPlayer(String plain, String guid, Team team)
     {
-        return mSingleton;
+        super(MarkupType.ATPlayer, plain);
+        mGUID = guid;
+        mTeam = team;
     }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
-	}
+    
+    public String getGUID()
+    {
+        return mGUID;
+    }
+    
+    public Team getTeam()
+    {
+        return mTeam;
+    }
 }

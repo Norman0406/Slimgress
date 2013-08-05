@@ -18,49 +18,53 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Game;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.Common.Location;
 
-import android.app.Application;
+public class XMParticle
+{	
+	private final String mGuid;
+	private final String mEnergyTimestamp;
+	private final long mCellId;
+	private final int mAmount;
+	private final Location mCellLocation;
 
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
+	public XMParticle(String guid, String timestamp)
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		mGuid = guid; 
+		mEnergyTimestamp = timestamp;
+		
+		mCellId = Long.parseLong(guid.substring(0, 16), 16);
+		mCellLocation = new Location(mCellId);
+		
+		// NOTE: not sure if correct
+		String amountStr = guid.substring(guid.length() - 4, guid.length() - 2);		
+		mAmount = Integer.parseInt(amountStr, 16);
 	}
 	
-	public boolean isLoggedIn()
+	public String getGuid()
 	{
-		return mLoggedIn;
+		return mGuid;
 	}
 	
-	public void setLoggedIn(boolean loggedIn)
+	public String getEnergyTimestamp()
 	{
-		mLoggedIn = loggedIn;
+		return mEnergyTimestamp;
+	}
+
+	public long getCellId()
+	{
+		return mCellId;
+	}
+
+	public int getAmount()
+	{
+		return mAmount;
+	}
+
+	public Location getCellLocation()
+	{
+		return mCellLocation;
 	}
 }

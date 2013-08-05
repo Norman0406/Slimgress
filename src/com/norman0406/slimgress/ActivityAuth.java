@@ -22,8 +22,8 @@ package com.norman0406.slimgress;
 
 import java.io.IOException;
 
-import com.norman0406.slimgress.API.Game;
-import com.norman0406.slimgress.API.Interface;
+import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.Interface.Interface;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -43,7 +43,7 @@ import android.widget.TextView;
 public class ActivityAuth extends Activity
 {
 	private IngressApplication mApp = IngressApplication.getInstance();
-	private Game mGame = mApp.getGame();
+	private GameState mGame = mApp.getGame();
 	private AccountManager mAccountMgr;
 	private int mNumAttempts = 0;
 	private static final int mMaxNumAttempts = 2;

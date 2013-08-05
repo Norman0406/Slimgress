@@ -18,49 +18,28 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
+public class ItemModShield extends ItemMod
+{	
+	private int mMitigation;
 
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
+	public ItemModShield(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
+		super(json);
+		
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mMitigation = Integer.parseInt(stats.getString("MITIGATION"));
 	}
 
-	@Override
-	public void onTerminate()
+	public int getMitigation()
 	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mMitigation;
 	}
 }

@@ -18,49 +18,36 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Interface;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class PlayerDamage
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
+    private int mAmount;
+    private String mAttackerGuid;
+    private String mWeaponSerializationTag;
 
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
+    public PlayerDamage(JSONObject json) throws NumberFormatException, JSONException
     {
-        return mSingleton;
+        mAmount = Integer.parseInt(json.getString("damageAmount"));
+        mAttackerGuid = json.getString("attackerGuid");
+        mWeaponSerializationTag = json.getString("weaponSerializationTag");
     }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
-	}
+    
+    public int getAmount()
+    {
+        return mAmount;
+    }
+    
+    public String getAttackerGuid()
+    {
+        return mAttackerGuid;
+    }
+    
+    public String getWeaponSerializationTag()
+    {
+        return mWeaponSerializationTag;
+    }
 }

@@ -18,49 +18,35 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
+public abstract class ItemMod extends ItemBase
+{	
+	private String mModDisplayName;
+	private int mRemovalStickiness;
 
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
+	public ItemMod(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
+		super(ItemType.Mod, json);
 
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mModDisplayName = modResource.getString("displayName");
+		mRemovalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
 	}
 	
-	public boolean isLoggedIn()
+	public String getModDisplayName()
 	{
-		return mLoggedIn;
+		return mModDisplayName;
 	}
 	
-	public void setLoggedIn(boolean loggedIn)
+	public int getRemovalStickiness()
 	{
-		mLoggedIn = loggedIn;
+		return mRemovalStickiness;
 	}
 }

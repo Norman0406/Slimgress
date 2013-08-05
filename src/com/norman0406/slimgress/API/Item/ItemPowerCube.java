@@ -18,49 +18,28 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class ItemPowerCube extends ItemBase
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+	private int mEnergy;
 	
-	@Override
-	public void onCreate()
+	public ItemPowerCube(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		super(ItemType.PowerCube, json);
+		
+		JSONObject item = json.getJSONObject(2);
+		JSONObject powerCube = item.getJSONObject("powerCube");
+		
+		mEnergy = powerCube.getInt("energy");
 	}
 	
-	public boolean isLoggedIn()
+	public int getEnergy()
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mEnergy;
 	}
 }

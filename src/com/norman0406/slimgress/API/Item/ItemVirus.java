@@ -18,49 +18,39 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
+public class ItemVirus extends ItemBase
+{	
+	public enum VirusType
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		Jarvis,
+		Ada
 	}
 	
-	public boolean isLoggedIn()
+	private VirusType mVirusType;
+	
+	public ItemVirus(JSONArray json) throws JSONException
 	{
-		return mLoggedIn;
+		super(ItemType.Virus, json);
+
+		JSONObject item = json.getJSONObject(2);
+		JSONObject flipCard = item.getJSONObject("flipCard");
+		
+		if (flipCard.getString("flipCardType").equals("JARVIS"))
+			mVirusType = VirusType.Jarvis;
+		else if (flipCard.getString("flipCardType").equals("ADA"))
+			mVirusType = VirusType.Ada;
+		else
+			System.out.println("unknown virus type");
 	}
 	
-	public void setLoggedIn(boolean loggedIn)
+	public VirusType getVirusType()
 	{
-		mLoggedIn = loggedIn;
+		return mVirusType;
 	}
 }

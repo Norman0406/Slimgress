@@ -18,49 +18,28 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
-{
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+public class ItemModHeatSink extends ItemMod
+{	
+	private int mHackSpeed;
 	
-	@Override
-	public void onCreate()
+	public ItemModHeatSink(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
+		super(json);
 
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mHackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
 	}
 	
-	public boolean isLoggedIn()
+	public int getHackSpeed()
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mHackSpeed;
 	}
 }

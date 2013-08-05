@@ -18,49 +18,32 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Common;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public abstract class EntityBase
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+	private String mEntityGuid;
+	private String mEntityTimestamp;
 	
-	@Override
-	public void onCreate()
+	public EntityBase(JSONArray json) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
+		if (json.length() != 3)
+			throw new JSONException("invalid array size");
+		
+		mEntityGuid = json.getString(0);
+		mEntityTimestamp = json.getString(1);
 	}
 
-	@Override
-	public void onTerminate()
+	public String getEntityGuid()
 	{
+		return mEntityGuid;
 	}
 
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
+	public String getEntityTimestamp()
 	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mEntityTimestamp;
 	}
 }

@@ -23,19 +23,10 @@ package com.norman0406.slimgress;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.norman0406.slimgress.API.Game;
-import com.norman0406.slimgress.API.Interface;
-import com.norman0406.slimgress.API.Inventory;
-import com.norman0406.slimgress.API.Item;
-import com.norman0406.slimgress.API.ItemMedia;
-import com.norman0406.slimgress.API.ItemMod;
-import com.norman0406.slimgress.API.ItemPortalKey;
-import com.norman0406.slimgress.API.ItemPowerCube;
-import com.norman0406.slimgress.API.ItemResonator;
-import com.norman0406.slimgress.API.ItemVirus;
-import com.norman0406.slimgress.API.ItemXMP;
+import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.Game.Inventory;
+import com.norman0406.slimgress.API.Item.ItemBase;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -43,21 +34,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class FragmentInventory extends Fragment implements OnChildClickListener
 {
     private IngressApplication mApp = IngressApplication.getInstance();
-    private Game mGame = mApp.getGame();
+    private GameState mGame = mApp.getGame();
     
-    List<Item> mItemsMedia;
-    List<Item> mItemsMods;
-    List<Item> mItemsPortalKeys;
-    List<Item> mItemsPowerCubes;
-    List<Item> mItemsResonators;
-    List<Item> mItemsWeapons;
+    List<ItemBase> mItemsMedia;
+    List<ItemBase> mItemsMods;
+    List<ItemBase> mItemsPortalKeys;
+    List<ItemBase> mItemsPowerCubes;
+    List<ItemBase> mItemsResonators;
+    List<ItemBase> mItemsWeapons;
     
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -77,23 +66,23 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
 		groupItem.add("Resonators");
 		groupItem.add("Weapons");
 
-	    mItemsMedia = new ArrayList<Item>();
-	    mItemsMods = new ArrayList<Item>();
-	    mItemsPortalKeys = new ArrayList<Item>();
-	    mItemsPowerCubes = new ArrayList<Item>();
-	    mItemsResonators = new ArrayList<Item>();
-	    mItemsWeapons = new ArrayList<Item>();
+	    mItemsMedia = new ArrayList<ItemBase>();
+	    mItemsMods = new ArrayList<ItemBase>();
+	    mItemsPortalKeys = new ArrayList<ItemBase>();
+	    mItemsPowerCubes = new ArrayList<ItemBase>();
+	    mItemsResonators = new ArrayList<ItemBase>();
+	    mItemsWeapons = new ArrayList<ItemBase>();
 	    
 	    fillInventory();
 		
-		ArrayList<String> childMedia = new ArrayList<String>();
+		/*ArrayList<String> childMedia = new ArrayList<String>();
 		ArrayList<String> childMods = new ArrayList<String>();
 		ArrayList<String> childPortalKeys = new ArrayList<String>();
 		ArrayList<String> childPowerCubes = new ArrayList<String>();
 		ArrayList<String> childResonators = new ArrayList<String>();
 		ArrayList<String> childWeapons = new ArrayList<String>();
 				
-		/*MainActivity mainAct = (MainActivity)this.getActivity();
+		MainActivity mainAct = (MainActivity)this.getActivity();
 		
 		Interface ingInt = mainAct.ingressInterface;
 		
@@ -165,22 +154,22 @@ public class FragmentInventory extends Fragment implements OnChildClickListener
             public void run()
             {
                 Inventory inv = mGame.getInventory();
-                List<Item> items = inv.getItems();
+                List<ItemBase> items = inv.getItems();
                 
-                for (Item item : items) {
-                    if (item.getItemType() == Item.ItemType.Media)
+                for (ItemBase item : items) {
+                    if (item.getItemType() == ItemBase.ItemType.Media)
                         mItemsMedia.add(item);
-                    else if (item.getItemType() == Item.ItemType.Mod)
+                    else if (item.getItemType() == ItemBase.ItemType.Mod)
                         mItemsMods.add(item);
-                    else if (item.getItemType() == Item.ItemType.PortalKey)
+                    else if (item.getItemType() == ItemBase.ItemType.PortalKey)
                         mItemsPortalKeys.add(item);
-                    else if (item.getItemType() == Item.ItemType.PowerCube)
+                    else if (item.getItemType() == ItemBase.ItemType.PowerCube)
                         mItemsPowerCubes.add(item);
-                    else if (item.getItemType() == Item.ItemType.Resonator)
+                    else if (item.getItemType() == ItemBase.ItemType.Resonator)
                         mItemsResonators.add(item);
-                    else if (item.getItemType() == Item.ItemType.Virus)
+                    else if (item.getItemType() == ItemBase.ItemType.Virus)
                         mItemsWeapons.add(item);
-                    else if (item.getItemType() == Item.ItemType.XMP)
+                    else if (item.getItemType() == ItemBase.ItemType.XMP)
                         mItemsWeapons.add(item);
                 }                
             }

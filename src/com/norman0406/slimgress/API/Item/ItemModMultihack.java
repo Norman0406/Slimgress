@@ -18,49 +18,28 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Item;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class ItemModMultihack extends ItemMod
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
+	private int mBurnoutInsulation;
 
-	@Override
-	public void onTerminate()
+	public ItemModMultihack(JSONArray json) throws JSONException
 	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		super(json);
+		
+		JSONObject item = json.getJSONObject(2);
+		JSONObject modResource = item.getJSONObject("modResource");
+		JSONObject stats = modResource.getJSONObject("stats");
+		mBurnoutInsulation = Integer.parseInt(stats.getString("BURNOUT_INSULATION"));
 	}
 	
-	public boolean isLoggedIn()
+	public int getBurnoutInsulation()
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mBurnoutInsulation;
 	}
 }

@@ -18,49 +18,38 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Game;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import java.util.LinkedList;
+import java.util.List;
 
-import android.app.Application;
+import com.norman0406.slimgress.API.Interface.GameBasket;
+import com.norman0406.slimgress.API.Item.ItemBase;
 
-public class IngressApplication extends Application
+public class Inventory
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+	private List<ItemBase> mItems;
 	
-	@Override
-	public void onCreate()
+	public Inventory()
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
+		mItems = new LinkedList<ItemBase>();
 	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
+    
+    public void clear()
     {
-        return mSingleton;
+        mItems.clear();
     }
 	
-	public GameState getGame()
+	public void processGameBasket(GameBasket basket)
 	{
-		return mGame;
+	    // add new inventory items
+		List<ItemBase> newInv = basket.getInventory();
+		if (newInv != null)
+			mItems.addAll(basket.getInventory());
 	}
 	
-	public boolean isLoggedIn()
+	public final List<ItemBase> getItems()
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return mItems;
 	}
 }

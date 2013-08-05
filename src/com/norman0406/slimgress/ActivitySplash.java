@@ -20,7 +20,7 @@
 
 package com.norman0406.slimgress;
 
-import com.norman0406.slimgress.API.Game;
+import com.norman0406.slimgress.API.Game.GameState;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,7 +35,7 @@ import android.os.Message;
 public class ActivitySplash extends Activity
 {
 	private IngressApplication mApp = IngressApplication.getInstance();
-	private Game mGame = mApp.getGame();
+	private GameState mGame = mApp.getGame();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) 

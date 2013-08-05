@@ -18,49 +18,34 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Plext;
 
-import com.norman0406.slimgress.API.Game.GameState;
-
-import android.app.Application;
-
-public class IngressApplication extends Application
+public abstract class Markup
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
-
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
+    public enum MarkupType {
+        Secure,
+        Sender,
+        Player,
+        ATPlayer,
+        Text
     }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
-	}
+    
+    private MarkupType mType;
+    private String mPlain;
+    
+    public Markup(MarkupType type, String plain)
+    {
+        mType = type;
+        mPlain = plain;
+    }
+    
+    public String getPlain()
+    {
+        return mPlain;
+    }
+    
+    public MarkupType getType()
+    {
+        return mType;
+    }
 }

@@ -58,18 +58,17 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.maps.model.UrlTileProvider;
 import com.google.common.geometry.S2LatLng;
 import com.google.common.geometry.S2LatLngRect;
-import com.norman0406.slimgress.API.Game;
-import com.norman0406.slimgress.API.GameEntity;
-import com.norman0406.slimgress.API.GameEntityControlField;
-import com.norman0406.slimgress.API.GameEntityLink;
-import com.norman0406.slimgress.API.GameEntityPortal;
-import com.norman0406.slimgress.API.Utils;
-import com.norman0406.slimgress.API.XMParticle;
+import com.norman0406.slimgress.API.Common.Team;
+import com.norman0406.slimgress.API.Game.GameState;
+import com.norman0406.slimgress.API.GameEntity.GameEntityBase;
+import com.norman0406.slimgress.API.GameEntity.GameEntityControlField;
+import com.norman0406.slimgress.API.GameEntity.GameEntityLink;
+import com.norman0406.slimgress.API.GameEntity.GameEntityPortal;
 
 public class ScannerView extends SupportMapFragment
 {
     private IngressApplication mApp = IngressApplication.getInstance();
-    private Game mGame = mApp.getGame();
+    private GameState mGame = mApp.getGame();
     private GoogleMap mMap = null;
 
     private Bitmap mXMParticleIcon = null;
@@ -122,7 +121,7 @@ public class ScannerView extends SupportMapFragment
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPos));
                 
                 // update game position
-                mGame.updateLocation(new Utils.LocationE6(myLocation.getLatitude(), myLocation.getLongitude()));
+                mGame.updateLocation(new com.norman0406.slimgress.API.Common.Location(myLocation.getLatitude(), myLocation.getLongitude()));
 
                 //updateWorld();
             }
@@ -214,16 +213,16 @@ public class ScannerView extends SupportMapFragment
                 drawXMParticles();
                 
                 // draw game entities
-                Map<String, GameEntity> entities = mGame.getWorld().getGameEntities();
+                Map<String, GameEntityBase> entities = mGame.getWorld().getGameEntities();
                 Set<String> keys = entities.keySet();
                 for (String key : keys) {
-                    GameEntity entity = entities.get(key);
+                    GameEntityBase entity = entities.get(key);
                     
-                    if (entity.getGameEntityType() == GameEntity.GameEntityType.Portal)
+                    if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Portal)
                         drawPortal((GameEntityPortal)entity);
-                    else if (entity.getGameEntityType() == GameEntity.GameEntityType.Link)
+                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Link)
                         drawLink((GameEntityLink)entity);
-                    else if (entity.getGameEntityType() == GameEntity.GameEntityType.ControlField)
+                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.ControlField)
                         drawField((GameEntityControlField)entity);
                 }
 
@@ -259,19 +258,19 @@ public class ScannerView extends SupportMapFragment
     
     private void drawPortal(final GameEntityPortal portal)
     {
-        final Utils.Team team = portal.getPortalTeam();
+        final Team team = portal.getPortalTeam();
         if (mMap != null) {
             // only update if marker has not yet been added
             if (!mMarkers.containsKey(portal.getEntityGuid())) {
-                final Utils.LocationE6 location = portal.getPortalLocation();
+                final com.norman0406.slimgress.API.Common.Location location = portal.getPortalLocation();
                 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Bitmap portalIcon = null;
-                        if (team == Utils.Team.Resistance)
+                        if (team.getTeamType() == Team.TeamType.Resistance)
                             portalIcon = mPortalIconResistance;
-                        else if (team == Utils.Team.Enlightened)
+                        else if (team.getTeamType() == Team.TeamType.Enlightened)
                             portalIcon = mPortalIconEnlightened;
                         else
                             portalIcon = mPortalIconNeutral; 
@@ -297,15 +296,15 @@ public class ScannerView extends SupportMapFragment
         if (mMap != null) {
             // only update if line has not yet been added
             if (!mLines.containsKey(link.getEntityGuid())) {
-                final Utils.LocationE6 origin = link.getLinkOriginLocation();
-                final Utils.LocationE6 dest = link.getLinkDestinationLocation();
+                final com.norman0406.slimgress.API.Common.Location origin = link.getLinkOriginLocation();
+                final com.norman0406.slimgress.API.Common.Location dest = link.getLinkDestinationLocation();
                 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         int color = 0xff0000ff; // blue without alpha
-                        Utils.Team team = link.getLinkControllingTeam();
-                        if (team == Utils.Team.Enlightened)
+                        Team team = link.getLinkControllingTeam();
+                        if (team.getTeamType() == Team.TeamType.Enlightened)
                             color = 0xff00ff00; // green without alpha
                         
                         PolylineOptions line = new PolylineOptions();
@@ -328,17 +327,17 @@ public class ScannerView extends SupportMapFragment
         if (mMap != null) {
             // only update if line has not yet been added
             if (!mPolygons.containsKey(field.getEntityGuid())) {
-                final Utils.LocationE6 vA = field.getFieldVertexA().getPortalLocation();
-                final Utils.LocationE6 vB = field.getFieldVertexB().getPortalLocation();
-                final Utils.LocationE6 vC = field.getFieldVertexC().getPortalLocation();
+                final com.norman0406.slimgress.API.Common.Location vA = field.getFieldVertexA().getPortalLocation();
+                final com.norman0406.slimgress.API.Common.Location vB = field.getFieldVertexB().getPortalLocation();
+                final com.norman0406.slimgress.API.Common.Location vC = field.getFieldVertexC().getPortalLocation();
                 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         
                         int color = 0x320000ff; // blue with alpha
-                        Utils.Team team = field.getFieldControllingTeam();
-                        if (team == Utils.Team.Enlightened)
+                        Team team = field.getFieldControllingTeam();
+                        if (team.getTeamType() == Team.TeamType.Enlightened)
                             color = 0x3200ff00; // green with alpha
                         
                         PolygonOptions polygon = new PolygonOptions();

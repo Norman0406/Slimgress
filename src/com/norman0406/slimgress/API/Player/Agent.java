@@ -18,49 +18,51 @@
 *
 ***********************************************************************/
 
-package com.norman0406.slimgress;
+package com.norman0406.slimgress.API.Player;
 
-import com.norman0406.slimgress.API.Game.GameState;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-import android.app.Application;
-
-public class IngressApplication extends Application
+public class Agent extends PlayerEntity
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
+	private final String mNickname;
 	
-	@Override
-	public void onCreate()
+	private static int[] mLevels = {
+			0,
+			10000,
+			30000,
+			70000,
+			150000,
+			300000,
+			600000,
+			1200000
+	};
+	
+	public Agent(JSONArray json, String nickname) throws JSONException
 	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
+		super(json);
+		mNickname = nickname;
 	}
+	
+	public String getNickname()
+	{
+		return mNickname;
+	}
+	
+	public int getLevel()
+	{
+		// TODO: more efficient?
+		
+		for (int i = mLevels.length - 1; i >= 0; i--) {
+			if (this.getAp() >= mLevels[i])
+				return i + 1;
+		}
 
-	@Override
-	public void onTerminate()
-	{
-	}
-
-    public static IngressApplication getInstance()
-    {
-        return mSingleton;
-    }
-	
-	public GameState getGame()
-	{
-		return mGame;
+		throw new IndexOutOfBoundsException("agent level could not be retrieved");
 	}
 	
-	public boolean isLoggedIn()
+	public int getEnergyMax()
 	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
+		return 2000 + (getLevel() * 1000);
 	}
 }
