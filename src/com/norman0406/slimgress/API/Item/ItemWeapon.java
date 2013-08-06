@@ -29,4 +29,14 @@ public class ItemWeapon extends ItemBase
     {
         super(type, json);
     }
+    
+    public static String getNameStatic()
+    {
+        return "EMP_BURSTER";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 }

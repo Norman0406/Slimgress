@@ -47,6 +47,7 @@ import org.json.JSONObject;
 
 import com.norman0406.slimgress.API.Common.Location;
 
+import android.os.Build;
 import android.util.Log;
 
 public class Interface
@@ -93,6 +94,7 @@ public class Interface
 						response = mClient.execute(get);
 					}
 					assert(response != null);
+					String content = EntityUtils.toString(response.getEntity());
 					response.getEntity().consumeContent();
 					
 					if (response.getStatusLine().getStatusCode() == 401) {
@@ -114,6 +116,13 @@ public class Interface
 								}
 							}
 						}
+						
+						if (mCookie == null) {
+	                        Log.e("Interface", "response does not contain a secure cookie");
+	                        Log.d("Interface", "content: " + content);
+	                        return AuthSuccess.UnknownError;
+						}
+						
 						Log.i("Interface", "authentication successful");
 						return AuthSuccess.Successful;
 					}
@@ -158,7 +167,13 @@ public class Interface
 		    	try {
 		    		// set handshake parameters
 			    	params.put("nemesisSoftwareVersion", mApiVersion);
-					params.put("deviceSoftwareVersion", "4.2.0");
+					params.put("deviceSoftwareVersion", Build.VERSION.RELEASE);
+					
+					// TODO: 
+                    /*params.put("activationCode", "");
+                    params.put("tosAccepted", "1");
+                    params.put("a", "");*/
+					
 			    	String paramString = params.toString();
 			    	paramString = URLEncoder.encode(paramString, "UTF-8");
 			    	
@@ -176,15 +191,15 @@ public class Interface
 					}
 					assert(response != null);
 					HttpEntity entity = response.getEntity();
-					
-					// check for content type json
-					Header contentType = entity.getContentType();
-					if (!contentType.getName().equals("Content-Type") || !contentType.getValue().contains("application/json"))
-						throw new RuntimeException("content type is not json");
 	
 					if (entity != null) {
 					    String content = EntityUtils.toString(entity);
-					    entity.consumeContent();
+                        Header contentType = entity.getContentType();
+                        entity.consumeContent();
+	                    
+	                    // check for content type json
+	                    if (!contentType.getName().equals("Content-Type") || !contentType.getValue().contains("application/json"))
+	                        throw new RuntimeException("content type is not json");	                    
 						
 					    content = content.replace("while(1);", "");
 					    

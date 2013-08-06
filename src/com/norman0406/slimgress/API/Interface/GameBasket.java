@@ -88,7 +88,7 @@ public class GameBasket
 			JSONArray resource = gameEntities.getJSONArray(i);
 
 			// deserialize the game entity using the JSON representation
-			GameEntityBase newEntity = GameEntityBase.createEntity(resource);
+			GameEntityBase newEntity = GameEntityBase.createByJSON(resource);
 			
 			// add the new entity to the world
 			if (newEntity != null) {
@@ -122,7 +122,7 @@ public class GameBasket
 			JSONArray resource = inventory.getJSONArray(i);
 			
 			// deserialize the item using the JSON representation
-			ItemBase newItem = ItemBase.createItem(resource);
+			ItemBase newItem = ItemBase.createByJSON(resource);
 
 			// add the new item to the player inventory
 			if (newItem != null) {

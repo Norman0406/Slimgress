@@ -24,34 +24,46 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ClientFeatureKnobs extends Knobs
-{    
+{
+    private boolean mEnableInviteNag;
+    private int mFireMode;
+    private boolean mEnableRecycle;
+    private int mInviteNagDelayDays;
+    private int mRefreshTimeMS;
+    
     public ClientFeatureKnobs(JSONObject json) throws JSONException
     {
         super(json);
+        
+        mEnableInviteNag = json.getBoolean("enableInviteNag");
+        mFireMode = json.getInt("fireMode");
+        mEnableRecycle = json.getBoolean("enableRecycle");
+        mInviteNagDelayDays = json.getInt("inviteNagDelayDays");
+        mRefreshTimeMS = json.getInt("refreshTimeMs");
     }
 
-    public boolean getEnableInviteNag()
+    public boolean isEnableInviteNag()
     {
-        return getData().getBoolean("enableInviteNag");
+        return mEnableInviteNag;
     }
-    
+
     public int getFireMode()
     {
-        return getData().getInt("fireMode");
+        return mFireMode;
     }
-    
-    public boolean getEnableRecycle()
+
+    public boolean isEnableRecycle()
     {
-        return getData().getBoolean("enableRecycle");
+        return mEnableRecycle;
     }
-    
+
     public int getInviteNagDelayDays()
     {
-        return getData().getInt("inviteNagDelayDays");
+        return mInviteNagDelayDays;
     }
-    
+
     public int getRefreshTimeMS()
     {
-        return getData().getInt("refreshTimeMs");
+        return mRefreshTimeMS;
     }
 }

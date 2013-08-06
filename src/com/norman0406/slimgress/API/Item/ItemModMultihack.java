@@ -37,6 +37,16 @@ public class ItemModMultihack extends ItemMod
 		JSONObject stats = modResource.getJSONObject("stats");
 		mBurnoutInsulation = Integer.parseInt(stats.getString("BURNOUT_INSULATION"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "MULTIHACK";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getBurnoutInsulation()
 	{

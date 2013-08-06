@@ -20,13 +20,38 @@
 
 package com.norman0406.slimgress.API.Knobs;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class RecycleKnobs extends Knobs
 {
+    private Map<String, List<Integer>> mRecycleValuesMap;
+    
     public RecycleKnobs(JSONObject json) throws JSONException
     {
         super(json);
+
+        mRecycleValuesMap = new HashMap<String, List<Integer>>();
+        JSONObject recycleValuesMap = json.getJSONObject("recycleValuesMap");
+        Iterator<?> it = recycleValuesMap.keys();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            mRecycleValuesMap.put(key, getIntArray(recycleValuesMap, key));
+        }
+    }
+    
+    public List<Integer> getRecycleValues(String key)
+    {
+        if (!mRecycleValuesMap.containsKey(key))
+            Log.e("RecycleKnobs", "key not found in hash map: " + key);
+        
+        return mRecycleValuesMap.get(key);
     }
 }

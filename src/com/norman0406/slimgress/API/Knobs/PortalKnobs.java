@@ -20,13 +20,62 @@
 
 package com.norman0406.slimgress.API.Knobs;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class PortalKnobs extends Knobs
 {
+    public class Band
+    {
+        List<Integer> applicableLevels;
+        int remaining;
+    }
+    
+    private List<Band> mBands;
+    private int mMaxResonatorsPerPlayer;
+
     public PortalKnobs(JSONObject json) throws JSONException
     {
         super(json);
+        
+        JSONObject resonatorLimits = json.getJSONObject("resonatorLimits");
+        JSONArray bands = resonatorLimits.getJSONArray("bands");
+        mBands = new ArrayList<Band>();
+        for (int i = 0; i < bands.length(); i++) {
+            JSONObject band = bands.getJSONObject(i);
+            Band newBand = new Band();
+            newBand.applicableLevels = getIntArray(band, "applicableLevels");
+            newBand.remaining = band.getInt("remaining");
+            mBands.add(newBand);
+        }
+        
+        mMaxResonatorsPerPlayer = json.getInt("maxResonatorsPerPlayer");
+    }
+    
+    public Band getBandForLevel(int level)
+    {
+        for (Band band : mBands) {
+            if (band.applicableLevels.contains((Integer)level))
+                return band;
+        }
+        
+        Log.w("PortalKnobs", "band not found for level: " + level);
+        return null;
+    }
+    
+    public List<Band> getBands()
+    {
+        return mBands;
+    }
+
+    public int getMaxResonatorsPerPlayer()
+    {
+        return mMaxResonatorsPerPlayer;
     }
 }

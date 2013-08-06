@@ -45,6 +45,16 @@ public class ItemPortalKey extends ItemBase
 		mPortalTitle = portalCoupler.getString("portalTitle");
 		mPortalAddress = portalCoupler.getString("portalAddress");
 	}
+    
+    public static String getNameStatic()
+    {
+        return "PORTAL_LINK_KEY";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 
 	public String getPortalGuid()
 	{

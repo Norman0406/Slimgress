@@ -29,4 +29,14 @@ public class ItemResonator extends ItemBase
 	{
 		super(ItemType.Resonator, json);
 	}
+    
+    public static String getNameStatic()
+    {
+        return "EMITTER_A";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 }

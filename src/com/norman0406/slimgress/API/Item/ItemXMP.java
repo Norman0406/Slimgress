@@ -30,5 +30,15 @@ public class ItemXMP extends ItemWeapon
 		super(ItemType.XMP, json);
 		
 		// TODO: which information is needed from the JSONObject?
-	}	
+	}
+    
+    public static String getNameStatic()
+    {
+        return "EMP_BURSTER";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 }

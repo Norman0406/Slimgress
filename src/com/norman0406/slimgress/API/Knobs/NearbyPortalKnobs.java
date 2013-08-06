@@ -25,8 +25,24 @@ import org.json.JSONObject;
 
 public class NearbyPortalKnobs extends Knobs
 {
+    private int mRepopulateDistanceMeters;
+    private int mRepopulateTimeMilliseconds;
+    
     public NearbyPortalKnobs(JSONObject json) throws JSONException
     {
         super(json);
+        
+        mRepopulateDistanceMeters = json.getInt("repopulateDistanceMeters");
+        mRepopulateTimeMilliseconds = Integer.parseInt(json.getString("repopulateTimeMilliseconds"));
+    }
+
+    public int getRepopulateDistanceMeters()
+    {
+        return mRepopulateDistanceMeters;
+    }
+
+    public int getRepopulateTimeMilliseconds()
+    {
+        return mRepopulateTimeMilliseconds;
     }
 }

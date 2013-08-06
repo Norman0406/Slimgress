@@ -20,13 +20,130 @@
 
 package com.norman0406.slimgress.API.Knobs;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class XMCostKnobs extends Knobs
 {
+    private List<Integer> mHeatsinkDeployCostByLevel;
+    private List<Integer> mFlipCardCostByLevel;
+    private List<Integer> mTurretDeployCostByLevel;
+    private List<Integer> mPortalHackNeutralCostByLevel;
+    private List<Integer> mShieldDeployCostByLevel;
+    private List<Integer> mXmpFiringCostByLevel;
+    private List<Integer> mResonatorUpgradeCostByLevel;
+    private List<Integer> mPortalHackFriendlyCostByLevel;
+    private List<Integer> mMultihackDeployCostByLevel;
+    private List<Integer> mPortalHackEnemyCostByLevel;
+    private List<Integer> mResonatorDeployCostByLevel;
+    private List<Integer> mForceAmplifierDeployCostByLevel;
+    private List<Integer> mLinkAmplifierDeployCostByLevel;
+    private Map<String, List<Integer>> mPortalModByLevel;
+    
     public XMCostKnobs(JSONObject json) throws JSONException
     {
         super(json);
+
+        mHeatsinkDeployCostByLevel = getIntArray(json, "heatsinkDeployCostByLevel");
+        mFlipCardCostByLevel = getIntArray(json, "flipCardCostByLevel");
+        mTurretDeployCostByLevel = getIntArray(json, "turretDeployCostByLevel");
+        mPortalHackNeutralCostByLevel = getIntArray(json, "portalHackNeutralCostByLevel");
+        mShieldDeployCostByLevel = getIntArray(json, "shieldDeployCostByLevel");
+        mXmpFiringCostByLevel = getIntArray(json, "xmpFiringCostByLevel");
+        mResonatorUpgradeCostByLevel = getIntArray(json, "resonatorUpgradeCostByLevel");
+        mPortalHackFriendlyCostByLevel = getIntArray(json, "portalHackFriendlyCostByLevel");
+        mMultihackDeployCostByLevel = getIntArray(json, "multihackDeployCostByLevel");
+        mPortalHackEnemyCostByLevel = getIntArray(json, "portalHackEnemyCostByLevel");
+        mResonatorDeployCostByLevel = getIntArray(json, "resonatorDeployCostByLevel");
+        mForceAmplifierDeployCostByLevel = getIntArray(json, "forceAmplifierDeployCostByLevel");
+        mLinkAmplifierDeployCostByLevel = getIntArray(json, "linkAmplifierDeployCostByLevel");
+
+        mPortalModByLevel = new HashMap<String, List<Integer>>();
+        JSONObject portalModByLevel = json.getJSONObject("portalModByLevel");
+        Iterator<?> it = portalModByLevel.keys();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            mPortalModByLevel.put(key, getIntArray(portalModByLevel, key));
+        }
+    }
+
+    public List<Integer> getHeatsinkDeployCostByLevel()
+    {
+        return mHeatsinkDeployCostByLevel;
+    }
+
+    public List<Integer> getFlipCardCostByLevel()
+    {
+        return mFlipCardCostByLevel;
+    }
+
+    public List<Integer> getTurretDeployCostByLevel()
+    {
+        return mTurretDeployCostByLevel;
+    }
+
+    public List<Integer> getPortalHackNeutralCostByLevel()
+    {
+        return mPortalHackNeutralCostByLevel;
+    }
+
+    public List<Integer> getShieldDeployCostByLevel()
+    {
+        return mShieldDeployCostByLevel;
+    }
+
+    public List<Integer> getXmpFiringCostByLevel()
+    {
+        return mXmpFiringCostByLevel;
+    }
+
+    public List<Integer> getResonatorUpgradeCostByLevel()
+    {
+        return mResonatorUpgradeCostByLevel;
+    }
+
+    public List<Integer> getPortalHackFriendlyCostByLevel()
+    {
+        return mPortalHackFriendlyCostByLevel;
+    }
+
+    public List<Integer> getMultihackDeployCostByLevel()
+    {
+        return mMultihackDeployCostByLevel;
+    }
+
+    public List<Integer> getPortalHackEnemyCostByLevel()
+    {
+        return mPortalHackEnemyCostByLevel;
+    }
+
+    public List<Integer> getResonatorDeployCostByLevel()
+    {
+        return mResonatorDeployCostByLevel;
+    }
+
+    public List<Integer> getForceAmplifierDeployCostByLevel()
+    {
+        return mForceAmplifierDeployCostByLevel;
+    }
+
+    public List<Integer> getLinkAmplifierDeployCostByLevel()
+    {
+        return mLinkAmplifierDeployCostByLevel;
+    }
+
+    public List<Integer> getPortalModByLevel(String key)
+    {
+        if (!mPortalModByLevel.containsKey(key))
+            Log.e("XMCostKnobs", "key not found in hash map: " + key);
+        
+        return mPortalModByLevel.get(key);
     }
 }

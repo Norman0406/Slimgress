@@ -48,6 +48,16 @@ public class ItemVirus extends ItemBase
 		else
 			System.out.println("unknown virus type");
 	}
+    
+    public static String getNameStatic()
+    {
+        return "FLIP_CARD";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public VirusType getVirusType()
 	{

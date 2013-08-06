@@ -37,6 +37,16 @@ public class ItemModHeatSink extends ItemMod
 		JSONObject stats = modResource.getJSONObject("stats");
 		mHackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "HEATSINK";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getHackSpeed()
 	{

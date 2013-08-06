@@ -58,6 +58,61 @@ public abstract class ItemBase extends EntityBase
 	private final ItemType mItemType;
 	private String mItemPlayerId;
 	private String mItemAcquisitionTimestamp;	
+
+    public static ItemBase createByJSON(JSONArray json) throws JSONException
+    {
+        if (json.length() != 3) {
+            Log.e("ItemBase", "invalid array size");
+            return null;
+        }
+        
+        JSONObject item = json.getJSONObject(2);
+        
+        JSONObject itemResource = null;
+        if (item.has("resource"))
+            itemResource = item.getJSONObject("resource");
+        else if (item.has("resourceWithLevels"))
+            itemResource = item.getJSONObject("resourceWithLevels");
+        else if (item.has("modResource"))
+            itemResource = item.getJSONObject("modResource");
+        
+        // create item
+        ItemBase newItem = null;
+        
+        String itemType = itemResource.getString("resourceType");
+        if (itemType.equals(ItemPortalKey.getNameStatic()))
+            newItem = new ItemPortalKey(json);
+        else if (itemType.equals(ItemXMP.getNameStatic()))
+            newItem = new ItemXMP(json);
+        else if (itemType.equals(ItemUltraStrike.getNameStatic()))
+            newItem = new ItemUltraStrike(json);
+        else if (itemType.equals(ItemResonator.getNameStatic()))
+            newItem = new ItemResonator(json);
+        else if (itemType.equals(ItemModShield.getNameStatic()))
+            newItem = new ItemModShield(json);
+        else if (itemType.equals(ItemPowerCube.getNameStatic()))
+            newItem = new ItemPowerCube(json);
+        else if (itemType.equals(ItemMedia.getNameStatic()))
+            newItem = new ItemMedia(json);
+        else if (itemType.equals(ItemModForceAmp.getNameStatic()))
+            newItem = new ItemModForceAmp(json);
+        else if (itemType.equals(ItemModMultihack.getNameStatic()))
+            newItem = new ItemModMultihack(json);
+        else if (itemType.equals(ItemModLinkAmp.getNameStatic()))
+            newItem = new ItemModLinkAmp(json);
+        else if (itemType.equals(ItemModTurret.getNameStatic()))
+            newItem = new ItemModTurret(json);
+        else if (itemType.equals(ItemModHeatSink.getNameStatic()))
+            newItem = new ItemModHeatSink(json);
+        else if (itemType.equals(ItemVirus.getNameStatic()))
+            newItem = new ItemVirus(json);
+        else {
+            // unknown resource type
+            Log.w("Item", "unknown resource type: " + itemType);
+        }
+
+        return newItem;
+    }
 	
 	protected ItemBase(ItemType type, JSONArray json) throws JSONException
 	{
@@ -109,59 +164,13 @@ public abstract class ItemBase extends EntityBase
 		mItemPlayerId = itemInInventory.getString("playerId");
 		mItemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
 	}
-
-	public static ItemBase createItem(JSONArray json) throws JSONException
-	{
-		if (json.length() != 3)
-			throw new JSONException("invalid array size");
-		
-		JSONObject item = json.getJSONObject(2);
-		
-		JSONObject itemResource = null;
-		if (item.has("resource"))
-			itemResource = item.getJSONObject("resource");
-		else if (item.has("resourceWithLevels"))
-			itemResource = item.getJSONObject("resourceWithLevels");
-		else if (item.has("modResource"))
-			itemResource = item.getJSONObject("modResource");
-		
-		// create item
-		ItemBase newItem = null;
-		
-		String itemType = itemResource.getString("resourceType");
-		if (itemType.equals("PORTAL_LINK_KEY"))
-			newItem = new ItemPortalKey(json);
-		else if (itemType.equals("EMP_BURSTER"))
-			newItem = new ItemXMP(json);
-        else if (itemType.equals("ULTRA_STRIKE"))
-            newItem = new ItemUltraStrike(json);
-		else if (itemType.equals("EMITTER_A"))
-			newItem = new ItemResonator(json);
-		else if (itemType.equals("RES_SHIELD"))
-			newItem = new ItemModShield(json);
-		else if (itemType.equals("POWER_CUBE"))
-			newItem = new ItemPowerCube(json);
-		else if (itemType.equals("MEDIA"))
-			newItem = new ItemMedia(json);
-		else if (itemType.equals("FORCE_AMP"))
-			newItem = new ItemModForceAmp(json);
-		else if (itemType.equals("MULTIHACK"))
-			newItem = new ItemModMultihack(json);
-		else if (itemType.equals("LINK_AMPLIFIER"))
-			newItem = new ItemModLinkAmp(json);
-		else if (itemType.equals("TURRET"))
-			newItem = new ItemModTurret(json);
-		else if (itemType.equals("HEATSINK"))
-			newItem = new ItemModHeatSink(json);
-		else if (itemType.equals("FLIP_CARD"))
-			newItem = new ItemVirus(json);
-		else {
-			// unknown resource type
-		    Log.w("Item", "unknown resource type: " + itemType);
-		}
-
-		return newItem;
+	
+	public static String getNameStatic() {
+	    // override!
+	    throw new RuntimeException("this method has to be overridden");
 	}
+	
+	public abstract String getName();
 	
 	public int getItemAccessLevel()
 	{

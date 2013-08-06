@@ -24,6 +24,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.norman0406.slimgress.API.Common.EntityBase;
 
 public abstract class GameEntityBase extends EntityBase
@@ -46,6 +48,33 @@ public abstract class GameEntityBase extends EntityBase
 	OwnerType mOwnerType;	// created or captured
 	String mOwnerGuid;
 	String mOwnerTimestamp;
+    
+    public static GameEntityBase createByJSON(JSONArray json) throws JSONException
+    {   
+        if (json.length() != 3) {
+            Log.e("GameEntityBase", "invalid array size");
+            return null;
+        }
+
+        JSONObject item = json.getJSONObject(2);
+        
+        // create entity
+        GameEntityBase newEntity = null;
+        if (item.has("edge"))
+            newEntity = new GameEntityLink(json);
+        else if (item.has("capturedRegion"))
+            newEntity = new GameEntityControlField(json);
+        else if (item.has("portalV2"))
+            newEntity = new GameEntityPortal(json);
+        else if (item.has("resource") || item.has("resourceWithLevels") || item.has("modResource"))
+            newEntity = new GameEntityItem(json);
+        else {
+            // unknown game entity
+            Log.w("GameEntityBase", "unknown game entity");
+        }
+        
+        return newEntity;
+    }
 		
 	GameEntityBase(GameEntityType type, JSONArray json) throws JSONException
 	{
@@ -70,31 +99,6 @@ public abstract class GameEntityBase extends EntityBase
 			// UNDONE: GameEntityItem does not have owner information
 			//throw new RuntimeException("no owner information available");
 		}
-	}
-	
-	public static GameEntityBase createEntity(JSONArray json) throws JSONException
-	{	
-		if (json.length() != 3)
-			throw new JSONException("invalid array size");
-
-		JSONObject item = json.getJSONObject(2);
-		
-		// create entity
-		GameEntityBase newEntity = null;
-		if (item.has("edge"))
-			newEntity = new GameEntityLink(json);
-		else if (item.has("capturedRegion"))
-			newEntity = new GameEntityControlField(json);
-		else if (item.has("portalV2"))
-			newEntity = new GameEntityPortal(json);
-		else if (item.has("resource") || item.has("resourceWithLevels") || item.has("modResource"))
-			newEntity = new GameEntityItem(json);
-		else {
-			// unknown game entity
-			throw new RuntimeException("unknown game entity");
-		}
-		
-		return newEntity;
 	}
 	
 	public GameEntityType getGameEntityType()

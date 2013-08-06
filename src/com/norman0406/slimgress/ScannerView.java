@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -108,6 +110,8 @@ public class ScannerView extends SupportMapFragment
         mMap.setMyLocationEnabled(true);
         
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            boolean firstLocation = true;
+            
             @Override
             public void onMyLocationChange(Location myLocation)
             {
@@ -122,10 +126,14 @@ public class ScannerView extends SupportMapFragment
                 
                 // update game position
                 mGame.updateLocation(new com.norman0406.slimgress.API.Common.Location(myLocation.getLatitude(), myLocation.getLongitude()));
-
-                //updateWorld();
+                
+                if (firstLocation) {
+                    firstLocation = false;
+                }
             }
         });
+        
+        //startWorldUpdate();
         
         // deactivate standard map
         mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -189,48 +197,95 @@ public class ScannerView extends SupportMapFragment
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tiles));
     }
     
-    private void updateWorld()
+    private void startWorldUpdate()
     {
-        // get visible region
-        LatLng northeast = mMap.getProjection().getVisibleRegion().latLngBounds.northeast;
-        LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;      
-        final S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
-                S2LatLng.fromDegrees(northeast.latitude, northeast.longitude));
-
-        mGame.intGetObjectsInCells(region, new Handler(new Handler.Callback() {
+        // TODO: problems blocking execution and causing out-of-memory exception
+        
+        final Handler uiHandler = new Handler();
+        
+        long updateInterval = mGame.getKnobs().getScannerKnobs().getUpdateIntervalMS();
+        
+        Timer updateTimer = new Timer();
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            final Handler timerHandler = new Handler();
+            
             @Override
-            public boolean handleMessage(Message msg) {
-                
-                // clear map first
-                getActivity().runOnUiThread(new Runnable() {
+            public void run()
+            {
+                uiHandler.post(new Runnable() {
                     @Override
-                    public void run() {
-                        //mMap.clear();
+                    public void run()
+                    {
+                        // get map boundaries (on ui thread)
+                        LatLng northeast = mMap.getProjection().getVisibleRegion().latLngBounds.northeast;
+                        LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;      
+                        final S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
+                                S2LatLng.fromDegrees(northeast.latitude, northeast.longitude));
+                        
+                        // update world (on timer thread)
+                        timerHandler.post(new Runnable() {
+                            @Override
+                            public void run()
+                            {
+                                if (mGame.getLocation() != null)
+                                    updateWorld(region, uiHandler);
+                            }
+                        });
                     }
                 });
-                
+            }
+        }, 0, updateInterval);
+    }
+    
+    private synchronized void updateWorld(final S2LatLngRect region, final Handler uiHandler)
+    {
+        // handle interface result (on timer thread)
+        final Handler resultHandler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
                 // draw xm particles
                 drawXMParticles();
                 
-                // draw game entities
-                Map<String, GameEntityBase> entities = mGame.getWorld().getGameEntities();
-                Set<String> keys = entities.keySet();
-                for (String key : keys) {
-                    GameEntityBase entity = entities.get(key);
-                    
-                    if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Portal)
-                        drawPortal((GameEntityPortal)entity);
-                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Link)
-                        drawLink((GameEntityLink)entity);
-                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.ControlField)
-                        drawField((GameEntityControlField)entity);
-                }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        // draw game entities
+                        Map<String, GameEntityBase> entities = mGame.getWorld().getGameEntities();
+                        Set<String> keys = entities.keySet();
+                        for (String key : keys) {
+                            final GameEntityBase entity = entities.get(key);
 
-                Log.d("ScannerView", "world updated");
+                            uiHandler.post(new Runnable() {
+                                @Override
+                                public void run()
+                                {
+                                    if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Portal)
+                                        drawPortal((GameEntityPortal)entity);
+                                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.Link)
+                                        drawLink((GameEntityLink)entity);
+                                    else if (entity.getGameEntityType() == GameEntityBase.GameEntityType.ControlField)
+                                        drawField((GameEntityControlField)entity);
+                                }
+                            });
+                        }
+
+                        Log.d("ScannerView", "world updated");
+                    }
+                }).start();
                 
                 return true;
+            }            
+        });
+
+        // get objects (on new thread)
+        new Thread(new Runnable() {            
+            @Override
+            public void run()
+            {
+                mGame.intGetObjectsInCells(region, resultHandler);
             }
-        }));
+        }).start();
     }
     
     private void drawXMParticles()

@@ -39,6 +39,16 @@ public class ItemModTurret extends ItemMod
 		mAttackFrequency = Integer.parseInt(stats.getString("ATTACK_FREQUENCY"));
 		mHitBonus = Integer.parseInt(stats.getString("HIT_BONUS"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "TURRET";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getAttackFrequency()
 	{

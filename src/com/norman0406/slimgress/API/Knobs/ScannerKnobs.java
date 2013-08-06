@@ -25,8 +25,31 @@ import org.json.JSONObject;
 
 public class ScannerKnobs extends Knobs
 {
+    private int mRangeM;
+    private int mUpdateDistanceM;
+    private int mUpdateIntervalMS;
+    
     public ScannerKnobs(JSONObject json) throws JSONException
     {
         super(json);
+        
+        mRangeM = json.getInt("rangeM");
+        mUpdateDistanceM = json.getInt("updateDistanceM");
+        mUpdateIntervalMS = json.getInt("updateIntervalMs");
+    }
+
+    public int getRangeM()
+    {
+        return mRangeM;
+    }
+
+    public int getUpdateDistanceM()
+    {
+        return mUpdateDistanceM;
+    }
+
+    public int getUpdateIntervalMS()
+    {
+        return mUpdateIntervalMS;
     }
 }

@@ -37,6 +37,16 @@ public class ItemModLinkAmp extends ItemMod
 		JSONObject stats = modResource.getJSONObject("stats");
 		mLinkRangeMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "LINK_AMPLIFIER";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getLinkRangeMultiplier()
 	{

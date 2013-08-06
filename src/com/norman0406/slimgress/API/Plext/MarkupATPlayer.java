@@ -20,6 +20,9 @@
 
 package com.norman0406.slimgress.API.Plext;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.norman0406.slimgress.API.Common.Team;
 
 public class MarkupATPlayer extends Markup
@@ -27,11 +30,11 @@ public class MarkupATPlayer extends Markup
     private String mGUID;
     private Team mTeam;
     
-    public MarkupATPlayer(String plain, String guid, Team team)
+    public MarkupATPlayer(JSONObject json) throws JSONException
     {
-        super(MarkupType.ATPlayer, plain);
-        mGUID = guid;
-        mTeam = team;
+        super(MarkupType.ATPlayer, json);
+        mGUID = json.getString("guid");
+        mTeam = new Team(json.getString("team"));
     }
     
     public String getGUID()

@@ -37,6 +37,16 @@ public class ItemPowerCube extends ItemBase
 		
 		mEnergy = powerCube.getInt("energy");
 	}
+    
+    public static String getNameStatic()
+    {
+        return "POWER_CUBE";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getEnergy()
 	{

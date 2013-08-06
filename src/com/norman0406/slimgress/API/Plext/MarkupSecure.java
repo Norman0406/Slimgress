@@ -20,10 +20,13 @@
 
 package com.norman0406.slimgress.API.Plext;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MarkupSecure extends Markup
 {
-    public MarkupSecure(String plain)
+    public MarkupSecure(JSONObject json) throws JSONException
     {
-        super(MarkupType.Secure, plain);
+        super(MarkupType.Secure, json);
     }
 }

@@ -107,12 +107,8 @@ public class GameState
     	// get agent
     	if (mAgent == null)
     		mAgent = mHandshake.getAgent();
-    	
-    	// get knobs
-    	if (mKnobs == null)
-    	    mKnobs = mHandshake.getKnobs();
     }
-    
+        
     public Interface.AuthSuccess intAuthenticate(String token)
     {
     	return mInterface.authenticate(token);
@@ -124,6 +120,7 @@ public class GameState
     		@Override
     		public void handle(Handshake handshake) {
     			mHandshake = handshake;
+    			mKnobs = mHandshake.getKnobs();
     			
                 Message msg = new Message();
                 Bundle bundle = new Bundle();
@@ -245,7 +242,7 @@ public class GameState
                     try {
                         // add plexts
                         for (int i = 0; i < result.length(); i++) {
-                            PlextBase newPlext = PlextBase.createPlext(result.getJSONArray(i));
+                            PlextBase newPlext = PlextBase.createByJSON(result.getJSONArray(i));
                             mPlexts.add(newPlext);
                         }
                     }
@@ -1019,6 +1016,16 @@ public class GameState
         catch (InterruptedException e) {
     		e.printStackTrace();
     	}
+    }
+    
+    public Handshake getHandshake()
+    {
+        return mHandshake;
+    }
+    
+    public KnobsBundle getKnobs()
+    {
+        return mKnobs;
     }
     
     public synchronized World getWorld()

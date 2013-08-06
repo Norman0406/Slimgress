@@ -20,18 +20,21 @@
 
 package com.norman0406.slimgress.API.Plext;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.norman0406.slimgress.API.Common.Team;
 
 public class MarkupPlayer extends Markup
 {
     private String mGUID;
     private Team mTeam;
-    
-    public MarkupPlayer(String plain, String guid, Team team)
+        
+    public MarkupPlayer(JSONObject json) throws JSONException
     {
-        super(MarkupType.Player, plain);
-        mGUID = guid;
-        mTeam = team;
+        super(MarkupType.Player, json);
+        mGUID = json.getString("guid");
+        mTeam = new Team(json.getString("team"));
     }
     
     public String getGUID()

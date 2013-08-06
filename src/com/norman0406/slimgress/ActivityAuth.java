@@ -203,7 +203,12 @@ public class ActivityAuth extends Activity
 	
 	private void refreshToken(Account account, String token)
 	{
-		((TextView)findViewById(R.id.login)).setText(getString(R.string.auth_refresh));
+        runOnUiThread(new Runnable() {
+            public void run() {
+                ((TextView)findViewById(R.id.login)).setText(getString(R.string.auth_refresh));
+            }
+        });
+        
 		mAccountMgr.invalidateAuthToken("com.google", token);
 		authenticateUser(account);
 	}

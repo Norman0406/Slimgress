@@ -20,13 +20,60 @@
 
 package com.norman0406.slimgress.API.Knobs;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class PortalModSharedKnobs extends Knobs
 {
+    private List<Integer> mMultiTurretFreqDiminishingValues;
+    private List<Integer> mMultiForceAmpDiminishingValues;
+    private List<Integer> mMultiLinkAmpDiminishingValues;
+    private Map<String, List<Integer>> mDiminishingValues;
+    
     public PortalModSharedKnobs(JSONObject json) throws JSONException
     {
         super(json);
+
+        mMultiTurretFreqDiminishingValues = getIntArray(json, "multiTurretFreqDiminishingValues");
+        mMultiForceAmpDiminishingValues = getIntArray(json, "multiForceAmpDiminishingValues");
+        mMultiLinkAmpDiminishingValues = getIntArray(json, "multiLinkAmpDiminishingValues");
+
+        mDiminishingValues = new HashMap<String, List<Integer>>();
+        JSONObject diminishingValues = json.getJSONObject("diminishingValues");
+        Iterator<?> it = diminishingValues.keys();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            mDiminishingValues.put(key, getIntArray(diminishingValues, key));
+        }
+    }
+
+    public List<Integer> getMultiTurretFreqDiminishingValues()
+    {
+        return mMultiTurretFreqDiminishingValues;
+    }
+
+    public List<Integer> getMultiForceAmpDiminishingValues()
+    {
+        return mMultiForceAmpDiminishingValues;
+    }
+
+    public List<Integer> getMultiLinkAmpDiminishingValues()
+    {
+        return mMultiLinkAmpDiminishingValues;
+    }
+
+    public List<Integer> getDiminishingValues(String key)
+    {
+        if (!mDiminishingValues.containsKey(key))
+            Log.e("PortalModSharedKnobs", "key not found in hash map: " + key);
+        
+        return mDiminishingValues.get(key);
     }
 }

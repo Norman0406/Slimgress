@@ -37,6 +37,16 @@ public class ItemModForceAmp extends ItemMod
 		JSONObject stats = modResource.getJSONObject("stats");
 		mForceAmplifier = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "FORCE_AMP";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 	
 	public int getForceAmplifier() 
 	{

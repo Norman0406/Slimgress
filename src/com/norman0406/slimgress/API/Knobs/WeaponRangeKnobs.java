@@ -20,13 +20,58 @@
 
 package com.norman0406.slimgress.API.Knobs;
 
+import java.util.Iterator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.SparseIntArray;
+
 public class WeaponRangeKnobs extends Knobs
 {
+    private SparseIntArray mUltraStrikeDamageRangeMap;
+    private SparseIntArray mXmpDamageRangeMap;
+    
     public WeaponRangeKnobs(JSONObject json) throws JSONException
     {
         super(json);
+
+        JSONObject ultraStrikeDamageRangeMap = json.getJSONObject("ultraStrikeDamageRangeMap");
+        mUltraStrikeDamageRangeMap = new SparseIntArray();
+        Iterator<?> it1 = ultraStrikeDamageRangeMap.keys();
+        while (it1.hasNext()) {
+            String strKey = (String)it1.next();
+            Integer key = Integer.parseInt(strKey);
+            mUltraStrikeDamageRangeMap.put(key, ultraStrikeDamageRangeMap.getInt(strKey));
+        }
+
+        JSONObject xmpDamageRangeMap = json.getJSONObject("xmpDamageRangeMap");
+        mXmpDamageRangeMap = new SparseIntArray();
+        Iterator<?> it2 = xmpDamageRangeMap.keys();
+        while (it2.hasNext()) {
+            String strKey = (String)it2.next();
+            Integer key = Integer.parseInt(strKey);
+            mXmpDamageRangeMap.put(key, xmpDamageRangeMap.getInt(strKey));
+        }
+    }
+
+    public SparseIntArray getUltraStrikeDamageRangeMap()
+    {        
+        return mUltraStrikeDamageRangeMap;
+    }
+
+    public SparseIntArray getXmpDamageRangeMap()
+    {
+        return mXmpDamageRangeMap;
+    }
+    
+    public int getUltraStrikeDamageRange(int level)
+    {
+        return mUltraStrikeDamageRangeMap.get(level);
+    }
+    
+    public int getXmpDamageRange(int level)
+    {
+        return mXmpDamageRangeMap.get(level);
     }
 }

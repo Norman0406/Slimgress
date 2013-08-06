@@ -20,23 +20,61 @@
 
 package com.norman0406.slimgress.API.Plext;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
+
 public abstract class Markup
 {
-    public enum MarkupType {
+    public enum MarkupType
+    {
         Secure,
         Sender,
         Player,
         ATPlayer,
+        Portal,
         Text
     }
     
     private MarkupType mType;
     private String mPlain;
     
-    public Markup(MarkupType type, String plain)
+    public static Markup createByJSON(JSONArray json) throws JSONException
+    {
+        if (json.length() != 2) {
+            Log.e("Markup", "invalid array size");
+            return null;
+        }
+        
+        JSONObject markupObj = json.getJSONObject(1);
+        
+        Markup newMarkup = null;
+
+        String markupString = json.getString(0);
+        if (markupString.equals("SECURE"))
+            newMarkup = new MarkupSecure(markupObj);
+        else if (markupString.equals("SENDER"))
+            newMarkup = new MarkupSender(markupObj);
+        else if (markupString.equals("PLAYER"))
+            newMarkup = new MarkupPlayer(markupObj);
+        else if (markupString.equals("AT_PLAYER"))
+            newMarkup = new MarkupATPlayer(markupObj);
+        else if (markupString.equals("PORTAL"))
+            newMarkup = new MarkupPortal(markupObj);
+        else if (markupString.equals("TEXT"))
+            newMarkup = new MarkupText(markupObj);
+        else
+            Log.w("Markup", "unknown markup type: " + markupString);
+        
+        return newMarkup;
+    }
+        
+    public Markup(MarkupType type, JSONObject json) throws JSONException
     {
         mType = type;
-        mPlain = plain;
+        mPlain = json.getString("plain");
     }
     
     public String getPlain()

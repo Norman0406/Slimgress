@@ -46,6 +46,16 @@ public class ItemMedia extends ItemBase
 		mMediaHasBeenViewed = storyItem.getBoolean("hasBeenViewed");
 		mMediaReleaseDate = storyItem.getString("releaseDate");
 	}
+	
+    public static String getNameStatic()
+    {
+        return "MEDIA";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 
 	public String getMediaImageUrl()
 	{

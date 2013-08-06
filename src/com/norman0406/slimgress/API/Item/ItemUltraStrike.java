@@ -30,5 +30,15 @@ public class ItemUltraStrike extends ItemWeapon
         super(ItemType.UltraStrike, json);
         
         // TODO: which information is needed from the JSONObject?
-    }   
+    }
+    
+    public static String getNameStatic()
+    {
+        return "ULTRA_STRIKE";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 }

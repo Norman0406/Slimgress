@@ -37,6 +37,16 @@ public class ItemModShield extends ItemMod
 		JSONObject stats = modResource.getJSONObject("stats");
 		mMitigation = Integer.parseInt(stats.getString("MITIGATION"));
 	}
+    
+    public static String getNameStatic()
+    {
+        return "RES_SHIELD";
+    }
+    
+    public String getName()
+    {
+        return getNameStatic();
+    }
 
 	public int getMitigation()
 	{

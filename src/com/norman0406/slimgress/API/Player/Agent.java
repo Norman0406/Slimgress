@@ -27,7 +27,7 @@ public class Agent extends PlayerEntity
 {
 	private final String mNickname;
 	
-	private static int[] mLevels = {
+	private static int[] mLevelAP = {
 			0,
 			10000,
 			30000,
@@ -53,8 +53,8 @@ public class Agent extends PlayerEntity
 	{
 		// TODO: more efficient?
 		
-		for (int i = mLevels.length - 1; i >= 0; i--) {
-			if (this.getAp() >= mLevels[i])
+		for (int i = mLevelAP.length - 1; i >= 0; i--) {
+			if (this.getAp() >= mLevelAP[i])
 				return i + 1;
 		}
 

@@ -20,6 +20,9 @@
 
 package com.norman0406.slimgress.API.Plext;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.norman0406.slimgress.API.Common.Location;
 import com.norman0406.slimgress.API.Common.Team;
 
@@ -31,15 +34,14 @@ public class MarkupPortal extends Markup
     private String mAddress;
     private String mName;
     
-    public MarkupPortal(String plain, String guid, Team team, Location location,
-            String address, String name)
+    public MarkupPortal(JSONObject json) throws JSONException
     {
-        super(MarkupType.Player, plain);
-        mGUID = guid;
-        mTeam = team;
-        mLocation = location;
-        mAddress = address;
-        mName = name;
+        super(MarkupType.Portal, json);
+        mGUID = json.getString("guid");
+        mTeam = new Team(json.getString("team"));
+        mLocation = new Location(json.getInt("latE6"), json.getInt("lngE6"));
+        mAddress = json.getString("address");
+        mName = json.getString("name");
     }
     
     public String getGUID()
