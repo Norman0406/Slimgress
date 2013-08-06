@@ -35,17 +35,17 @@ public class PlayerDamage
         mAttackerGuid = json.getString("attackerGuid");
         mWeaponSerializationTag = json.getString("weaponSerializationTag");
     }
-    
+
     public int getAmount()
     {
         return mAmount;
     }
-    
+
     public String getAttackerGuid()
     {
         return mAttackerGuid;
     }
-    
+
     public String getWeaponSerializationTag()
     {
         return mWeaponSerializationTag;

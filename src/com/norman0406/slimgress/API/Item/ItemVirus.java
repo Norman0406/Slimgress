@@ -25,42 +25,42 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemVirus extends ItemBase
-{	
-	public enum VirusType
-	{
-		Jarvis,
-		Ada
-	}
-	
-	private VirusType mVirusType;
-	
-	public ItemVirus(JSONArray json) throws JSONException
-	{
-		super(ItemType.Virus, json);
+{
+    public enum VirusType
+    {
+        Jarvis,
+        Ada
+    }
 
-		JSONObject item = json.getJSONObject(2);
-		JSONObject flipCard = item.getJSONObject("flipCard");
-		
-		if (flipCard.getString("flipCardType").equals("JARVIS"))
-			mVirusType = VirusType.Jarvis;
-		else if (flipCard.getString("flipCardType").equals("ADA"))
-			mVirusType = VirusType.Ada;
-		else
-			System.out.println("unknown virus type");
-	}
-    
+    private VirusType mVirusType;
+
+    public ItemVirus(JSONArray json) throws JSONException
+    {
+        super(ItemType.Virus, json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject flipCard = item.getJSONObject("flipCard");
+
+        if (flipCard.getString("flipCardType").equals("JARVIS"))
+            mVirusType = VirusType.Jarvis;
+        else if (flipCard.getString("flipCardType").equals("ADA"))
+            mVirusType = VirusType.Ada;
+        else
+            System.out.println("unknown virus type");
+    }
+
     public static String getNameStatic()
     {
         return "FLIP_CARD";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public VirusType getVirusType()
-	{
-		return mVirusType;
-	}
+
+    public VirusType getVirusType()
+    {
+        return mVirusType;
+    }
 }

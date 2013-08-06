@@ -29,45 +29,45 @@ import com.norman0406.slimgress.API.Interface.GameBasket;
 
 public class World
 {
-	private Map<String, GameEntityBase> mGameEntities;
-	private Map<String, XMParticle> mXMParticles;
-	
-	public World()
-	{
-	    mGameEntities = new HashMap<String, GameEntityBase>();
-	    mXMParticles = new HashMap<String, XMParticle>();
-	}
-	
-	public void clear()
-	{
-	    mGameEntities.clear();
-	    mXMParticles.clear();
-	}
-	
-	public void processGameBasket(GameBasket basket)
-	{
-		// only add non-existing game entities
-		List<GameEntityBase> entities = basket.getGameEntities();
-		for (GameEntityBase entity : entities) {
-			if (!mGameEntities.containsKey(entity.getEntityGuid()))
-				mGameEntities.put(entity.getEntityGuid(), entity);
-		}
+    private Map<String, GameEntityBase> mGameEntities;
+    private Map<String, XMParticle> mXMParticles;
 
-		// only add non-existing xm particles
-		List<XMParticle> xmParticles = basket.getEnergyGlobGuids();
-		for (XMParticle particle : xmParticles) {
-			if (!mXMParticles.containsKey(particle.getGuid()))
-				mXMParticles.put(particle.getGuid(), particle);
-		}
-	}
-	
-	public final Map<String, GameEntityBase> getGameEntities()
-	{
-		return mGameEntities;
-	}
-	
-	public final Map<String, XMParticle> getXMParticles()
-	{
-		return mXMParticles;
-	}
+    public World()
+    {
+        mGameEntities = new HashMap<String, GameEntityBase>();
+        mXMParticles = new HashMap<String, XMParticle>();
+    }
+
+    public void clear()
+    {
+        mGameEntities.clear();
+        mXMParticles.clear();
+    }
+
+    public void processGameBasket(GameBasket basket)
+    {
+        // only add non-existing game entities
+        List<GameEntityBase> entities = basket.getGameEntities();
+        for (GameEntityBase entity : entities) {
+            if (!mGameEntities.containsKey(entity.getEntityGuid()))
+                mGameEntities.put(entity.getEntityGuid(), entity);
+        }
+
+        // only add non-existing xm particles
+        List<XMParticle> xmParticles = basket.getEnergyGlobGuids();
+        for (XMParticle particle : xmParticles) {
+            if (!mXMParticles.containsKey(particle.getGuid()))
+                mXMParticles.put(particle.getGuid(), particle);
+        }
+    }
+
+    public final Map<String, GameEntityBase> getGameEntities()
+    {
+        return mGameEntities;
+    }
+
+    public final Map<String, XMParticle> getXMParticles()
+    {
+        return mXMParticles;
+    }
 }

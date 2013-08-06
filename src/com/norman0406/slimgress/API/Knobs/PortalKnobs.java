@@ -36,14 +36,14 @@ public class PortalKnobs extends Knobs
         List<Integer> applicableLevels;
         int remaining;
     }
-    
+
     private List<Band> mBands;
     private int mMaxResonatorsPerPlayer;
 
     public PortalKnobs(JSONObject json) throws JSONException
     {
         super(json);
-        
+
         JSONObject resonatorLimits = json.getJSONObject("resonatorLimits");
         JSONArray bands = resonatorLimits.getJSONArray("bands");
         mBands = new ArrayList<Band>();
@@ -54,21 +54,21 @@ public class PortalKnobs extends Knobs
             newBand.remaining = band.getInt("remaining");
             mBands.add(newBand);
         }
-        
+
         mMaxResonatorsPerPlayer = json.getInt("maxResonatorsPerPlayer");
     }
-    
+
     public Band getBandForLevel(int level)
     {
         for (Band band : mBands) {
             if (band.applicableLevels.contains((Integer)level))
                 return band;
         }
-        
+
         Log.w("PortalKnobs", "band not found for level: " + level);
         return null;
     }
-    
+
     public List<Band> getBands()
     {
         return mBands;

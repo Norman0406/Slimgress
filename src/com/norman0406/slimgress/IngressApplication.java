@@ -26,41 +26,41 @@ import android.app.Application;
 
 public class IngressApplication extends Application
 {
-	private static IngressApplication mSingleton;
-	private boolean mLoggedIn = false;
-	protected GameState mGame;
-	
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-						
-		mSingleton = this;
-		mGame = new GameState();
-	}
+    private static IngressApplication mSingleton;
+    private boolean mLoggedIn = false;
+    protected GameState mGame;
 
-	@Override
-	public void onTerminate()
-	{
-	}
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        mSingleton = this;
+        mGame = new GameState();
+    }
+
+    @Override
+    public void onTerminate()
+    {
+    }
 
     public static IngressApplication getInstance()
     {
         return mSingleton;
     }
-	
-	public GameState getGame()
-	{
-		return mGame;
-	}
-	
-	public boolean isLoggedIn()
-	{
-		return mLoggedIn;
-	}
-	
-	public void setLoggedIn(boolean loggedIn)
-	{
-		mLoggedIn = loggedIn;
-	}
+
+    public GameState getGame()
+    {
+        return mGame;
+    }
+
+    public boolean isLoggedIn()
+    {
+        return mLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn)
+    {
+        mLoggedIn = loggedIn;
+    }
 }

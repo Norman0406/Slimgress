@@ -25,38 +25,38 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModTurret extends ItemMod
-{	
-	private int mAttackFrequency;
-	private int mHitBonus;
-	
-	public ItemModTurret(JSONArray json) throws JSONException
-	{
-		super(json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mAttackFrequency = Integer.parseInt(stats.getString("ATTACK_FREQUENCY"));
-		mHitBonus = Integer.parseInt(stats.getString("HIT_BONUS"));
-	}
-    
+{
+    private int mAttackFrequency;
+    private int mHitBonus;
+
+    public ItemModTurret(JSONArray json) throws JSONException
+    {
+        super(json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mAttackFrequency = Integer.parseInt(stats.getString("ATTACK_FREQUENCY"));
+        mHitBonus = Integer.parseInt(stats.getString("HIT_BONUS"));
+    }
+
     public static String getNameStatic()
     {
         return "TURRET";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public int getAttackFrequency()
-	{
-		return mAttackFrequency;
-	}
-	
-	public int getHitBonus()
-	{
-		return mHitBonus;
-	}
+
+    public int getAttackFrequency()
+    {
+        return mAttackFrequency;
+    }
+
+    public int getHitBonus()
+    {
+        return mHitBonus;
+    }
 }

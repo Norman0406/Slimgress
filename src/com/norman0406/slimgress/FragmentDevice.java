@@ -28,12 +28,12 @@ import android.view.ViewGroup;
 
 public class FragmentDevice extends Fragment
 {
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		View rootView = inflater.inflate(R.layout.fragment_device,
-				container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View rootView = inflater.inflate(R.layout.fragment_device,
+                container, false);
 
-		return rootView;
-	}
+        return rootView;
+    }
 }

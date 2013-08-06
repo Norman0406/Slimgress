@@ -33,25 +33,25 @@ public class Team
     }
 
     private TeamType mTeam;
-    
+
     public Team(JSONObject json) throws JSONException
     {
         if (!json.has("team"))
             throw new RuntimeException("invalid json object");
-        
+
         mTeam = fromString(json.getString("team"));
     }
-    
+
     public Team(String teamString)
     {
         mTeam = fromString(teamString);
     }
-    
+
     public Team(TeamType teamType)
     {
         mTeam = teamType;
     }
-    
+
     private TeamType fromString(String teamString)
     {
         if (teamString.equals("RESISTANCE"))
@@ -63,12 +63,12 @@ public class Team
         else
             throw new RuntimeException("invalid team string: " + teamString);
     }
-    
+
     public TeamType getTeamType()
     {
         return mTeam;
     }
-    
+
     public String toString()
     {
         if (mTeam == TeamType.Resistance)

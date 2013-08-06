@@ -30,11 +30,11 @@ public class ClientFeatureKnobs extends Knobs
     private boolean mEnableRecycle;
     private int mInviteNagDelayDays;
     private int mRefreshTimeMS;
-    
+
     public ClientFeatureKnobs(JSONObject json) throws JSONException
     {
         super(json);
-        
+
         mEnableInviteNag = json.getBoolean("enableInviteNag");
         mFireMode = json.getInt("fireMode");
         mEnableRecycle = json.getBoolean("enableRecycle");

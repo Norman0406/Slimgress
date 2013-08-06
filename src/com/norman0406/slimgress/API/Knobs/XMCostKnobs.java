@@ -46,7 +46,7 @@ public class XMCostKnobs extends Knobs
     private List<Integer> mForceAmplifierDeployCostByLevel;
     private List<Integer> mLinkAmplifierDeployCostByLevel;
     private Map<String, List<Integer>> mPortalModByLevel;
-    
+
     public XMCostKnobs(JSONObject json) throws JSONException
     {
         super(json);
@@ -143,7 +143,7 @@ public class XMCostKnobs extends Knobs
     {
         if (!mPortalModByLevel.containsKey(key))
             Log.e("XMCostKnobs", "key not found in hash map: " + key);
-        
+
         return mPortalModByLevel.get(key);
     }
 }

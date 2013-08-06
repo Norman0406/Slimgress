@@ -30,34 +30,34 @@ import com.norman0406.slimgress.API.Common.EntityBase;
 
 public abstract class GameEntityBase extends EntityBase
 {
-	public enum GameEntityType
-	{
-		ControlField,
-		Link,
-		Portal,
-		Item
-	}
-	
-	private enum OwnerType
-	{
-		Creator,
-		Conqueror
-	}
-	
-	GameEntityType mGameEntityType;
-	OwnerType mOwnerType;	// created or captured
-	String mOwnerGuid;
-	String mOwnerTimestamp;
-    
+    public enum GameEntityType
+    {
+        ControlField,
+        Link,
+        Portal,
+        Item
+    }
+
+    private enum OwnerType
+    {
+        Creator,
+        Conqueror
+    }
+
+    GameEntityType mGameEntityType;
+    OwnerType mOwnerType;	// created or captured
+    String mOwnerGuid;
+    String mOwnerTimestamp;
+
     public static GameEntityBase createByJSON(JSONArray json) throws JSONException
-    {   
+    {
         if (json.length() != 3) {
             Log.e("GameEntityBase", "invalid array size");
             return null;
         }
 
         JSONObject item = json.getJSONObject(2);
-        
+
         // create entity
         GameEntityBase newEntity = null;
         if (item.has("edge"))
@@ -72,52 +72,52 @@ public abstract class GameEntityBase extends EntityBase
             // unknown game entity
             Log.w("GameEntityBase", "unknown game entity");
         }
-        
+
         return newEntity;
     }
-		
-	GameEntityBase(GameEntityType type, JSONArray json) throws JSONException
-	{
-		super(json);
-		mGameEntityType = type;
-		
-		JSONObject item = json.getJSONObject(2);
 
-		if (item.has("creator")) {
-			JSONObject creator = item.getJSONObject("creator");
-			mOwnerGuid = creator.getString("creatorGuid");
-			mOwnerTimestamp = creator.getString("creationTime");
-			mOwnerType = OwnerType.Creator;
-		}
-		else if (item.has("captured")) {
-			JSONObject creator = item.getJSONObject("captured");
-			mOwnerGuid = creator.getString("capturingPlayerId");
-			mOwnerTimestamp = creator.getString("capturedTime");
-			mOwnerType = OwnerType.Conqueror;
-		}
-		else {
-			// UNDONE: GameEntityItem does not have owner information
-			//throw new RuntimeException("no owner information available");
-		}
-	}
-	
-	public GameEntityType getGameEntityType()
-	{
-		return mGameEntityType;
-	}
-	
-	public OwnerType getOwnerType()
-	{
-		return mOwnerType;
-	}
-	
-	public String getOwnerGuid()
-	{
-		return mOwnerGuid;
-	}
+    GameEntityBase(GameEntityType type, JSONArray json) throws JSONException
+    {
+        super(json);
+        mGameEntityType = type;
 
-	public String getOwnerTimestamp()
-	{
-		return mOwnerTimestamp;
-	}
+        JSONObject item = json.getJSONObject(2);
+
+        if (item.has("creator")) {
+            JSONObject creator = item.getJSONObject("creator");
+            mOwnerGuid = creator.getString("creatorGuid");
+            mOwnerTimestamp = creator.getString("creationTime");
+            mOwnerType = OwnerType.Creator;
+        }
+        else if (item.has("captured")) {
+            JSONObject creator = item.getJSONObject("captured");
+            mOwnerGuid = creator.getString("capturingPlayerId");
+            mOwnerTimestamp = creator.getString("capturedTime");
+            mOwnerType = OwnerType.Conqueror;
+        }
+        else {
+            // UNDONE: GameEntityItem does not have owner information
+            //throw new RuntimeException("no owner information available");
+        }
+    }
+
+    public GameEntityType getGameEntityType()
+    {
+        return mGameEntityType;
+    }
+
+    public OwnerType getOwnerType()
+    {
+        return mOwnerType;
+    }
+
+    public String getOwnerGuid()
+    {
+        return mOwnerGuid;
+    }
+
+    public String getOwnerTimestamp()
+    {
+        return mOwnerTimestamp;
+    }
 }

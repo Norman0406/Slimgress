@@ -7,17 +7,17 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-    
+
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true"/>
-    
+
     <permission
         android:name="com.norman0406.slimgress.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
-    
+
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -25,18 +25,18 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-	<uses-permission android:name="com.norman0406.slimgress.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="com.norman0406.slimgress.permission.MAPS_RECEIVE"/>
 
     <application
         android:allowBackup="true"
         android:name="com.norman0406.slimgress.IngressApplication"
         android:icon="@drawable/ic_launcher"
-       	android:theme="@android:style/Theme.Holo.NoActionBar" >
-        
+        android:theme="@android:style/Theme.Holo.NoActionBar" >
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/mapskey" />
-        
+
         <!-- start with splash activity to authenticate and get handshake data -->
         <activity
             android:name="com.norman0406.slimgress.ActivitySplash"
@@ -46,21 +46,21 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        
+
         <!-- if necessary continue with authentication -->
         <activity
             android:name="com.norman0406.slimgress.ActivityAuth" >
         </activity>
-        
+
         <!-- start main activity and display map -->
         <activity
             android:name="com.norman0406.slimgress.ActivityMain" >
         </activity>
-        
+
         <!-- ops activity with additional information -->
         <activity
             android:name="com.norman0406.slimgress.ActivityOps"
-       		android:theme="@android:style/Theme.Holo" >
+               android:theme="@android:style/Theme.Holo" >
         </activity>
     </application>
 

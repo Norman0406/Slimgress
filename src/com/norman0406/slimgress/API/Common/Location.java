@@ -31,30 +31,30 @@ public class Location
 {
     private long latitude;
     private long longitude;
-    
+
     public Location(JSONObject json) throws JSONException
     {
         latitude = json.getInt("latE6");
         longitude = json.getInt("lngE6");
     }
-    
+
     public Location(long cellId)
     {
         S2CellId cell = new S2CellId(cellId);
-        
+
         S2LatLng pos = cell.toLatLng();
         latitude = pos.lat().e6();
         longitude = pos.lng().e6();
     }
-    
+
     public Location(double latDeg, double lngDeg)
     {
         S2LatLng pos = S2LatLng.fromDegrees(latDeg, lngDeg);
-        
+
         latitude = pos.lat().e6();
         longitude = pos.lng().e6();
     }
-    
+
     public Location(long latE6, long lngE6)
     {
         latitude = latE6;
@@ -70,7 +70,7 @@ public class Location
     {
         return longitude;
     }
-    
+
     public LatLng getLatLng()
     {
         S2LatLng pos = S2LatLng.fromE6(latitude, longitude);

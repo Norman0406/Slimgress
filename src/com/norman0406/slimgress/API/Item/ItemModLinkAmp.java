@@ -25,31 +25,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModLinkAmp extends ItemMod
-{	
-	private int mLinkRangeMultiplier;
+{
+    private int mLinkRangeMultiplier;
 
-	public ItemModLinkAmp(JSONArray json) throws JSONException
-	{
-		super(json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mLinkRangeMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
-	}
-    
+    public ItemModLinkAmp(JSONArray json) throws JSONException
+    {
+        super(json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mLinkRangeMultiplier = Integer.parseInt(stats.getString("LINK_RANGE_MULTIPLIER"));
+    }
+
     public static String getNameStatic()
     {
         return "LINK_AMPLIFIER";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public int getLinkRangeMultiplier()
-	{
-		return mLinkRangeMultiplier;
-	}
+
+    public int getLinkRangeMultiplier()
+    {
+        return mLinkRangeMultiplier;
+    }
 }

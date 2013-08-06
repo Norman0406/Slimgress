@@ -25,31 +25,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModForceAmp extends ItemMod
-{	
-	private int mForceAmplifier;
+{
+    private int mForceAmplifier;
 
-	public ItemModForceAmp(JSONArray json) throws JSONException
-	{
-		super(json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mForceAmplifier = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
-	}
-    
+    public ItemModForceAmp(JSONArray json) throws JSONException
+    {
+        super(json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mForceAmplifier = Integer.parseInt(stats.getString("FORCE_AMPLIFIER"));
+    }
+
     public static String getNameStatic()
     {
         return "FORCE_AMP";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public int getForceAmplifier() 
-	{
-		return mForceAmplifier;
-	}
+
+    public int getForceAmplifier()
+    {
+        return mForceAmplifier;
+    }
 }

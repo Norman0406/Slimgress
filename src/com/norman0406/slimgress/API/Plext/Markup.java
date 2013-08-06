@@ -37,19 +37,19 @@ public abstract class Markup
         Portal,
         Text
     }
-    
+
     private MarkupType mType;
     private String mPlain;
-    
+
     public static Markup createByJSON(JSONArray json) throws JSONException
     {
         if (json.length() != 2) {
             Log.e("Markup", "invalid array size");
             return null;
         }
-        
+
         JSONObject markupObj = json.getJSONObject(1);
-        
+
         Markup newMarkup = null;
 
         String markupString = json.getString(0);
@@ -67,21 +67,21 @@ public abstract class Markup
             newMarkup = new MarkupText(markupObj);
         else
             Log.w("Markup", "unknown markup type: " + markupString);
-        
+
         return newMarkup;
     }
-        
+
     public Markup(MarkupType type, JSONObject json) throws JSONException
     {
         mType = type;
         mPlain = json.getString("plain");
     }
-    
+
     public String getPlain()
     {
         return mPlain;
     }
-    
+
     public MarkupType getType()
     {
         return mType;

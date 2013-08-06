@@ -28,15 +28,15 @@ public class ItemUltraStrike extends ItemWeapon
     public ItemUltraStrike(JSONArray json) throws JSONException
     {
         super(ItemType.UltraStrike, json);
-        
+
         // TODO: which information is needed from the JSONObject?
     }
-    
+
     public static String getNameStatic()
     {
         return "ULTRA_STRIKE";
     }
-    
+
     public String getName()
     {
         return getNameStatic();

@@ -24,17 +24,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class ItemResonator extends ItemBase
-{	
-	public ItemResonator(JSONArray json) throws JSONException
-	{
-		super(ItemType.Resonator, json);
-	}
-    
+{
+    public ItemResonator(JSONArray json) throws JSONException
+    {
+        super(ItemType.Resonator, json);
+    }
+
     public static String getNameStatic()
     {
         return "EMITTER_A";
     }
-    
+
     public String getName()
     {
         return getNameStatic();

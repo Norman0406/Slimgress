@@ -26,30 +26,30 @@ import org.json.JSONObject;
 
 public class ItemModMultihack extends ItemMod
 {
-	private int mBurnoutInsulation;
+    private int mBurnoutInsulation;
 
-	public ItemModMultihack(JSONArray json) throws JSONException
-	{
-		super(json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mBurnoutInsulation = Integer.parseInt(stats.getString("BURNOUT_INSULATION"));
-	}
-    
+    public ItemModMultihack(JSONArray json) throws JSONException
+    {
+        super(json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mBurnoutInsulation = Integer.parseInt(stats.getString("BURNOUT_INSULATION"));
+    }
+
     public static String getNameStatic()
     {
         return "MULTIHACK";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public int getBurnoutInsulation()
-	{
-		return mBurnoutInsulation;
-	}
+
+    public int getBurnoutInsulation()
+    {
+        return mBurnoutInsulation;
+    }
 }

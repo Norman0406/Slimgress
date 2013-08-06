@@ -25,25 +25,25 @@ import org.json.JSONException;
 
 public abstract class EntityBase
 {
-	private String mEntityGuid;
-	private String mEntityTimestamp;
-	
-	public EntityBase(JSONArray json) throws JSONException
-	{
-		if (json.length() != 3)
-			throw new JSONException("invalid array size");
-		
-		mEntityGuid = json.getString(0);
-		mEntityTimestamp = json.getString(1);
-	}
+    private String mEntityGuid;
+    private String mEntityTimestamp;
 
-	public String getEntityGuid()
-	{
-		return mEntityGuid;
-	}
+    public EntityBase(JSONArray json) throws JSONException
+    {
+        if (json.length() != 3)
+            throw new JSONException("invalid array size");
 
-	public String getEntityTimestamp()
-	{
-		return mEntityTimestamp;
-	}
+        mEntityGuid = json.getString(0);
+        mEntityTimestamp = json.getString(1);
+    }
+
+    public String getEntityGuid()
+    {
+        return mEntityGuid;
+    }
+
+    public String getEntityTimestamp()
+    {
+        return mEntityTimestamp;
+    }
 }

@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- general strings -->
     <string name="appname">Slimgress</string>
- 	<string name="ok">OK</string>
- 	<string name="cancel">Cancel</string>
- 	<string name="mapskey">AIzaSyAAUm-zllH4VMqtpEvmeFhjqr8ZvDpNUvM</string>
- 	
- 	<!-- activity strings --> 	
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="mapskey">AIzaSyAAUm-zllH4VMqtpEvmeFhjqr8ZvDpNUvM</string>
+
+     <!-- activity strings -->
     <string name="auth_login">Logging in&#8230;</string>
     <string name="auth_refresh">Refreshing token&#8230;</string>
- 	<string name="auth_identity">Select identity</string>
+    <string name="auth_identity">Select identity</string>
     <string name="auth_username">User-Name</string>
- 	<string name="splash_failure_title">Authentication failed</string>
- 	<string name="splash_failure_msg">Authentication failed. This can have several reasons, e.g. you are not authorized to use your google account with Ingress.</string>
- 	<string name="splash_loading">Loading game&#8230;</string>
+    <string name="splash_failure_title">Authentication failed</string>
+    <string name="splash_failure_msg">Authentication failed. This can have several reasons, e.g. you are not authorized to use your google account with Ingress.</string>
+    <string name="splash_loading">Loading game&#8230;</string>
     <string name="main_level">L1</string>
     <string name="main_agent">Agent</string>
     <string name="main_agentinfo">AP: 0 / XM: 0 %</string>
@@ -23,7 +22,7 @@
     <string name="ops_inventory">Inventory</string>
     <string name="ops_user">User</string>
     <string name="ops_device">Device</string>
- 	
- 	<!-- other -->
- 	<string name="dummy">Dummy</string>
+
+    <!-- other -->
+    <string name="dummy">Dummy</string>
 </resources>

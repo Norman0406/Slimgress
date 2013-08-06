@@ -25,18 +25,18 @@ import org.json.JSONException;
 
 public class ItemXMP extends ItemWeapon
 {
-	public ItemXMP(JSONArray json) throws JSONException
-	{
-		super(ItemType.XMP, json);
-		
-		// TODO: which information is needed from the JSONObject?
-	}
-    
+    public ItemXMP(JSONArray json) throws JSONException
+    {
+        super(ItemType.XMP, json);
+
+        // TODO: which information is needed from the JSONObject?
+    }
+
     public static String getNameStatic()
     {
         return "EMP_BURSTER";
     }
-    
+
     public String getName()
     {
         return getNameStatic();

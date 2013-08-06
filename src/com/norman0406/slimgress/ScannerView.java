@@ -77,27 +77,27 @@ public class ScannerView extends SupportMapFragment
     private Bitmap mPortalIconResistance = null;
     private Bitmap mPortalIconEnlightened = null;
     private Bitmap mPortalIconNeutral = null;
-    
+
     private HashMap<String, Marker> mMarkers = null;
     private HashMap<String, Polyline> mLines = null;
     private HashMap<String, Polygon> mPolygons = null;
-    
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        
+
         // retrieve map
         mMap = getMap();
         if (mMap == null)
             throw new RuntimeException("map is invalid");
 
         loadAssets();
-        
+
         mMarkers = new HashMap<String, Marker>();
         mLines = new HashMap<String, Polyline>();
         mPolygons = new HashMap<String, Polygon>();
-        
+
         // disable most ui elements
         UiSettings ui = mMap.getUiSettings();
         ui.setAllGesturesEnabled(false);
@@ -106,12 +106,12 @@ public class ScannerView extends SupportMapFragment
         ui.setRotateGesturesEnabled(true);
         ui.setZoomControlsEnabled(false);
         ui.setMyLocationButtonEnabled(false);
-        
+
         mMap.setMyLocationEnabled(true);
-        
+
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             boolean firstLocation = true;
-            
+
             @Override
             public void onMyLocationChange(Location myLocation)
             {
@@ -123,25 +123,25 @@ public class ScannerView extends SupportMapFragment
                 .tilt(40)
                 .build();
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(newPos));
-                
+
                 // update game position
                 mGame.updateLocation(new com.norman0406.slimgress.API.Common.Location(myLocation.getLatitude(), myLocation.getLongitude()));
-                
+
                 if (firstLocation) {
                     firstLocation = false;
                 }
             }
         });
-        
+
         //startWorldUpdate();
-        
+
         // deactivate standard map
         mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-        
+
         // add custom map tiles
         addIngressTiles();
     }
-    
+
     private void loadAssets()
     {
         int portalSize = 80;
@@ -154,7 +154,7 @@ public class ScannerView extends SupportMapFragment
     private Bitmap getBitmapFromAsset(String name)
     {
         AssetManager assetManager = getActivity().getAssets();
-        
+
         InputStream istr;
         Bitmap bitmap = null;
         try {
@@ -163,10 +163,10 @@ public class ScannerView extends SupportMapFragment
         } catch (IOException e) {
             return null;
         }
-        
+
         return bitmap;
     }
-    
+
     private void addIngressTiles()
     {
         // create a custom tile provider with an ingress-like map
@@ -175,12 +175,12 @@ public class ScannerView extends SupportMapFragment
             public synchronized URL getTileUrl(int x, int y, int zoom) {
                 final String apistyle = "s.e%3Al%7Cp.v%3Aoff%2Cs.e%3Ag%7Cp.c%3A%23ff000000%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5e9391";
                 final String style = "59,37%7Csmartmaps";
-                
-                final String format = "http://mt1.googleapis.com/vt?lyrs=m&src=apiv3&hl=de-DE&x=%d&s=&y=%d&z=%d&s=Galileo";                 
+
+                final String format = "http://mt1.googleapis.com/vt?lyrs=m&src=apiv3&hl=de-DE&x=%d&s=&y=%d&z=%d&s=Galileo";
                 String mapUrl = String.format(Locale.US, format, x, y, zoom);
-                
+
                 mapUrl += "&apistyle=" + apistyle + "&style=" + style;
-                
+
                 URL url = null;
                 try {
                     url = new URL(mapUrl);
@@ -188,27 +188,27 @@ public class ScannerView extends SupportMapFragment
                     throw new AssertionError(e);
                 }
                 return url;
-            }               
+            }
         };
-        
+
         TileOverlayOptions tileOverlay = new TileOverlayOptions();
         tileOverlay.tileProvider(tiles);
-        
+
         mMap.addTileOverlay(new TileOverlayOptions().tileProvider(tiles));
     }
-    
+
     private void startWorldUpdate()
     {
         // TODO: problems blocking execution and causing out-of-memory exception
-        
+
         final Handler uiHandler = new Handler();
-        
+
         long updateInterval = mGame.getKnobs().getScannerKnobs().getUpdateIntervalMS();
-        
+
         Timer updateTimer = new Timer();
         updateTimer.scheduleAtFixedRate(new TimerTask() {
             final Handler timerHandler = new Handler();
-            
+
             @Override
             public void run()
             {
@@ -218,10 +218,10 @@ public class ScannerView extends SupportMapFragment
                     {
                         // get map boundaries (on ui thread)
                         LatLng northeast = mMap.getProjection().getVisibleRegion().latLngBounds.northeast;
-                        LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;      
+                        LatLng southwest = mMap.getProjection().getVisibleRegion().latLngBounds.southwest;
                         final S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromDegrees(southwest.latitude, southwest.longitude),
                                 S2LatLng.fromDegrees(northeast.latitude, northeast.longitude));
-                        
+
                         // update world (on timer thread)
                         timerHandler.post(new Runnable() {
                             @Override
@@ -236,7 +236,7 @@ public class ScannerView extends SupportMapFragment
             }
         }, 0, updateInterval);
     }
-    
+
     private synchronized void updateWorld(final S2LatLngRect region, final Handler uiHandler)
     {
         // handle interface result (on timer thread)
@@ -245,7 +245,7 @@ public class ScannerView extends SupportMapFragment
             public boolean handleMessage(Message msg) {
                 // draw xm particles
                 drawXMParticles();
-                
+
                 new Thread(new Runnable() {
                     @Override
                     public void run()
@@ -273,13 +273,13 @@ public class ScannerView extends SupportMapFragment
                         Log.d("ScannerView", "world updated");
                     }
                 }).start();
-                
+
                 return true;
-            }            
+            }
         });
 
         // get objects (on new thread)
-        new Thread(new Runnable() {            
+        new Thread(new Runnable() {
             @Override
             public void run()
             {
@@ -287,7 +287,7 @@ public class ScannerView extends SupportMapFragment
             }
         }).start();
     }
-    
+
     private void drawXMParticles()
     {
         // draw xm particles
@@ -298,11 +298,11 @@ public class ScannerView extends SupportMapFragment
             XMParticle particle = xmParticles.get(key);
 
             final Utils.LocationE6 location = particle.getCellLocation();
-            
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(mXMParticleIcon);        
+                    BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(mXMParticleIcon);
                     mMap.addMarker(new MarkerOptions()
                     .position(location.getLatLng())
                     .icon(icon));
@@ -310,7 +310,7 @@ public class ScannerView extends SupportMapFragment
             });
         }*/
     }
-    
+
     private void drawPortal(final GameEntityPortal portal)
     {
         final Team team = portal.getPortalTeam();
@@ -318,7 +318,7 @@ public class ScannerView extends SupportMapFragment
             // only update if marker has not yet been added
             if (!mMarkers.containsKey(portal.getEntityGuid())) {
                 final com.norman0406.slimgress.API.Common.Location location = portal.getPortalLocation();
-                
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -328,24 +328,24 @@ public class ScannerView extends SupportMapFragment
                         else if (team.getTeamType() == Team.TeamType.Enlightened)
                             portalIcon = mPortalIconEnlightened;
                         else
-                            portalIcon = mPortalIconNeutral; 
-                        
-                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(portalIcon);                                 
-                        
+                            portalIcon = mPortalIconNeutral;
+
+                        BitmapDescriptor icon = BitmapDescriptorFactory.fromBitmap(portalIcon);
+
                         MarkerOptions marker = new MarkerOptions();
                         marker.position(location.getLatLng())
                         .title(portal.getPortalTitle())
                         .icon(icon)
                         .anchor(0.5f, 0.5f);
-                        
+
                         Marker m = mMap.addMarker(marker);
                         mMarkers.put(portal.getEntityGuid(), m);
                     }
                 });
-            }            
+            }
         }
     }
-    
+
     private void drawLink(final GameEntityLink link)
     {
         if (mMap != null) {
@@ -353,7 +353,7 @@ public class ScannerView extends SupportMapFragment
             if (!mLines.containsKey(link.getEntityGuid())) {
                 final com.norman0406.slimgress.API.Common.Location origin = link.getLinkOriginLocation();
                 final com.norman0406.slimgress.API.Common.Location dest = link.getLinkDestinationLocation();
-                
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -361,14 +361,14 @@ public class ScannerView extends SupportMapFragment
                         Team team = link.getLinkControllingTeam();
                         if (team.getTeamType() == Team.TeamType.Enlightened)
                             color = 0xff00ff00; // green without alpha
-                        
+
                         PolylineOptions line = new PolylineOptions();
                         line.add(origin.getLatLng());
                         line.add(dest.getLatLng());
                         line.color(color);
                         line.width(2);
                         line.zIndex(2);
-                        
+
                         Polyline l = mMap.addPolyline(line);
                         mLines.put(link.getEntityGuid(), l);
                     }
@@ -376,7 +376,7 @@ public class ScannerView extends SupportMapFragment
             }
         }
     }
-    
+
     private void drawField(final GameEntityControlField field)
     {
         if (mMap != null) {
@@ -385,16 +385,16 @@ public class ScannerView extends SupportMapFragment
                 final com.norman0406.slimgress.API.Common.Location vA = field.getFieldVertexA().getPortalLocation();
                 final com.norman0406.slimgress.API.Common.Location vB = field.getFieldVertexB().getPortalLocation();
                 final com.norman0406.slimgress.API.Common.Location vC = field.getFieldVertexC().getPortalLocation();
-                
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        
+
                         int color = 0x320000ff; // blue with alpha
                         Team team = field.getFieldControllingTeam();
                         if (team.getTeamType() == Team.TeamType.Enlightened)
                             color = 0x3200ff00; // green with alpha
-                        
+
                         PolygonOptions polygon = new PolygonOptions();
                         polygon.add(vA.getLatLng());
                         polygon.add(vB.getLatLng());
@@ -402,7 +402,7 @@ public class ScannerView extends SupportMapFragment
                         polygon.fillColor(color);
                         polygon.strokeWidth(0);
                         polygon.zIndex(1);
-                        
+
                         Polygon p = mMap.addPolygon(polygon);
                         mPolygons.put(field.getEntityGuid(), p);
                     }

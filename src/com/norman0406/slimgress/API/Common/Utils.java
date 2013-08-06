@@ -30,55 +30,55 @@ import com.google.common.geometry.S2Region;
 import com.google.common.geometry.S2RegionCoverer;
 
 public class Utils
-{	
-	public static String[] getCellIdsFromLocationArea(Location location, double areaM2, int minLevel, int maxLevel)
-	{
-		final double radius_m2 = 6371 * 1000;
-		final double sr = areaM2 / (radius_m2 * radius_m2);
+{
+    public static String[] getCellIdsFromLocationArea(Location location, double areaM2, int minLevel, int maxLevel)
+    {
+        final double radius_m2 = 6371 * 1000;
+        final double sr = areaM2 / (radius_m2 * radius_m2);
 
-		S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());
-		S2Cap cap = S2Cap.fromAxisArea(pointLatLng.toPoint(), sr);
-		
-		return getCellIdsFromRegion(cap, minLevel, maxLevel);
-	}
-	
-	public static String[] getCellIdsFromMinMax(Location min, Location max, int minLevel, int maxLevel)
-	{
-		S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromE6(min.getLatitude(), min.getLongitude()),
-				S2LatLng.fromE6(max.getLatitude(), max.getLongitude()));
-		return getCellIdsFromRegion(region, minLevel, maxLevel);
-	}
-	
-	// retrieve cell ids from location and covering area in m2
-	public static String[] getCellIdsFromRegion(S2Region region, int minLevel, int maxLevel)
-	{
-		S2RegionCoverer rCov = new S2RegionCoverer();
+        S2LatLng pointLatLng = S2LatLng.fromE6(location.getLatitude(), location.getLongitude());
+        S2Cap cap = S2Cap.fromAxisArea(pointLatLng.toPoint(), sr);
 
-		rCov.setMinLevel(minLevel);
-		rCov.setMaxLevel(maxLevel);
-		
-		// get cells
-		ArrayList<S2CellId> cells = new ArrayList<S2CellId>();
-		rCov.getCovering(region, cells);
-		
-		ArrayList<Long> cellIds = new ArrayList<Long>();
-		for (int i = 0; i < cells.size(); i++) {
-			
-			S2CellId cellId = cells.get(i);
-			
-			// can happen for some reason
-			if (cellId.level() < minLevel || cellId.level() > maxLevel)
-				continue;
-			
-			cellIds.add(cellId.id());
-		}
-		
-		// convert to hex values
-		String cellIdsHex[] = new String[cellIds.size()];
-		for (int i = 0; i < cellIdsHex.length; i++) {
-			cellIdsHex[i] = Long.toHexString(cellIds.get(i));
-		}
+        return getCellIdsFromRegion(cap, minLevel, maxLevel);
+    }
 
-		return cellIdsHex;
-	}
+    public static String[] getCellIdsFromMinMax(Location min, Location max, int minLevel, int maxLevel)
+    {
+        S2LatLngRect region = S2LatLngRect.fromPointPair(S2LatLng.fromE6(min.getLatitude(), min.getLongitude()),
+                S2LatLng.fromE6(max.getLatitude(), max.getLongitude()));
+        return getCellIdsFromRegion(region, minLevel, maxLevel);
+    }
+
+    // retrieve cell ids from location and covering area in m2
+    public static String[] getCellIdsFromRegion(S2Region region, int minLevel, int maxLevel)
+    {
+        S2RegionCoverer rCov = new S2RegionCoverer();
+
+        rCov.setMinLevel(minLevel);
+        rCov.setMaxLevel(maxLevel);
+
+        // get cells
+        ArrayList<S2CellId> cells = new ArrayList<S2CellId>();
+        rCov.getCovering(region, cells);
+
+        ArrayList<Long> cellIds = new ArrayList<Long>();
+        for (int i = 0; i < cells.size(); i++) {
+
+            S2CellId cellId = cells.get(i);
+
+            // can happen for some reason
+            if (cellId.level() < minLevel || cellId.level() > maxLevel)
+                continue;
+
+            cellIds.add(cellId.id());
+        }
+
+        // convert to hex values
+        String cellIdsHex[] = new String[cellIds.size()];
+        for (int i = 0; i < cellIdsHex.length; i++) {
+            cellIdsHex[i] = Long.toHexString(cellIds.get(i));
+        }
+
+        return cellIdsHex;
+    }
 }

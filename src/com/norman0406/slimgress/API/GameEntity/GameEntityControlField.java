@@ -29,71 +29,71 @@ import com.norman0406.slimgress.API.Common.Team;
 
 public class GameEntityControlField extends GameEntityBase
 {
-	public class Vertex
-	{
-		private String mPortalGuid;
-		private Location mPortalLocation;
-		
-		public Vertex(JSONObject json) throws JSONException
-		{
-			mPortalGuid = json.getString("guid");
-			mPortalLocation = new Location(json.getJSONObject("location"));
-		}
+    public class Vertex
+    {
+        private String mPortalGuid;
+        private Location mPortalLocation;
 
-		public String getPortalGuid()
-		{
-			return mPortalGuid;
-		}
+        public Vertex(JSONObject json) throws JSONException
+        {
+            mPortalGuid = json.getString("guid");
+            mPortalLocation = new Location(json.getJSONObject("location"));
+        }
 
-		public Location getPortalLocation()
-		{
-			return mPortalLocation;
-		}
-	}
-	
-	private Vertex mFieldVertexA;
-	private Vertex mFieldVertexB;
-	private Vertex mFieldVertexC;
-	private int mFieldScore;
-	private Team mFieldControllingTeam;
-	
-	GameEntityControlField(JSONArray json) throws JSONException
-	{
-		super(GameEntityType.ControlField, json);
-		
-		JSONObject item = json.getJSONObject(2);
-		
-		JSONObject capturedRedgion = item.getJSONObject("capturedRegion");
-		
-		mFieldVertexA = new Vertex(capturedRedgion.getJSONObject("vertexA"));
-		mFieldVertexB = new Vertex(capturedRedgion.getJSONObject("vertexB"));
-		mFieldVertexC = new Vertex(capturedRedgion.getJSONObject("vertexC"));
-		mFieldScore = Integer.parseInt(item.getJSONObject("entityScore").getString("entityScore"));
-		mFieldControllingTeam = new Team(item.getJSONObject("controllingTeam"));
-	}
-	
-	public Vertex getFieldVertexA()
-	{
-		return mFieldVertexA;
-	}
-	
-	public Vertex getFieldVertexB()
-	{
-		return mFieldVertexB;
-	}
-	
-	public Vertex getFieldVertexC()
-	{
-		return mFieldVertexC;
-	}
-	
-	public int getFieldScore()
-	{
-		return mFieldScore;
-	}
-	
-	public Team getFieldControllingTeam()
-	{
-		return mFieldControllingTeam;
-	}
+        public String getPortalGuid()
+        {
+            return mPortalGuid;
+        }
+
+        public Location getPortalLocation()
+        {
+            return mPortalLocation;
+        }
+    }
+
+    private Vertex mFieldVertexA;
+    private Vertex mFieldVertexB;
+    private Vertex mFieldVertexC;
+    private int mFieldScore;
+    private Team mFieldControllingTeam;
+
+    GameEntityControlField(JSONArray json) throws JSONException
+    {
+        super(GameEntityType.ControlField, json);
+
+        JSONObject item = json.getJSONObject(2);
+
+        JSONObject capturedRedgion = item.getJSONObject("capturedRegion");
+
+        mFieldVertexA = new Vertex(capturedRedgion.getJSONObject("vertexA"));
+        mFieldVertexB = new Vertex(capturedRedgion.getJSONObject("vertexB"));
+        mFieldVertexC = new Vertex(capturedRedgion.getJSONObject("vertexC"));
+        mFieldScore = Integer.parseInt(item.getJSONObject("entityScore").getString("entityScore"));
+        mFieldControllingTeam = new Team(item.getJSONObject("controllingTeam"));
+    }
+
+    public Vertex getFieldVertexA()
+    {
+        return mFieldVertexA;
+    }
+
+    public Vertex getFieldVertexB()
+    {
+        return mFieldVertexB;
+    }
+
+    public Vertex getFieldVertexC()
+    {
+        return mFieldVertexC;
+    }
+
+    public int getFieldScore()
+    {
+        return mFieldScore;
+    }
+
+    public Team getFieldControllingTeam()
+    {
+        return mFieldControllingTeam;
+    }
 }

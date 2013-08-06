@@ -30,34 +30,34 @@ import android.util.Log;
 
 public abstract class ItemBase extends EntityBase
 {
-	public enum ItemType
-	{
-		Media,
-		Mod,
-		PortalKey,
-		PowerCube,
-		Resonator,
-		Virus,
-		XMP,
-		UltraStrike
-	}
-	
-	public enum Rarity
-	{
-		None,
-		VeryCommon,
-		Common,
-		LessCommon,
-		Rare,
-		VeryRare,
-		ExtraRare
-	}
+    public enum ItemType
+    {
+        Media,
+        Mod,
+        PortalKey,
+        PowerCube,
+        Resonator,
+        Virus,
+        XMP,
+        UltraStrike
+    }
 
-	private int mItemAccessLevel = 0;
-	private Rarity mItemRarity = Rarity.None;
-	private final ItemType mItemType;
-	private String mItemPlayerId;
-	private String mItemAcquisitionTimestamp;	
+    public enum Rarity
+    {
+        None,
+        VeryCommon,
+        Common,
+        LessCommon,
+        Rare,
+        VeryRare,
+        ExtraRare
+    }
+
+    private int mItemAccessLevel = 0;
+    private Rarity mItemRarity = Rarity.None;
+    private final ItemType mItemType;
+    private String mItemPlayerId;
+    private String mItemAcquisitionTimestamp;
 
     public static ItemBase createByJSON(JSONArray json) throws JSONException
     {
@@ -65,9 +65,9 @@ public abstract class ItemBase extends EntityBase
             Log.e("ItemBase", "invalid array size");
             return null;
         }
-        
+
         JSONObject item = json.getJSONObject(2);
-        
+
         JSONObject itemResource = null;
         if (item.has("resource"))
             itemResource = item.getJSONObject("resource");
@@ -75,10 +75,10 @@ public abstract class ItemBase extends EntityBase
             itemResource = item.getJSONObject("resourceWithLevels");
         else if (item.has("modResource"))
             itemResource = item.getJSONObject("modResource");
-        
+
         // create item
         ItemBase newItem = null;
-        
+
         String itemType = itemResource.getString("resourceType");
         if (itemType.equals(ItemPortalKey.getNameStatic()))
             newItem = new ItemPortalKey(json);
@@ -113,87 +113,87 @@ public abstract class ItemBase extends EntityBase
 
         return newItem;
     }
-	
-	protected ItemBase(ItemType type, JSONArray json) throws JSONException
-	{
-		super(json);
-		mItemType = type;
 
-		JSONObject item = json.getJSONObject(2);
-		JSONObject itemResource = null;
-		if (item.has("resource"))
-			itemResource = item.getJSONObject("resource");
-		else if (item.has("resourceWithLevels"))
-			itemResource = item.getJSONObject("resourceWithLevels");
-		else if (item.has("modResource"))
-			itemResource = item.getJSONObject("modResource");
-		else
-			throw new JSONException("resource not found");
-		
-		if (itemResource.has("resourceRarity") || itemResource.has("rarity")) {
-			String rarity = null;
-			if (itemResource.has("resourceRarity"))
-				rarity = itemResource.getString("resourceRarity");
-			else if (itemResource.has("rarity"))
-				rarity = itemResource.getString("rarity");
-			else
-				throw new RuntimeException("unknown rarity string");
-			
-			if (mItemRarity != null) {
-				if (rarity.equals("VERY_COMMON"))
-					mItemRarity = ItemBase.Rarity.VeryCommon;
-				else if (rarity.equals("COMMON"))
-					mItemRarity = ItemBase.Rarity.Common;
+    protected ItemBase(ItemType type, JSONArray json) throws JSONException
+    {
+        super(json);
+        mItemType = type;
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject itemResource = null;
+        if (item.has("resource"))
+            itemResource = item.getJSONObject("resource");
+        else if (item.has("resourceWithLevels"))
+            itemResource = item.getJSONObject("resourceWithLevels");
+        else if (item.has("modResource"))
+            itemResource = item.getJSONObject("modResource");
+        else
+            throw new JSONException("resource not found");
+
+        if (itemResource.has("resourceRarity") || itemResource.has("rarity")) {
+            String rarity = null;
+            if (itemResource.has("resourceRarity"))
+                rarity = itemResource.getString("resourceRarity");
+            else if (itemResource.has("rarity"))
+                rarity = itemResource.getString("rarity");
+            else
+                throw new RuntimeException("unknown rarity string");
+
+            if (mItemRarity != null) {
+                if (rarity.equals("VERY_COMMON"))
+                    mItemRarity = ItemBase.Rarity.VeryCommon;
+                else if (rarity.equals("COMMON"))
+                    mItemRarity = ItemBase.Rarity.Common;
                 else if (rarity.equals("LESS_COMMON"))
                     mItemRarity = ItemBase.Rarity.LessCommon;
-				else if (rarity.equals("RARE"))
-					mItemRarity = ItemBase.Rarity.Rare;
-				else if (rarity.equals("VERY_RARE"))
-					mItemRarity = ItemBase.Rarity.VeryRare;
+                else if (rarity.equals("RARE"))
+                    mItemRarity = ItemBase.Rarity.Rare;
+                else if (rarity.equals("VERY_RARE"))
+                    mItemRarity = ItemBase.Rarity.VeryRare;
                 else if (rarity.equals("EXTREMELY_RARE"))
                     mItemRarity = ItemBase.Rarity.ExtraRare;
-			}
-		}
+            }
+        }
 
-		if (itemResource.has("level")) {
-			int level = itemResource.getInt("level");
-			mItemAccessLevel = level;
-		}
-		
-		JSONObject itemInInventory = item.getJSONObject("inInventory");
-		mItemPlayerId = itemInInventory.getString("playerId");
-		mItemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
-	}
-	
-	public static String getNameStatic() {
-	    // override!
-	    throw new RuntimeException("this method has to be overridden");
-	}
-	
-	public abstract String getName();
-	
-	public int getItemAccessLevel()
-	{
-		return mItemAccessLevel;
-	}
+        if (itemResource.has("level")) {
+            int level = itemResource.getInt("level");
+            mItemAccessLevel = level;
+        }
 
-	public Rarity getItemRarity()
-	{
-		return mItemRarity;
-	}
+        JSONObject itemInInventory = item.getJSONObject("inInventory");
+        mItemPlayerId = itemInInventory.getString("playerId");
+        mItemAcquisitionTimestamp = itemInInventory.getString("acquisitionTimestampMs");
+    }
 
-	public String getItemPlayerId()
-	{
-		return mItemPlayerId;
-	}
+    public static String getNameStatic() {
+        // override!
+        throw new RuntimeException("this method has to be overridden");
+    }
 
-	public String getItemAcquisitionTimestamp()
-	{
-		return mItemAcquisitionTimestamp;
-	}
+    public abstract String getName();
 
-	public ItemType getItemType()
-	{
-		return mItemType;
-	}
+    public int getItemAccessLevel()
+    {
+        return mItemAccessLevel;
+    }
+
+    public Rarity getItemRarity()
+    {
+        return mItemRarity;
+    }
+
+    public String getItemPlayerId()
+    {
+        return mItemPlayerId;
+    }
+
+    public String getItemAcquisitionTimestamp()
+    {
+        return mItemAcquisitionTimestamp;
+    }
+
+    public ItemType getItemType()
+    {
+        return mItemType;
+    }
 }

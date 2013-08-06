@@ -26,58 +26,58 @@ import org.json.JSONObject;
 
 public class ItemPortalKey extends ItemBase
 {
-	private String mPortalGuid;
-	private String mPortalLocation;
-	private String mPortalImageUrl;
-	private String mPortalTitle;
-	private String mPortalAddress;
-	
-	public ItemPortalKey(JSONArray json) throws JSONException
-	{
-		super(ItemType.PortalKey, json);
+    private String mPortalGuid;
+    private String mPortalLocation;
+    private String mPortalImageUrl;
+    private String mPortalTitle;
+    private String mPortalAddress;
 
-		JSONObject item = json.getJSONObject(2);
-		JSONObject portalCoupler = item.getJSONObject("portalCoupler");
-		
-		mPortalGuid = portalCoupler.getString("portalGuid");
-		mPortalLocation = portalCoupler.getString("portalLocation");
-		mPortalImageUrl = portalCoupler.getString("portalImageUrl");
-		mPortalTitle = portalCoupler.getString("portalTitle");
-		mPortalAddress = portalCoupler.getString("portalAddress");
-	}
-    
+    public ItemPortalKey(JSONArray json) throws JSONException
+    {
+        super(ItemType.PortalKey, json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject portalCoupler = item.getJSONObject("portalCoupler");
+
+        mPortalGuid = portalCoupler.getString("portalGuid");
+        mPortalLocation = portalCoupler.getString("portalLocation");
+        mPortalImageUrl = portalCoupler.getString("portalImageUrl");
+        mPortalTitle = portalCoupler.getString("portalTitle");
+        mPortalAddress = portalCoupler.getString("portalAddress");
+    }
+
     public static String getNameStatic()
     {
         return "PORTAL_LINK_KEY";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
 
-	public String getPortalGuid()
-	{
-		return mPortalGuid;
-	}
+    public String getPortalGuid()
+    {
+        return mPortalGuid;
+    }
 
-	public String getPortalLocation()
-	{
-		return mPortalLocation;
-	}
+    public String getPortalLocation()
+    {
+        return mPortalLocation;
+    }
 
-	public String getPortalImageUrl()
-	{
-		return mPortalImageUrl;
-	}
+    public String getPortalImageUrl()
+    {
+        return mPortalImageUrl;
+    }
 
-	public String getPortalTitle()
-	{
-		return mPortalTitle;
-	}
+    public String getPortalTitle()
+    {
+        return mPortalTitle;
+    }
 
-	public String getPortalAddress()
-	{
-		return mPortalAddress;
-	}	
+    public String getPortalAddress()
+    {
+        return mPortalAddress;
+    }
 }

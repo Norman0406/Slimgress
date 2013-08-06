@@ -28,28 +28,28 @@ import com.norman0406.slimgress.API.Item.ItemBase;
 
 public class Inventory
 {
-	private List<ItemBase> mItems;
-	
-	public Inventory()
-	{
-		mItems = new LinkedList<ItemBase>();
-	}
-    
+    private List<ItemBase> mItems;
+
+    public Inventory()
+    {
+        mItems = new LinkedList<ItemBase>();
+    }
+
     public void clear()
     {
         mItems.clear();
     }
-	
-	public void processGameBasket(GameBasket basket)
-	{
-	    // add new inventory items
-		List<ItemBase> newInv = basket.getInventory();
-		if (newInv != null)
-			mItems.addAll(basket.getInventory());
-	}
-	
-	public final List<ItemBase> getItems()
-	{
-		return mItems;
-	}
+
+    public void processGameBasket(GameBasket basket)
+    {
+        // add new inventory items
+        List<ItemBase> newInv = basket.getInventory();
+        if (newInv != null)
+            mItems.addAll(basket.getInventory());
+    }
+
+    public final List<ItemBase> getItems()
+    {
+        return mItems;
+    }
 }

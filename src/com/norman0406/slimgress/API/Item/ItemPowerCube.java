@@ -26,30 +26,30 @@ import org.json.JSONObject;
 
 public class ItemPowerCube extends ItemBase
 {
-	private int mEnergy;
-	
-	public ItemPowerCube(JSONArray json) throws JSONException
-	{
-		super(ItemType.PowerCube, json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject powerCube = item.getJSONObject("powerCube");
-		
-		mEnergy = powerCube.getInt("energy");
-	}
-    
+    private int mEnergy;
+
+    public ItemPowerCube(JSONArray json) throws JSONException
+    {
+        super(ItemType.PowerCube, json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject powerCube = item.getJSONObject("powerCube");
+
+        mEnergy = powerCube.getInt("energy");
+    }
+
     public static String getNameStatic()
     {
         return "POWER_CUBE";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
-	
-	public int getEnergy()
-	{
-		return mEnergy;
-	}
+
+    public int getEnergy()
+    {
+        return mEnergy;
+    }
 }

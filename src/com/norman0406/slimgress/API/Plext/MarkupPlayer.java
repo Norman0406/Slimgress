@@ -29,19 +29,19 @@ public class MarkupPlayer extends Markup
 {
     private String mGUID;
     private Team mTeam;
-        
+
     public MarkupPlayer(JSONObject json) throws JSONException
     {
         super(MarkupType.Player, json);
         mGUID = json.getString("guid");
         mTeam = new Team(json.getString("team"));
     }
-    
+
     public String getGUID()
     {
         return mGUID;
     }
-    
+
     public Team getTeam()
     {
         return mTeam;

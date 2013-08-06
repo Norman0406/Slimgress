@@ -29,19 +29,19 @@ public class MarkupSender extends Markup
 {
     private String mGUID;
     private Team mTeam;
-    
+
     public MarkupSender(JSONObject json) throws JSONException
     {
         super(MarkupType.Sender, json);
         mGUID = json.getString("guid");
         mTeam = new Team(json.getString("team"));
     }
-    
+
     public String getGUID()
     {
         return mGUID;
     }
-    
+
     public Team getTeam()
     {
         return mTeam;

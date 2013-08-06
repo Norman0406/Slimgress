@@ -25,28 +25,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class ItemMod extends ItemBase
-{	
-	private String mModDisplayName;
-	private int mRemovalStickiness;
+{
+    private String mModDisplayName;
+    private int mRemovalStickiness;
 
-	public ItemMod(JSONArray json) throws JSONException
-	{
-		super(ItemType.Mod, json);
+    public ItemMod(JSONArray json) throws JSONException
+    {
+        super(ItemType.Mod, json);
 
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mModDisplayName = modResource.getString("displayName");
-		mRemovalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
-	}
-	
-	public String getModDisplayName()
-	{
-		return mModDisplayName;
-	}
-	
-	public int getRemovalStickiness()
-	{
-		return mRemovalStickiness;
-	}
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mModDisplayName = modResource.getString("displayName");
+        mRemovalStickiness = Integer.parseInt(stats.getString("REMOVAL_STICKINESS"));
+    }
+
+    public String getModDisplayName()
+    {
+        return mModDisplayName;
+    }
+
+    public int getRemovalStickiness()
+    {
+        return mRemovalStickiness;
+    }
 }

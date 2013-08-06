@@ -31,7 +31,7 @@ public class WeaponRangeKnobs extends Knobs
 {
     private SparseIntArray mUltraStrikeDamageRangeMap;
     private SparseIntArray mXmpDamageRangeMap;
-    
+
     public WeaponRangeKnobs(JSONObject json) throws JSONException
     {
         super(json);
@@ -56,7 +56,7 @@ public class WeaponRangeKnobs extends Knobs
     }
 
     public SparseIntArray getUltraStrikeDamageRangeMap()
-    {        
+    {
         return mUltraStrikeDamageRangeMap;
     }
 
@@ -64,12 +64,12 @@ public class WeaponRangeKnobs extends Knobs
     {
         return mXmpDamageRangeMap;
     }
-    
+
     public int getUltraStrikeDamageRange(int level)
     {
         return mUltraStrikeDamageRangeMap.get(level);
     }
-    
+
     public int getXmpDamageRange(int level)
     {
         return mXmpDamageRangeMap.get(level);

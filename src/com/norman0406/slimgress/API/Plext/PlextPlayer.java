@@ -29,41 +29,41 @@ import com.norman0406.slimgress.API.Common.Team;
 
 public class PlextPlayer extends PlextBase
 {
-	private Location mLocation;
-	private Team mTeam;
-	
-	public PlextPlayer(JSONArray json) throws JSONException
-	{
-		super(PlextType.PlayerGenerated, json);
-		
-		JSONObject item = json.getJSONObject(2);
-		
-		mLocation = new Location(item.getJSONObject("locationE6"));
-		
-		JSONObject controllingTeam = item.optJSONObject("controllingTeam");
-		if (controllingTeam != null)
-			mTeam = new Team(controllingTeam);
-		else
-			mTeam = new Team(Team.TeamType.Neutral);
-	}
-	
-	public boolean isSecure()
-	{
-		for (Markup markup : getMarkups()) {
-			if (markup.getType() == Markup.MarkupType.Secure)
-				return true;
-		}
-		
-		return false;
-	}
-	
-	public Location getLocation()
-	{
-		return mLocation;
-	}
+    private Location mLocation;
+    private Team mTeam;
 
-	public Team getTeam()
-	{
-		return mTeam;
-	}
+    public PlextPlayer(JSONArray json) throws JSONException
+    {
+        super(PlextType.PlayerGenerated, json);
+
+        JSONObject item = json.getJSONObject(2);
+
+        mLocation = new Location(item.getJSONObject("locationE6"));
+
+        JSONObject controllingTeam = item.optJSONObject("controllingTeam");
+        if (controllingTeam != null)
+            mTeam = new Team(controllingTeam);
+        else
+            mTeam = new Team(Team.TeamType.Neutral);
+    }
+
+    public boolean isSecure()
+    {
+        for (Markup markup : getMarkups()) {
+            if (markup.getType() == Markup.MarkupType.Secure)
+                return true;
+        }
+
+        return false;
+    }
+
+    public Location getLocation()
+    {
+        return mLocation;
+    }
+
+    public Team getTeam()
+    {
+        return mTeam;
+    }
 }

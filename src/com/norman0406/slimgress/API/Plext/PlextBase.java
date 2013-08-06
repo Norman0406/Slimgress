@@ -33,28 +33,28 @@ import com.norman0406.slimgress.API.Common.EntityBase;
 
 public class PlextBase extends EntityBase
 {
-	public enum PlextType
-	{
-		PlayerGenerated,
-		SystemBroadcast
-	}
-	
-	private PlextType mPlextType;
-	private String mText;
-	private List<Markup> mMarkups;
-    
+    public enum PlextType
+    {
+        PlayerGenerated,
+        SystemBroadcast
+    }
+
+    private PlextType mPlextType;
+    private String mText;
+    private List<Markup> mMarkups;
+
     public static PlextBase createByJSON(JSONArray json) throws JSONException
     {
         if (json.length() != 3) {
             Log.e("PlextBase", "invalid array size");
             return null;
         }
-        
+
         JSONObject item = json.getJSONObject(2);
         JSONObject plext = item.getJSONObject("plext");
-        
+
         PlextBase newPlext = null;
-        
+
         String plextType = plext.getString("plextType");
         if (plextType.equals("PLAYER_GENERATED"))
             newPlext = new PlextPlayer(json);
@@ -62,44 +62,44 @@ public class PlextBase extends EntityBase
             newPlext = new PlextSystem(json);
         else
             Log.w("PlextBase", "unknown plext type: " + plextType);
-        
+
         return newPlext;
     }
-	
-	protected PlextBase(PlextType type, JSONArray json) throws JSONException
-	{
-		super(json);
-		mPlextType = type;
-		
-		JSONObject item = json.getJSONObject(2);
-		
-		JSONObject plext = item.getJSONObject("plext");
-		JSONArray markup = plext.getJSONArray("markup");
 
-		mText = plext.getString("text");		
-		
-		mMarkups = new LinkedList<Markup>();
-		for (int i = 0; i < markup.length(); i++) {
-			JSONArray markupItem = markup.getJSONArray(i);
-			
-			Markup newMarkup = Markup.createByJSON(markupItem);
-			if (newMarkup != null)
-			    mMarkups.add(newMarkup);
-		}			
-	}
+    protected PlextBase(PlextType type, JSONArray json) throws JSONException
+    {
+        super(json);
+        mPlextType = type;
 
-	public PlextType getPlextType()
-	{
-		return mPlextType;
-	}
+        JSONObject item = json.getJSONObject(2);
 
-	public String getText()
-	{
-		return mText;
-	}
-	
-	public List<Markup> getMarkups()
-	{
-		return mMarkups;
-	}	
+        JSONObject plext = item.getJSONObject("plext");
+        JSONArray markup = plext.getJSONArray("markup");
+
+        mText = plext.getString("text");
+
+        mMarkups = new LinkedList<Markup>();
+        for (int i = 0; i < markup.length(); i++) {
+            JSONArray markupItem = markup.getJSONArray(i);
+
+            Markup newMarkup = Markup.createByJSON(markupItem);
+            if (newMarkup != null)
+                mMarkups.add(newMarkup);
+        }
+    }
+
+    public PlextType getPlextType()
+    {
+        return mPlextType;
+    }
+
+    public String getText()
+    {
+        return mText;
+    }
+
+    public List<Markup> getMarkups()
+    {
+        return mMarkups;
+    }
 }

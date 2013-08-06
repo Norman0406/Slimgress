@@ -37,7 +37,7 @@ public class DialogInfo extends Dialog
     {
         super(context);
         setContentView(R.layout.dialog_infobox);
-        
+
         getWindow().setWindowAnimations(R.style.FadeAnimation);
         //getWindow().setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
         getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -48,16 +48,16 @@ public class DialogInfo extends Dialog
         getWindow().setAttributes(lp);
 
         ((TextView)findViewById(R.id.message)).setVisibility(View.INVISIBLE);
-        ((TextView)findViewById(R.id.title)).setVisibility(View.INVISIBLE);        
+        ((TextView)findViewById(R.id.title)).setVisibility(View.INVISIBLE);
     }
-    
+
     public DialogInfo setMessage(String msg)
     {
-        ((TextView)findViewById(R.id.message)).setText(msg);  
-        ((TextView)findViewById(R.id.message)).setVisibility(View.VISIBLE);      
+        ((TextView)findViewById(R.id.message)).setText(msg);
+        ((TextView)findViewById(R.id.message)).setVisibility(View.VISIBLE);
         return this;
     }
-    
+
     public DialogInfo setTitle(String title)
     {
         ((TextView)findViewById(R.id.title)).setText(title);
@@ -69,7 +69,7 @@ public class DialogInfo extends Dialog
     {
         return setDismissDelay(3000);
     }
-    
+
     public DialogInfo setDismissDelay(int delay)
     {
         // automatically dismiss dialog after 3 seconds
@@ -88,7 +88,7 @@ public class DialogInfo extends Dialog
         });
         return this;
     }
-    
+
     public DialogInfo setTouchable(boolean isTouchable)
     {
         if (isTouchable) {

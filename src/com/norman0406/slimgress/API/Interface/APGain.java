@@ -43,10 +43,10 @@ public class APGain
         RemoteRechargeResonator,
         InvitedPlayerJoined
     }
-    
+
     private int mAmount;
     private Trigger mTrigger;
-    
+
     public APGain(JSONObject json) throws NumberFormatException, JSONException
     {
         mAmount = Integer.parseInt(json.getString("apGainAmount"));
@@ -82,12 +82,12 @@ public class APGain
         else
             mTrigger = Trigger.Unknown;
     }
-    
+
     public int getAmount()
     {
         return mAmount;
     }
-    
+
     public Trigger getTrigger()
     {
         return mTrigger;

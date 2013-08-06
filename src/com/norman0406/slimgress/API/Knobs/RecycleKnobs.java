@@ -33,7 +33,7 @@ import android.util.Log;
 public class RecycleKnobs extends Knobs
 {
     private Map<String, List<Integer>> mRecycleValuesMap;
-    
+
     public RecycleKnobs(JSONObject json) throws JSONException
     {
         super(json);
@@ -46,12 +46,12 @@ public class RecycleKnobs extends Knobs
             mRecycleValuesMap.put(key, getIntArray(recycleValuesMap, key));
         }
     }
-    
+
     public List<Integer> getRecycleValues(String key)
     {
         if (!mRecycleValuesMap.containsKey(key))
             Log.e("RecycleKnobs", "key not found in hash map: " + key);
-        
+
         return mRecycleValuesMap.get(key);
     }
 }

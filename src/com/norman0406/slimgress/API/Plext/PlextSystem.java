@@ -25,8 +25,8 @@ import org.json.JSONException;
 
 public class PlextSystem extends PlextBase
 {
-	public PlextSystem(JSONArray json) throws JSONException
-	{
-		super(PlextType.SystemBroadcast, json);
-	}
+    public PlextSystem(JSONArray json) throws JSONException
+    {
+        super(PlextType.SystemBroadcast, json);
+    }
 }

@@ -36,7 +36,7 @@ public class PortalModSharedKnobs extends Knobs
     private List<Integer> mMultiForceAmpDiminishingValues;
     private List<Integer> mMultiLinkAmpDiminishingValues;
     private Map<String, List<Integer>> mDiminishingValues;
-    
+
     public PortalModSharedKnobs(JSONObject json) throws JSONException
     {
         super(json);
@@ -73,7 +73,7 @@ public class PortalModSharedKnobs extends Knobs
     {
         if (!mDiminishingValues.containsKey(key))
             Log.e("PortalModSharedKnobs", "key not found in hash map: " + key);
-        
+
         return mDiminishingValues.get(key);
     }
 }

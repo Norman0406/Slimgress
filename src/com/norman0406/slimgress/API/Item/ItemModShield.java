@@ -25,31 +25,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ItemModShield extends ItemMod
-{	
-	private int mMitigation;
+{
+    private int mMitigation;
 
-	public ItemModShield(JSONArray json) throws JSONException
-	{
-		super(json);
-		
-		JSONObject item = json.getJSONObject(2);
-		JSONObject modResource = item.getJSONObject("modResource");
-		JSONObject stats = modResource.getJSONObject("stats");
-		mMitigation = Integer.parseInt(stats.getString("MITIGATION"));
-	}
-    
+    public ItemModShield(JSONArray json) throws JSONException
+    {
+        super(json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mMitigation = Integer.parseInt(stats.getString("MITIGATION"));
+    }
+
     public static String getNameStatic()
     {
         return "RES_SHIELD";
     }
-    
+
     public String getName()
     {
         return getNameStatic();
     }
 
-	public int getMitigation()
-	{
-		return mMitigation;
-	}
+    public int getMitigation()
+    {
+        return mMitigation;
+    }
 }

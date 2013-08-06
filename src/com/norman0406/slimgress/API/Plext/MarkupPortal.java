@@ -33,7 +33,7 @@ public class MarkupPortal extends Markup
     private Location mLocation;
     private String mAddress;
     private String mName;
-    
+
     public MarkupPortal(JSONObject json) throws JSONException
     {
         super(MarkupType.Portal, json);
@@ -43,27 +43,27 @@ public class MarkupPortal extends Markup
         mAddress = json.getString("address");
         mName = json.getString("name");
     }
-    
+
     public String getGUID()
     {
         return mGUID;
     }
-    
+
     public Team getTeam()
     {
         return mTeam;
     }
-    
+
     public Location getLocation()
     {
         return mLocation;
     }
-    
+
     public String getAddress()
     {
         return mAddress;
     }
-    
+
     public String getName()
     {
         return mName;

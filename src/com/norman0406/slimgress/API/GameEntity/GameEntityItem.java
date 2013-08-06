@@ -25,9 +25,9 @@ import org.json.JSONException;
 
 public class GameEntityItem extends GameEntityBase
 {
-	GameEntityItem(JSONArray json) throws JSONException {
-		super(GameEntityType.Item, json);
-		
-		// UNDONE
-	}	
+    GameEntityItem(JSONArray json) throws JSONException {
+        super(GameEntityType.Item, json);
+
+        // UNDONE
+    }
 }
