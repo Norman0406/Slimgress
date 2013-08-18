@@ -521,13 +521,13 @@ public class GameState
         }
     }
 
-    public void intFireXMP(ItemXMP xmp, final Handler handler)
+    public void intFireWeapon(ItemWeapon weapon, final Handler handler)
     {
         try {
             checkInterface();
 
             JSONObject params = new JSONObject();
-            params.put("itemGuid", xmp.getEntityGuid());
+            params.put("itemGuid", weapon.getEntityGuid());
 
             mInterface.request(mHandshake, "gameplay/fireUntargetedRadialWeapon", mLocation, params, new RequestResult(handler) {
                 @Override
@@ -939,14 +939,14 @@ public class GameState
         Log.w("Game", "intSetNotificationSettings not yet implemented");
     }
 
-    public void intFlipPortal(GameEntityPortal portal, ItemVirus virus, final Handler handler)
+    public void intFlipPortal(GameEntityPortal portal, ItemFlipCard flipCard, final Handler handler)
     {
         try {
             checkInterface();
 
             JSONObject params = new JSONObject();
             params.put("portalGuid", portal.getEntityGuid());
-            params.put("resourceGuid", virus.getEntityGuid());
+            params.put("resourceGuid", flipCard.getEntityGuid());
 
             mInterface.request(mHandshake, "gameplay/flipPortal", mLocation, params, new RequestResult(handler) {
                 @Override

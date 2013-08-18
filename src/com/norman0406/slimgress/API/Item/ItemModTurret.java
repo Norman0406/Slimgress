@@ -31,7 +31,7 @@ public class ItemModTurret extends ItemMod
 
     public ItemModTurret(JSONArray json) throws JSONException
     {
-        super(json);
+        super(ItemBase.ItemType.ModTurret, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

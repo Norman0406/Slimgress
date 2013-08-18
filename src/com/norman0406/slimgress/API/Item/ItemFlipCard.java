@@ -24,23 +24,34 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ItemModHeatSink extends ItemMod
+public class ItemFlipCard extends ItemBase
 {
-    private int mHackSpeed;
-
-    public ItemModHeatSink(JSONArray json) throws JSONException
+    public enum FlipCardType
     {
-        super(json);
+        Jarvis,
+        Ada
+    }
+
+    private FlipCardType mVirusType;
+
+    public ItemFlipCard(JSONArray json) throws JSONException
+    {
+        super(ItemType.FlipCard, json);
 
         JSONObject item = json.getJSONObject(2);
-        JSONObject modResource = item.getJSONObject("modResource");
-        JSONObject stats = modResource.getJSONObject("stats");
-        mHackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
+        JSONObject flipCard = item.getJSONObject("flipCard");
+
+        if (flipCard.getString("flipCardType").equals("JARVIS"))
+            mVirusType = FlipCardType.Jarvis;
+        else if (flipCard.getString("flipCardType").equals("ADA"))
+            mVirusType = FlipCardType.Ada;
+        else
+            System.out.println("unknown virus type");
     }
 
     public static String getNameStatic()
     {
-        return "HEATSINK";
+        return "FLIP_CARD";
     }
 
     public String getName()
@@ -48,8 +59,8 @@ public class ItemModHeatSink extends ItemMod
         return getNameStatic();
     }
 
-    public int getHackSpeed()
+    public FlipCardType getFlipCardType()
     {
-        return mHackSpeed;
+        return mVirusType;
     }
 }

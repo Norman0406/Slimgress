@@ -23,11 +23,11 @@ package com.norman0406.slimgress.API.Item;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class ItemXMP extends ItemWeapon
+public class ItemWeaponXMP extends ItemWeapon
 {
-    public ItemXMP(JSONArray json) throws JSONException
+    public ItemWeaponXMP(JSONArray json) throws JSONException
     {
-        super(ItemType.XMP, json);
+        super(ItemType.WeaponXMP, json);
 
         // TODO: which information is needed from the JSONObject?
     }

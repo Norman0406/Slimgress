@@ -29,9 +29,9 @@ public abstract class ItemMod extends ItemBase
     private String mModDisplayName;
     private int mRemovalStickiness;
 
-    public ItemMod(JSONArray json) throws JSONException
+    public ItemMod(ItemType type, JSONArray json) throws JSONException
     {
-        super(ItemType.Mod, json);
+        super(type, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

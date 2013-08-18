@@ -30,7 +30,7 @@ public class ItemModShield extends ItemMod
 
     public ItemModShield(JSONArray json) throws JSONException
     {
-        super(json);
+        super(ItemBase.ItemType.ModShield, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

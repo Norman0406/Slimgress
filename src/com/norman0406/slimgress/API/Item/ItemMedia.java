@@ -72,7 +72,7 @@ public class ItemMedia extends ItemBase
         return mMediaDescription;
     }
 
-    public boolean isMediaHasBeenViewed()
+    public boolean getMediaHasBeenViewed()
     {
         return mMediaHasBeenViewed;
     }

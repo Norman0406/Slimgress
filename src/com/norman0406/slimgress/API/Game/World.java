@@ -20,6 +20,7 @@
 
 package com.norman0406.slimgress.API.Game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,13 @@ public class World
             if (!mXMParticles.containsKey(particle.getGuid()))
                 mXMParticles.put(particle.getGuid(), particle);
         }
+
+        // remove deleted entities
+        List<String> deletedEntityGuids = basket.getDeletedEntityGuids();
+        for (String guid : deletedEntityGuids) {
+            mGameEntities.remove(guid);
+            mXMParticles.remove(guid);  // necessary?
+        }
     }
 
     public final Map<String, GameEntityBase> getGameEntities()
@@ -66,8 +74,18 @@ public class World
         return mGameEntities;
     }
 
+    public final List<GameEntityBase> getGameEntitiesList()
+    {
+        return new ArrayList<GameEntityBase>(mGameEntities.values());
+    }
+
     public final Map<String, XMParticle> getXMParticles()
     {
         return mXMParticles;
+    }
+
+    public final List<XMParticle> getXMParticlesList()
+    {
+        return new ArrayList<XMParticle>(mXMParticles.values());
     }
 }

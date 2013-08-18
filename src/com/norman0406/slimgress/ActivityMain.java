@@ -119,14 +119,5 @@ public class ActivityMain extends FragmentActivity
 
         // update current position
         mGame.updateLocation(new Location(50.345963, 7.588223));
-
-        mGame.intGetInventory(new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                // inventory is loaded
-                System.out.println("inventory loaded");
-                return true;
-            }
-        }));
     }
 }

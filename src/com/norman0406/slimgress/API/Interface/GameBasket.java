@@ -133,10 +133,9 @@ public class GameBasket
 
     private void processDeletedEntityGuids(JSONArray deletedEntityGuids) throws JSONException
     {
-        // TODO: UNDONE
         if (deletedEntityGuids != null) {
-            Log.d("GameBasket", "deleted entity guids: " + deletedEntityGuids.toString());
             for (int i = 0; i < deletedEntityGuids.length(); i++) {
+                mDeletedEntityGuids.add(deletedEntityGuids.getString(i));
             }
         }
     }

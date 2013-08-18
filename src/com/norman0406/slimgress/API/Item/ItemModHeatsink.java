@@ -22,23 +22,34 @@ package com.norman0406.slimgress.API.Item;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ItemUltraStrike extends ItemWeapon
+public class ItemModHeatsink extends ItemMod
 {
-    public ItemUltraStrike(JSONArray json) throws JSONException
-    {
-        super(ItemType.UltraStrike, json);
+    private int mHackSpeed;
 
-        // TODO: which information is needed from the JSONObject?
+    public ItemModHeatsink(JSONArray json) throws JSONException
+    {
+        super(ItemBase.ItemType.ModHeatsink, json);
+
+        JSONObject item = json.getJSONObject(2);
+        JSONObject modResource = item.getJSONObject("modResource");
+        JSONObject stats = modResource.getJSONObject("stats");
+        mHackSpeed = Integer.parseInt(stats.getString("HACK_SPEED"));
     }
 
     public static String getNameStatic()
     {
-        return "ULTRA_STRIKE";
+        return "HEATSINK";
     }
 
     public String getName()
     {
         return getNameStatic();
+    }
+
+    public int getHackSpeed()
+    {
+        return mHackSpeed;
     }
 }

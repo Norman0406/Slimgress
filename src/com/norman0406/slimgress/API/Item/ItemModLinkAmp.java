@@ -30,7 +30,7 @@ public class ItemModLinkAmp extends ItemMod
 
     public ItemModLinkAmp(JSONArray json) throws JSONException
     {
-        super(json);
+        super(ItemBase.ItemType.ModLinkAmp, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

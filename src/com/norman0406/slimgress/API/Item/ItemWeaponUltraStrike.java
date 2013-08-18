@@ -22,45 +22,23 @@ package com.norman0406.slimgress.API.Item;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-public class ItemVirus extends ItemBase
+public class ItemWeaponUltraStrike extends ItemWeapon
 {
-    public enum VirusType
+    public ItemWeaponUltraStrike(JSONArray json) throws JSONException
     {
-        Jarvis,
-        Ada
-    }
+        super(ItemType.WeaponUltraStrike, json);
 
-    private VirusType mVirusType;
-
-    public ItemVirus(JSONArray json) throws JSONException
-    {
-        super(ItemType.Virus, json);
-
-        JSONObject item = json.getJSONObject(2);
-        JSONObject flipCard = item.getJSONObject("flipCard");
-
-        if (flipCard.getString("flipCardType").equals("JARVIS"))
-            mVirusType = VirusType.Jarvis;
-        else if (flipCard.getString("flipCardType").equals("ADA"))
-            mVirusType = VirusType.Ada;
-        else
-            System.out.println("unknown virus type");
+        // TODO: which information is needed from the JSONObject?
     }
 
     public static String getNameStatic()
     {
-        return "FLIP_CARD";
+        return "ULTRA_STRIKE";
     }
 
     public String getName()
     {
         return getNameStatic();
-    }
-
-    public VirusType getVirusType()
-    {
-        return mVirusType;
     }
 }

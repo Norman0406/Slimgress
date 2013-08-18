@@ -30,7 +30,7 @@ public class ItemModMultihack extends ItemMod
 
     public ItemModMultihack(JSONArray json) throws JSONException
     {
-        super(json);
+        super(ItemBase.ItemType.ModMultihack, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

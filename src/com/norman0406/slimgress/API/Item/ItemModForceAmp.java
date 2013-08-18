@@ -30,7 +30,7 @@ public class ItemModForceAmp extends ItemMod
 
     public ItemModForceAmp(JSONArray json) throws JSONException
     {
-        super(json);
+        super(ItemBase.ItemType.ModForceAmp, json);
 
         JSONObject item = json.getJSONObject(2);
         JSONObject modResource = item.getJSONObject("modResource");

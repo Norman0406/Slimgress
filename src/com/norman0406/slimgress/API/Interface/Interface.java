@@ -63,7 +63,7 @@ public class Interface
     private String mCookie;
 
     // ingress api definitions
-    private static final String mApiVersion = "2013-07-29T18:57:27Z 7af0d9a744b opt";
+    private static final String mApiVersion = "2013-08-07T00:06:39Z a52083df5202 opt";
     private static final String mApiBase = "m-dot-betaspike.appspot.com";
     private static final String mApiBaseURL = "https://" + mApiBase + "/";
     private static final String mApiLogin = "_ah/login?continue=http://localhost/&auth=";
@@ -94,12 +94,13 @@ public class Interface
                         response = mClient.execute(get);
                     }
                     assert(response != null);
+                    @SuppressWarnings("unused")
                     String content = EntityUtils.toString(response.getEntity());
                     response.getEntity().consumeContent();
 
                     if (response.getStatusLine().getStatusCode() == 401) {
                         // the token has expired
-                        Log.i("Interface", "authentication token has expired");
+                        Log.i("Interface", "401: authentication token has expired");
                         return AuthSuccess.TokenExpired;
                     }
                     else if (response.getStatusLine().getStatusCode() != 302) {
@@ -118,9 +119,8 @@ public class Interface
                         }
 
                         if (mCookie == null) {
-                            Log.e("Interface", "response does not contain a secure cookie");
-                            Log.d("Interface", "content: " + content);
-                            return AuthSuccess.UnknownError;
+                            Log.i("Interface", "authentication token has expired");
+                            return AuthSuccess.TokenExpired;
                         }
 
                         Log.i("Interface", "authentication successful");

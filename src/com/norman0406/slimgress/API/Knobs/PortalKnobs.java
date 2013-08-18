@@ -38,7 +38,8 @@ public class PortalKnobs extends Knobs
     }
 
     private List<Band> mBands;
-    private int mMaxResonatorsPerPlayer;
+    private boolean mCanPlayerRemoveMod;
+    private int mMaxModsPerPlayer;
 
     public PortalKnobs(JSONObject json) throws JSONException
     {
@@ -55,7 +56,8 @@ public class PortalKnobs extends Knobs
             mBands.add(newBand);
         }
 
-        mMaxResonatorsPerPlayer = json.getInt("maxResonatorsPerPlayer");
+        mCanPlayerRemoveMod = json.getBoolean("canPlayerRemoveMod");
+        mMaxModsPerPlayer = json.getInt("maxModsPerPlayer");
     }
 
     public Band getBandForLevel(int level)
@@ -74,8 +76,13 @@ public class PortalKnobs extends Knobs
         return mBands;
     }
 
-    public int getMaxResonatorsPerPlayer()
+    public boolean getCanPlayerRemoveMod()
     {
-        return mMaxResonatorsPerPlayer;
+        return mCanPlayerRemoveMod;
+    }
+
+    public int getMaxModsPerPlayer()
+    {
+        return mMaxModsPerPlayer;
     }
 }

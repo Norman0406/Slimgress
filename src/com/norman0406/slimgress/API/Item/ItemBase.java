@@ -33,13 +33,18 @@ public abstract class ItemBase extends EntityBase
     public enum ItemType
     {
         Media,
-        Mod,
+        ModForceAmp,
+        ModHeatsink,
+        ModLinkAmp,
+        ModMultihack,
+        ModShield,
+        ModTurret,
         PortalKey,
         PowerCube,
         Resonator,
-        Virus,
-        XMP,
-        UltraStrike
+        FlipCard,
+        WeaponXMP,
+        WeaponUltraStrike,
     }
 
     public enum Rarity
@@ -82,10 +87,10 @@ public abstract class ItemBase extends EntityBase
         String itemType = itemResource.getString("resourceType");
         if (itemType.equals(ItemPortalKey.getNameStatic()))
             newItem = new ItemPortalKey(json);
-        else if (itemType.equals(ItemXMP.getNameStatic()))
-            newItem = new ItemXMP(json);
-        else if (itemType.equals(ItemUltraStrike.getNameStatic()))
-            newItem = new ItemUltraStrike(json);
+        else if (itemType.equals(ItemWeaponXMP.getNameStatic()))
+            newItem = new ItemWeaponXMP(json);
+        else if (itemType.equals(ItemWeaponUltraStrike.getNameStatic()))
+            newItem = new ItemWeaponUltraStrike(json);
         else if (itemType.equals(ItemResonator.getNameStatic()))
             newItem = new ItemResonator(json);
         else if (itemType.equals(ItemModShield.getNameStatic()))
@@ -102,10 +107,10 @@ public abstract class ItemBase extends EntityBase
             newItem = new ItemModLinkAmp(json);
         else if (itemType.equals(ItemModTurret.getNameStatic()))
             newItem = new ItemModTurret(json);
-        else if (itemType.equals(ItemModHeatSink.getNameStatic()))
-            newItem = new ItemModHeatSink(json);
-        else if (itemType.equals(ItemVirus.getNameStatic()))
-            newItem = new ItemVirus(json);
+        else if (itemType.equals(ItemModHeatsink.getNameStatic()))
+            newItem = new ItemModHeatsink(json);
+        else if (itemType.equals(ItemFlipCard.getNameStatic()))
+            newItem = new ItemFlipCard(json);
         else {
             // unknown resource type
             Log.w("Item", "unknown resource type: " + itemType);
